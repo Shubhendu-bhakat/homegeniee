@@ -336,7 +336,7 @@
 /* ===== Ask HomeGeniee (demo AI panel) ====================== */
 .hg-ai {
   position: relative; z-index: 141;
-  width: min(440px, 100%); max-height: 82vh;
+  width: min(440px, 100%); max-height: 86vh;
   display: flex; flex-direction: column;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -345,6 +345,7 @@
   overflow: hidden;
 }
 .hg-ai__head {
+  flex: none;
   display: flex; align-items: center; gap: var(--s-3);
   padding: var(--s-4) var(--s-5);
   border-bottom: 1px solid var(--line-solid);
@@ -361,11 +362,23 @@
   font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--gold-deep);
 }
-.hg-ai__head .hg-modal__close { position: static; flex: none; width: 34px; height: 34px; }
+.hg-ai__close {
+  position: static; flex: none; width: 34px; height: 34px;
+  color: var(--accent); border-color: var(--line);
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+.hg-ai__close:hover { background: var(--accent); color: var(--canvas); }
 
+/* One scrollable region below the fixed header: the log, then the input —
+   right after the greeting, not buried under the suggestion chips — then
+   the chips (gone once the user has asked anything) and the CTA. */
+.hg-ai__body {
+  flex: 1; overflow-y: auto; min-height: 0;
+  display: flex; flex-direction: column;
+}
 .hg-ai__log {
-  flex: 1; overflow-y: auto; min-height: 160px; max-height: 40vh;
-  padding: var(--s-4) var(--s-5);
+  flex: none; min-height: 70px;
+  padding: var(--s-4) var(--s-5) var(--s-3);
   display: flex; flex-direction: column; gap: var(--s-3);
 }
 .hg-ai__msg {
@@ -380,7 +393,8 @@
 
 .hg-ai__suggest {
   display: flex; flex-wrap: wrap; gap: 6px;
-  padding: 0 var(--s-5) var(--s-3);
+  padding: var(--s-3) var(--s-5);
+  border-top: 1px solid var(--line-solid);
 }
 .hg-ai__chip {
   padding: 7px 12px; font-size: var(--fs-xs);
