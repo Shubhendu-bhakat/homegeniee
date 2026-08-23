@@ -3,7 +3,6 @@ import { Link, NavLink } from "react-router-dom";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { site, mainNav } from "../data/site";
 import { useUI } from "../context/UIContext";
-import { useShop } from "../context/ShopContext";
 
 function Chevron() {
   return (
@@ -17,7 +16,6 @@ export default function Header() {
   const [condensed, setCondensed] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const { toggleMobileNav, mobileNavOpen, openModal } = useUI();
-  const { compare } = useShop();
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (v) => setCondensed(v > 40));
@@ -88,11 +86,6 @@ export default function Header() {
         </nav>
 
         <div className="hg-header__actions">
-          <Link to="/collection" className="hg-iconlink" aria-label={`Compare, ${compare.length} selected`}>
-            <span aria-hidden="true">⇄</span>
-            {compare.length > 0 && <em className="hg-dot hg-mono">{compare.length}</em>}
-          </Link>
-
           <button className="hg-btn hg-btn--sm hg-header__cta" onClick={() => openModal("consultation")}>
             Book consultation
           </button>

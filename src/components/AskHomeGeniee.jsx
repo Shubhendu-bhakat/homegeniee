@@ -18,6 +18,7 @@ export default function AskHomeGeniee() {
 
   const [messages, setMessages] = useState([{ from: "ai", text: GREETING }]);
   const [input, setInput] = useState("");
+  const [asked, setAsked] = useState(false);
   const endRef = useRef(null);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function AskHomeGeniee() {
     if (!q) return;
     setMessages((m) => [...m, { from: "user", text: q }, { from: "ai", text: matchAiAnswer(q) }]);
     setInput("");
+    setAsked(true);
   };
 
   return (
@@ -54,38 +56,46 @@ export default function AskHomeGeniee() {
                 <strong>Ask HomeGeniee</strong>
                 <span className="hg-ai__badge">Demo preview · not a live AI</span>
               </div>
-              <button className="hg-modal__close" onClick={closeModal} aria-label="Close">✕</button>
+              <button className="hg-modal__close hg-ai__close" onClick={closeModal} aria-label="Close">✕</button>
             </div>
 
-            <div className="hg-ai__log">
-              {messages.map((m, i) => (
-                <p key={i} className={`hg-ai__msg hg-ai__msg--${m.from}`}>{m.text}</p>
-              ))}
-              <div ref={endRef} />
+            <div className="hg-ai__body">
+              <div className="hg-ai__log">
+                {messages.map((m, i) => (
+                  <p key={i} className={`hg-ai__msg hg-ai__msg--${m.from}`}>{m.text}</p>
+                ))}
+                <div ref={endRef} />
+              </div>
+
+              <form
+                className="hg-ai__form"
+                onSubmit={(e) => { e.preventDefault(); ask(input); }}
+              >
+                <label htmlFor="hg-ai-input" className="hg-ai__formLabel">Or type your own question</label>
+                <div className="hg-ai__formRow">
+                  <input
+                    id="hg-ai-input"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="e.g. Do you work outside Kolkata?"
+                    aria-label="Ask HomeGeniee a question"
+                  />
+                  <button className="hg-btn hg-btn--sm" type="submit">Send</button>
+                </div>
+              </form>
+
+              {!asked && (
+                <div className="hg-ai__suggest">
+                  {aiSuggestions.map((s) => (
+                    <button key={s.q} className="hg-ai__chip" onClick={() => ask(s.q)}>{s.q}</button>
+                  ))}
+                </div>
+              )}
+
+              <button className="hg-ai__cta" onClick={() => openModal("consultation")}>
+                Skip the demo — book a real consultation →
+              </button>
             </div>
-
-            <div className="hg-ai__suggest">
-              {aiSuggestions.map((s) => (
-                <button key={s.q} className="hg-ai__chip" onClick={() => ask(s.q)}>{s.q}</button>
-              ))}
-            </div>
-
-            <form
-              className="hg-ai__form"
-              onSubmit={(e) => { e.preventDefault(); ask(input); }}
-            >
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type a question…"
-                aria-label="Ask HomeGeniee a question"
-              />
-              <button className="hg-btn hg-btn--sm" type="submit">Send</button>
-            </form>
-
-            <button className="hg-ai__cta" onClick={() => openModal("consultation")}>
-              Skip the demo — book a real consultation →
-            </button>
           </motion.div>
         </div>
       )}

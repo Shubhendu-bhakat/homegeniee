@@ -39,21 +39,25 @@
   display: flex; align-items: center; gap: var(--s-5);
   min-height: var(--header-h);
 }
-.hg-logo {
-  display: inline-flex; align-items: center;
-  padding: 5px 10px; border-radius: var(--r-md);
-  background: rgba(255, 255, 255, 0.94);
+/* No plate behind the mark — it sits straight on the navy bar, sized up so
+   it reads as the header's anchor rather than a shrunk-down favicon. The
+   drop-shadow holds its edge since the header itself is a dark gradient. */
+.hg-logo { display: inline-flex; align-items: center; }
+.hg-logo img {
+  height: 52px; width: auto; object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
 }
-.hg-logo img { height: 26px; width: auto; object-fit: contain; }
 
+/* The logo carries the header now, so everything beside it steps down —
+   smaller type, tighter icons — rather than competing at the same scale. */
 .hg-nav { margin-inline: auto; display: none; }
 @media (min-width: 1180px) { .hg-nav { display: block; } }
-.hg-nav__list { display: flex; align-items: center; gap: var(--s-1); }
+.hg-nav__list { display: flex; align-items: center; gap: 2px; }
 .hg-nav__item { position: relative; perspective: 800px; }
 .hg-nav__link {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: var(--s-3) var(--s-3);
-  font-size: var(--fs-sm); color: var(--fg-muted);
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 10px;
+  font-size: 0.8125rem; color: var(--fg-muted);
   border-radius: var(--r-sm);
   transition: color var(--dur) var(--ease-out), background var(--dur) var(--ease-out);
   white-space: nowrap;
@@ -91,28 +95,15 @@
 }
 .hg-drop__link:hover::before { transform: scaleY(1); }
 
-.hg-header__actions { margin-left: auto; display: flex; align-items: center; gap: var(--s-3); }
-.hg-iconlink {
-  position: relative; display: none;
-  width: 40px; height: 40px; place-items: center;
-  border-radius: var(--r-pill); color: var(--fg-muted);
-  transition: color var(--dur-fast), background var(--dur-fast);
+.hg-header__actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.hg-header__cta {
+  display: none; --btn-bg: var(--gold); --btn-fg: var(--navy);
+  min-height: 34px; padding: 0 14px; font-size: 0.7rem;
 }
-@media (min-width: 900px) { .hg-iconlink { display: grid; } }
-.hg-iconlink:hover { color: var(--accent-strong); background: rgba(255,255,255,.1); }
-.hg-dot {
-  position: absolute; top: 2px; right: 0;
-  min-width: 17px; height: 17px; padding: 0 4px;
-  display: grid; place-items: center;
-  background: var(--gold); color: var(--navy);
-  border-radius: var(--r-pill);
-  font-size: 0.62rem; font-style: normal;
-}
-.hg-header__cta { display: none; --btn-bg: var(--gold); --btn-fg: var(--navy); }
 @media (min-width: 640px) { .hg-header__cta { display: inline-flex; } }
 
 .hg-burger {
-  width: 44px; height: 44px; display: grid; place-content: center; gap: 6px;
+  width: 38px; height: 38px; display: grid; place-content: center; gap: 5px;
   background: none; border: 1px solid var(--line); border-radius: var(--r-pill);
   color: var(--fg);
 }
@@ -400,14 +391,19 @@
 .hg-ai__chip:hover { background: var(--sand-100); border-color: var(--gold); }
 
 .hg-ai__form {
-  display: flex; gap: var(--s-2);
-  padding: var(--s-3) var(--s-5);
+  padding: var(--s-3) var(--s-5) var(--s-4);
+  background: var(--canvas-2);
   border-top: 1px solid var(--line-solid);
 }
+.hg-ai__formLabel {
+  display: block; margin-bottom: 6px;
+  font-size: var(--fs-xs); letter-spacing: 0.04em; color: var(--fg-muted);
+}
+.hg-ai__formRow { display: flex; gap: var(--s-2); }
 .hg-ai__form input {
-  flex: 1; min-height: 42px; padding: 0 14px;
+  flex: 1; min-height: 44px; padding: 0 14px;
   font: inherit; font-size: var(--fs-sm);
-  border: 1px solid var(--line-solid); border-radius: var(--r-md);
+  border: 2px solid var(--sand-300); border-radius: var(--r-md);
   background: var(--canvas);
 }
 .hg-ai__form input:focus { outline: none; border-color: var(--accent); }

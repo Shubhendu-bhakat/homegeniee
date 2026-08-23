@@ -1,34 +1,42 @@
 /* ===== Page header ======================================== */
+/* Same fix as the hero: a near-opaque white wash was hiding the photo
+   entirely. Text goes light-on-dark instead, scoped the same way as the
+   hero and header, so a much thinner navy scrim is enough to read — and the
+   photo underneath stays visible. */
 .hg-phead {
   position: relative;
   padding-top: calc(var(--header-h) + clamp(1rem, 2.5vw, 1.75rem));
   padding-bottom: clamp(1.75rem, 4vw, 3rem);
   overflow: hidden;
   isolation: isolate;
+  --fg: #FBFCFE;
+  --fg-muted: #D3E1EE;
+  --fg-faint: #A9C2D8;
+  color: var(--fg);
 }
 .hg-phead__media { position: absolute; inset: 0; z-index: -2; }
 .hg-phead__media img { width: 100%; height: 100%; object-fit: cover; }
 .hg-phead::after {
   content: ""; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.80) 45%, var(--canvas));
-}
-.hg-phead--plain::after {
-  background:
-    radial-gradient(90% 120% at 88% -10%, rgba(0,132,218,.13), transparent 60%),
-    var(--canvas);
+  background: linear-gradient(180deg, rgba(4,34,59,.62) 0%, rgba(4,34,59,.32) 45%, rgba(4,34,59,.86) 100%);
 }
 .hg-phead__copy { position: relative; max-width: 74ch; }
+.hg-phead__copy .hg-eyebrow { color: var(--gold); }
 .hg-phead__title {
   font-size: var(--fs-3xl);
   font-variation-settings: "opsz" 30, "wght" 800;
   margin-block: var(--s-2) var(--s-4);
+  color: var(--fg);
 }
 .hg-phead__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
-.hg-phead__note { margin-top: var(--s-5); font-size: var(--fs-xs); color: var(--accent-soft); letter-spacing: 0.06em; }
+.hg-phead__actions .hg-btn:not(.hg-btn--ghost) { --btn-bg: var(--gold); --btn-fg: var(--navy); }
+.hg-phead__actions .hg-btn--ghost { border-color: rgba(255,255,255,.4); }
+.hg-phead__actions .hg-btn--ghost:hover { border-color: var(--gold); color: var(--gold); }
+.hg-phead__note { margin-top: var(--s-5); font-size: var(--fs-xs); color: var(--gold); letter-spacing: 0.06em; }
 
 .hg-crumbs { font-size: var(--fs-xs); color: var(--fg-faint); letter-spacing: 0.08em; text-transform: uppercase; }
 .hg-crumbs a { color: var(--fg-muted); }
-.hg-crumbs a:hover { color: var(--accent); }
+.hg-crumbs a:hover { color: var(--gold); }
 .hg-crumbs span { margin-inline: 4px; }
 
 /* ===== Anchor sub-nav ===================================== */
@@ -51,17 +59,31 @@
 .hg-anchors__link:hover { color: var(--accent-strong); border-color: var(--accent); background: rgba(0,132,218,.08); }
 
 /* ===== Service detail rows ================================ */
+/* Cards now, not dividided rows — each sub-feature gets its own tinted
+   panel and a colour-coded index chip, cycling the same blue/gold/navy set
+   the homepage service cards use. */
 .hg-detail { background: var(--canvas-2); }
-.hg-detail__list { display: grid; }
+.hg-detail__list { display: grid; gap: var(--s-4); }
 .hg-detail__row {
   display: grid; align-items: start; gap: var(--s-4);
   grid-template-columns: auto 1fr;
-  padding-block: var(--s-6);
-  border-top: 1px solid var(--line-solid);
+  padding: var(--s-5) var(--s-5) var(--s-5) var(--s-4);
+  background: var(--surface);
+  border: 1px solid var(--line-solid);
+  border-left: 4px solid var(--accent-bright);
+  border-radius: var(--r-lg);
   scroll-margin-top: calc(var(--header-h) + 72px);
+  transition: box-shadow var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
 }
+.hg-detail__row:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+.hg-detail__list > *:nth-child(3n+2) .hg-detail__row { border-left-color: var(--gold); }
+.hg-detail__list > *:nth-child(3n) .hg-detail__row { border-left-color: var(--navy); }
 @media (min-width: 860px) { .hg-detail__row { grid-template-columns: 5ch 1fr auto; } }
-.hg-detail__idx { font-size: var(--fs-lg); color: var(--accent); }
+.hg-detail__idx {
+  font-size: var(--fs-sm); color: var(--accent);
+  width: 34px; height: 34px; display: grid; place-items: center;
+  background: var(--canvas-2); border-radius: var(--r-pill);
+}
 .hg-detail__title { font-size: var(--fs-xl); font-variation-settings: "opsz" 30; }
 .hg-detail__body { margin-top: 8px; color: var(--fg-muted); max-width: 62ch; }
 .hg-detail__cta {
@@ -80,13 +102,21 @@
 @media (min-width: 700px)  { .hg-related__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1040px) { .hg-related__grid { grid-template-columns: repeat(3, 1fr); } }
 .hg-related__card {
-  display: flex; flex-direction: column; gap: 6px; height: 100%;
-  padding: var(--s-5);
+  display: flex; flex-direction: column; height: 100%;
   background: var(--surface);
-  border: 1px solid var(--line-solid); border-radius: var(--r-lg);
-  transition: border-color var(--dur), transform var(--dur) var(--ease-out);
+  border: 1px solid var(--line-solid);
+  border-top: 3px solid var(--accent-bright);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition: border-color var(--dur), box-shadow var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
 }
-.hg-related__card:hover { border-color: var(--accent-soft); transform: translateY(-4px); }
+.hg-related__grid > *:nth-child(3n+2) .hg-related__card { border-top-color: var(--gold); }
+.hg-related__grid > *:nth-child(3n) .hg-related__card { border-top-color: var(--navy); }
+.hg-related__card:hover { border-color: var(--accent-soft); box-shadow: var(--shadow-3); transform: translateY(-4px); }
+.hg-related__media { aspect-ratio: 16 / 10; overflow: hidden; }
+.hg-related__media img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease-out); }
+.hg-related__card:hover .hg-related__media img { transform: scale(1.06); }
+.hg-related__body { display: flex; flex-direction: column; gap: 6px; flex: 1; padding: var(--s-5); }
 .hg-related__title { font-size: var(--fs-lg); font-variation-settings: "opsz" 30; }
 .hg-related__more { margin-top: auto; padding-top: var(--s-4); font-size: var(--fs-xs); color: var(--accent); }
 

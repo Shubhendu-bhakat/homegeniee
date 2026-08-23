@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useParams, Link, Navigate, useLocation } from "react-router-dom";
-import { motion } from "motion/react";
 import { services, getService } from "../data/services";
 import { site } from "../data/site";
 import { useUI } from "../context/UIContext";
 import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
 import LouverDivider from "../components/LouverDivider";
+import HeroSlider from "../components/HeroSlider";
 import TrustStrip from "../sections/TrustStrip";
 
 /**
@@ -28,18 +28,15 @@ export default function ServicePage() {
   if (!service) return <Navigate to="/" replace />;
 
   const others = services.filter((s) => s.slug !== slug).slice(0, 6);
+  // This service's own photo leads, then three others slide through behind
+  // it — the same carousel the homepage runs, not a single static frame.
+  const slides = [service, ...others.slice(0, 3)];
 
   return (
     <>
       <header className="hg-phead">
         <div className="hg-phead__media" aria-hidden="true">
-          <motion.img
-            src={service.image}
-            alt=""
-            initial={{ scale: 1.14, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.42 }}
-            transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
-          />
+          <HeroSlider slides={slides} />
         </div>
         <div className="hg-shell hg-phead__copy">
           <Reveal as="nav" className="hg-crumbs hg-mono" aria-label="Breadcrumb">
@@ -97,9 +94,14 @@ export default function ServicePage() {
             {others.map((o) => (
               <RevealItem key={o.slug}>
                 <Link to={o.href ?? `/services/${o.slug}`} className="hg-related__card">
-                  <span className="hg-eyebrow">{o.eyebrow}</span>
-                  <h3 className="hg-related__title">{o.title}</h3>
-                  <span className="hg-mono hg-related__more">View →</span>
+                  <div className="hg-related__media">
+                    <img src={o.image} alt="" loading="lazy" decoding="async" />
+                  </div>
+                  <div className="hg-related__body">
+                    <span className="hg-eyebrow">{o.eyebrow}</span>
+                    <h3 className="hg-related__title">{o.title}</h3>
+                    <span className="hg-mono hg-related__more">View →</span>
+                  </div>
                 </Link>
               </RevealItem>
             ))}

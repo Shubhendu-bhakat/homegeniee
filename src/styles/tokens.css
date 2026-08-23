@@ -102,7 +102,7 @@
   --dur: 260ms;
   --dur-slow: 620ms;
 
-  --header-h: 60px;
+  --header-h: 68px;
 }
 
 @media (prefers-reduced-motion: reduce) {
