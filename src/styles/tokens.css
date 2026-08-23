@@ -1,0 +1,115 @@
+/* ============================================================
+   HomeGeniee design tokens
+
+   Every colour below is sampled from the logo file itself
+   (public/logo.png, decoded and counted pixel by pixel), not
+   picked by eye. The mark is a vertical blue gradient — #38BCF1
+   at the top of the house down to #003D70 at the base — with a
+   lemon-gold genie and a cream highlight. Those are the site's
+   colours; nothing outside that set is introduced.
+
+   Where the brightest logo blue (#0084DA, 3.95:1 on white) is too
+   light to carry small text, the darker stops of the same gradient
+   do the work. The bright end stays for fills, glows and graphics.
+   ============================================================ */
+
+:root {
+  /* --- Blue: the logo gradient, top to bottom ---------------- */
+  --accent-sky: #38BCF1;    /* top of the house — glows, gradient stops */
+  --accent-bright: #0084DA; /* the signature azure — fills and graphics */
+  --accent: #0064AB;        /* primary: text, buttons, borders (6.2:1 on white) */
+  --accent-soft: #00599A;   /* muted accent labels */
+  --accent-strong: #004B87; /* hover and emphasis */
+  --navy: #003D70;          /* the base of the gradient — footer ground */
+
+  /* --- Gold: the genie ---------------------------------------- */
+  --gold: #FFE55A;          /* the lamp gold, straight off the mark */
+  --gold-deep: #7D6300;     /* the same hue darkened until it reads as text */
+  --cream: #FFFBEC;         /* the genie's highlight */
+
+  /* --- Surfaces: tints of the two brand colours -------------- */
+  --canvas: #FDFBF6;        /* warm ivory page base, and the text colour on accent fills */
+  --canvas-2: #EAF6FE;      /* alternating section — the azure at 8% */
+  --surface: #FFFFFF;       /* cards, modals, panels */
+  --edge: #D6E6F5;
+  --edge-2: #B9D5EC;
+
+  --sand: var(--cream);     /* warm bay — the gold half of the mark */
+  --sand-100: #FFFEF7;
+  --sand-300: #F5E4AE;
+
+  --paper: #FFFFFF;
+  --ink: #04223B;
+
+  /* --- Text: the logo navy, lightened in three steps --------- */
+  --fg: #04223B;
+  --fg-muted: #3F5D79;
+  --fg-faint: #526C87;
+
+  /* Kept for the light-section overrides; on a bright theme they match --fg. */
+  --fg-inv: #04223B;
+  --fg-inv-muted: #3F5D79;
+
+  --line: rgba(0, 132, 218, 0.22);
+  --line-solid: #D6E6F5;
+
+  /* --- Type ------------------------------------------------- */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Karla", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: clamp(1.75rem, 3vw, 2.5rem);
+  --fs-3xl: clamp(2.25rem, 5vw, 3.75rem);
+  --fs-4xl: clamp(2.75rem, 8vw, 6rem);
+
+  --lh-tight: 1.05;
+  --lh-snug: 1.2;
+  --lh-body: 1.6;
+
+  --track-wide: 0.18em;
+  --track-tight: -0.02em;
+
+  /* --- Space ------------------------------------------------ */
+  --s-1: 0.25rem;  --s-2: 0.5rem;   --s-3: 0.75rem;
+  --s-4: 1rem;     --s-5: 1.5rem;   --s-6: 2rem;
+  --s-7: 3rem;     --s-8: 4rem;     --s-9: 6rem;
+  --s-10: 8rem;
+
+  --shell: 1240px;
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+
+  /* --- Form ------------------------------------------------- */
+  --r-sm: 4px;
+  --r-md: 10px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+
+  /* Depth: shadows carry the logo navy, never neutral grey */
+  --shadow-1: 0 1px 2px rgba(0, 61, 112, 0.08);
+  --shadow-2: 0 12px 30px -14px rgba(0, 61, 112, 0.24);
+  --shadow-3: 0 28px 64px -28px rgba(0, 61, 112, 0.32);
+  --shadow-accent: 0 16px 40px -16px rgba(0, 132, 218, 0.45);
+
+  /* --- Motion ----------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur: 260ms;
+  --dur-slow: 620ms;
+
+  --header-h: 60px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
