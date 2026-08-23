@@ -1,33 +1,44 @@
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { testimonials } from "../data/testimonials";
 import SectionHeading from "../components/SectionHeading";
+import Reveal from "../components/Reveal";
 
-const slide = {
-  enter: (dir) => ({ opacity: 0, x: dir > 0 ? 60 : -60, rotateY: dir > 0 ? 8 : -8 }),
-  center: { opacity: 1, x: 0, rotateY: 0 },
-  exit: (dir) => ({ opacity: 0, x: dir > 0 ? -60 : 60, rotateY: dir > 0 ? -8 : 8 }),
-};
+function Stars({ rating }) {
+  return (
+    <div className="hg-quote__stars hg-mono" aria-label={`${rating} out of 5 stars`}>
+      {Array.from({ length: 5 }, (_, i) => {
+        const filled = rating - i >= 1;
+        const half = !filled && rating - i > 0;
+        return (
+          <span key={i} className={filled ? "is-full" : half ? "is-half" : ""} aria-hidden="true">★</span>
+        );
+      })}
+    </div>
+  );
+}
 
+function Card({ t, duplicate = false }) {
+  return (
+    <figure className="hg-quote" aria-hidden={duplicate || undefined}>
+      <Stars rating={t.rating} />
+      <blockquote className="hg-quote__text">“{t.quote}”</blockquote>
+      <figcaption className="hg-quote__by">
+        <img className="hg-quote__avatar" src={t.avatar} alt="" width="48" height="48" loading="lazy" />
+        <div>
+          <cite className="hg-quote__name">{t.name}</cite>
+          <span className="hg-quote__role hg-mono">{t.location} · {t.service}</span>
+        </div>
+      </figcaption>
+    </figure>
+  );
+}
+
+/**
+ * A self-scrolling strip rather than a fixed grid — the list is doubled so
+ * the loop is seamless, animated in plain CSS (pauses on hover, and the
+ * site-wide reduced-motion rule already freezes it for anyone who prefers
+ * that, no extra handling needed here).
+ */
 export default function Testimonials() {
-  const [[index, dir], setState] = useState([0, 0]);
-  const reduce = useReducedMotion();
-  const t = testimonials[index];
-
-  const go = useCallback((next) => {
-    setState(([i]) => {
-      const len = testimonials.length;
-      return [(next + len) % len, next > i ? 1 : -1];
-    });
-  }, []);
-
-  // Auto-advance, paused when the user prefers reduced motion.
-  useEffect(() => {
-    if (reduce) return;
-    const id = setInterval(() => setState(([i]) => [(i + 1) % testimonials.length, 1]), 6500);
-    return () => clearInterval(id);
-  }, [reduce]);
-
   return (
     <section className="hg-section hg-quotes" aria-labelledby="hg-quotes-title">
       <div className="hg-shell">
@@ -36,45 +47,14 @@ export default function Testimonials() {
           title={<span id="hg-quotes-title">What people say after handover</span>}
           align="center"
         />
-
-        <div className="hg-quotes__stage">
-          <AnimatePresence mode="wait" custom={dir}>
-            <motion.blockquote
-              key={index}
-              className="hg-quote"
-              custom={dir}
-              variants={slide}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <p className="hg-quote__text">{t.quote}</p>
-              <footer className="hg-quote__by">
-                <cite className="hg-quote__name">{t.name}</cite>
-                <span className="hg-quote__role hg-mono">{t.role}</span>
-              </footer>
-            </motion.blockquote>
-          </AnimatePresence>
-        </div>
-
-        <div className="hg-quotes__nav">
-          <button className="hg-quotes__arrow" onClick={() => go(index - 1)} aria-label="Previous testimonial">←</button>
-          <div className="hg-quotes__dots" role="tablist" aria-label="Testimonials">
-            {testimonials.map((q, i) => (
-              <button
-                key={q.name}
-                role="tab"
-                aria-selected={i === index}
-                aria-label={`Testimonial from ${q.name}`}
-                className={`hg-quotes__dot ${i === index ? "is-on" : ""}`}
-                onClick={() => go(i)}
-              />
-            ))}
-          </div>
-          <button className="hg-quotes__arrow" onClick={() => go(index + 1)} aria-label="Next testimonial">→</button>
-        </div>
       </div>
+
+      <Reveal className="hg-quotes__viewport">
+        <div className="hg-quotes__track">
+          {testimonials.map((t) => <Card key={t.name} t={t} />)}
+          {testimonials.map((t) => <Card key={`${t.name}-dup`} t={t} duplicate />)}
+        </div>
+      </Reveal>
     </section>
   );
 }

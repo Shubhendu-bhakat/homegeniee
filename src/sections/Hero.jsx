@@ -84,7 +84,6 @@ export default function Hero() {
           transition={{ delay: 0.8, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <MagneticButton onClick={() => openModal("consultation")}>Book free consultation</MagneticButton>
-          <a href={`tel:${site.phonePrimary}`} className="hg-btn hg-btn--ghost">Call {site.phonePrimaryLabel}</a>
         </motion.div>
 
         <motion.ul
