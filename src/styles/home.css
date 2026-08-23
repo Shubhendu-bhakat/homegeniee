@@ -148,11 +148,11 @@
 .hg-journey__list { display: grid; }
 .hg-journey__step {
   display: flex; gap: var(--s-4); align-items: flex-start;
-  min-height: 30vh; padding-block: var(--s-5);
+  min-height: 42vh; padding-block: var(--s-5);
   opacity: 0.4;
   transition: opacity var(--dur) var(--ease-out);
 }
-@media (min-width: 900px) { .hg-journey__step { min-height: 36vh; align-items: center; } }
+@media (min-width: 900px) { .hg-journey__step { min-height: 54vh; align-items: center; } }
 .hg-journey__step.is-on { opacity: 1; }
 .hg-journey__index {
   flex: none;
@@ -228,18 +228,30 @@
   -webkit-box-orient: vertical; overflow: hidden;
 }
 .hg-svc__more {
-  display: block; padding: 0 var(--s-5) var(--s-4);
+  display: inline-flex; align-items: center; gap: 4px;
+  margin: 0 var(--s-5) var(--s-4);
+  padding: 7px 14px;
   font-size: var(--fs-xs); color: var(--accent);
-  transition: transform var(--dur-fast) var(--ease-out);
+  background: var(--canvas-2);
+  border-radius: var(--r-pill);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
 }
-.hg-svc:hover .hg-svc__more { transform: translateX(5px); }
+.hg-svc:hover .hg-svc__more { background: var(--accent); color: var(--canvas); transform: translateX(4px); }
+.hg-svc__more:active { transform: translateX(4px) scale(0.94); }
+
 .hg-svc__call {
-  display: block; padding: var(--s-3) var(--s-5);
-  font-size: var(--fs-xs); color: var(--fg-faint);
-  border-top: 1px solid var(--line-solid);
-  transition: color var(--dur-fast), background var(--dur-fast);
+  display: block; margin: 0 var(--s-5) var(--s-5);
+  padding: 10px var(--s-4);
+  font-size: var(--fs-xs); color: var(--gold-deep); text-align: center;
+  background: var(--sand-100);
+  border: 1px solid var(--sand-300);
+  border-radius: var(--r-pill);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
 }
-.hg-svc__call:hover { color: var(--accent-strong); background: rgba(0,132,218,.07); }
+.hg-svc__call:hover { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+.hg-svc__call:active { transform: scale(0.96); background: var(--gold-deep); color: var(--canvas); }
 
 /* ===== Why us ============================================= */
 /* A numbered rail above the cards, so the four read as an order to follow —

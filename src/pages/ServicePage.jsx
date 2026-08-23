@@ -7,6 +7,7 @@ import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
 import LouverDivider from "../components/LouverDivider";
 import HeroSlider from "../components/HeroSlider";
 import TrustStrip from "../sections/TrustStrip";
+import useIsDesktop from "../hooks/useIsDesktop";
 
 /**
  * One route serves all fourteen verticals. The anchor sub-sections preserve the
@@ -18,6 +19,10 @@ export default function ServicePage() {
   const { hash } = useLocation();
   const { openModal } = useUI();
   const service = getService(slug);
+  const isDesktop = useIsDesktop();
+  const callHref = isDesktop
+    ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Hi Home Geniee, I'd like to talk about a project.")}`
+    : `tel:${site.phonePrimary}`;
 
   useEffect(() => {
     if (!hash) return;
@@ -47,7 +52,14 @@ export default function ServicePage() {
           <Reveal delay={0.2}><p className="hg-lede">{service.body}</p></Reveal>
           <Reveal delay={0.26} className="hg-phead__actions">
             <button className="hg-btn" onClick={() => openModal("consultation")}>Book free consultation</button>
-            <a href={`tel:${site.phonePrimary}`} className="hg-btn hg-btn--ghost">Call now</a>
+            <a
+              href={callHref}
+              className="hg-btn hg-btn--ghost"
+              target={isDesktop ? "_blank" : undefined}
+              rel={isDesktop ? "noreferrer noopener" : undefined}
+            >
+              Call now
+            </a>
           </Reveal>
         </div>
       </header>

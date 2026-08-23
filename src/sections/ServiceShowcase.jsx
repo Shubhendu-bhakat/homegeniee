@@ -4,6 +4,7 @@ import { site } from "../data/site";
 import SectionHeading from "../components/SectionHeading";
 import TiltCard from "../components/TiltCard";
 import { RevealGroup, RevealItem } from "../components/Reveal";
+import useIsDesktop from "../hooks/useIsDesktop";
 
 /**
  * All service verticals from the homepage, each keeping its original eyebrow,
@@ -11,6 +12,13 @@ import { RevealGroup, RevealItem } from "../components/Reveal";
  * translateZ so it genuinely lifts off the card face rather than faking depth.
  */
 export default function ServiceShowcase() {
+  const isDesktop = useIsDesktop();
+  // A tel: link is dead weight on a mouse-driven laptop — no dialer to hand
+  // off to — so desktop routes "Call now" to a WhatsApp chat instead.
+  const callHref = isDesktop
+    ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Hi Home Geniee, I'd like to talk about a project.")}`
+    : `tel:${site.phonePrimary}`;
+
   return (
     <section className="hg-section hg-services" aria-labelledby="hg-services-title">
       <div className="hg-shell">
@@ -35,7 +43,14 @@ export default function ServiceShowcase() {
                   </div>
                   <span className="hg-svc__more hg-mono">View more →</span>
                 </Link>
-                <a href={`tel:${site.phonePrimary}`} className="hg-svc__call hg-mono">Call now</a>
+                <a
+                  href={callHref}
+                  className="hg-svc__call hg-mono"
+                  target={isDesktop ? "_blank" : undefined}
+                  rel={isDesktop ? "noreferrer noopener" : undefined}
+                >
+                  Call now
+                </a>
               </TiltCard>
             </RevealItem>
           ))}
