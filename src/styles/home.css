@@ -242,6 +242,24 @@
 .hg-svc__call:hover { color: var(--accent-strong); background: rgba(0,132,218,.07); }
 
 /* ===== Why us ============================================= */
+/* A numbered rail above the cards, so the four read as an order to follow —
+   one, then the next — rather than four unrelated selling points. */
+.hg-why__stepline {
+  display: flex; align-items: center;
+  margin-bottom: var(--s-5);
+}
+.hg-why__step { display: flex; align-items: center; flex: 1; }
+.hg-why__step:last-child { flex: none; }
+.hg-why__step em {
+  flex: none; width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border-radius: var(--r-pill);
+  font-style: normal; font-family: var(--font-mono); font-size: 0.7rem;
+  background: var(--accent); color: var(--canvas);
+}
+.hg-why__step:nth-child(2n) em { background: var(--gold); color: var(--navy); }
+.hg-why__stepLine { flex: 1; height: 2px; margin: 0 10px; background: var(--sand-300); }
+
 .hg-why__grid { display: grid; gap: var(--s-5); grid-template-columns: 1fr; }
 @media (min-width: 640px)  { .hg-why__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1040px) { .hg-why__grid { grid-template-columns: repeat(4, 1fr); } }

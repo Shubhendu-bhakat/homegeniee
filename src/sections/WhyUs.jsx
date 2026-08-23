@@ -16,7 +16,17 @@ export default function WhyUs() {
         <SectionHeading
           eyebrow="Why choose Home Geniee"
           title={<span id="hg-why-title">Four things we will not negotiate on</span>}
+          lede="Followed in this order, on every project — not a menu to pick from."
         />
+
+        <div className="hg-why__stepline" aria-hidden="true">
+          {differentiators.map((d, i) => (
+            <span className="hg-why__step" key={d.title}>
+              <em>{String(i + 1).padStart(2, "0")}</em>
+              {i < differentiators.length - 1 && <i className="hg-why__stepLine" />}
+            </span>
+          ))}
+        </div>
 
         <RevealGroup className="hg-why__grid" stagger={0.09}>
           {differentiators.map((d, i) => (
