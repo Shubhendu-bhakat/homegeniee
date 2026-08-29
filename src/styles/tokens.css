@@ -27,6 +27,14 @@
   --gold-deep: #7D6300;     /* the same hue darkened until it reads as text */
   --cream: #FFFBEC;         /* the genie's highlight */
 
+  /* --- Clay: the one deliberate departure from the logo — a warm terracotta
+     for sections that want to read as furnished/inhabited rather than
+     branded. Used sparingly, by request, not blended into the core set. */
+  --clay: #8A4130;
+  --clay-deep: #5A2A1F;
+  --clay-tint: #F3E4DE;
+  --clay-light: #D89A79;    /* clay lightened for dark grounds — 6.8:1 on navy */
+
   /* --- Surfaces: tints of the two brand colours -------------- */
   --canvas: #FDFBF6;        /* warm ivory page base, and the text colour on accent fills */
   --canvas-2: #EAF6FE;      /* alternating section — the azure at 8% */

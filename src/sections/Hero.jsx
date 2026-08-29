@@ -8,11 +8,11 @@ import HeroSlider from "../components/HeroSlider";
 
 /** Banner destinations carried over from the homepage slider. */
 const quickEntries = [
-  { label: "Green Scape", to: "/services/green-scape#balcony" },
-  { label: "Wall Decor", to: "/services/wall-decor" },
+  { label: "Interior Design", to: "/services/interior-design" },
+  { label: "Modular Kitchen", to: "/services/modular-kitchen" },
   { label: "Architecture & Civil", to: "/services/architectural-civil" },
-  { label: "HomeGeniee Collection", to: "/collection" },
-  { label: "Facade Decor", to: "/services/facade-elevational" },
+  { label: "Facade", to: "/services/facade-elevational" },
+  { label: "Green Scape", to: "/services/green-scape" },
 ];
 
 const stats = [
@@ -20,6 +20,8 @@ const stats = [
   { value: "14", label: "Service verticals" },
   { value: "10 yrs", label: "Upto, warranty" },
   { value: "24 hrs", label: "Callback window" },
+  { value: "No hidden cost", label: "One transparent estimate" },
+  { value: "On time", label: "Delivered as promised" },
 ];
 
 const line = {
@@ -100,23 +102,21 @@ export default function Hero() {
         </motion.ul>
       </motion.div>
 
-      <motion.dl
-        className="hg-hero__stats"
-        initial="hidden"
-        animate="shown"
-        variants={{ shown: { transition: { delayChildren: 1.05, staggerChildren: 0.08 } } }}
+      <motion.div
+        className="hg-hero__statline"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.05, duration: 0.6 }}
       >
-        {stats.map((s) => (
-          <motion.div
-            key={s.label}
-            className="hg-hero__stat"
-            variants={{ hidden: { opacity: 0, y: 20 }, shown: { opacity: 1, y: 0 } }}
-          >
-            <dt className="hg-hero__statValue hg-mono">{s.value}</dt>
-            <dd className="hg-hero__statLabel">{s.label}</dd>
-          </motion.div>
-        ))}
-      </motion.dl>
+        <dl className="hg-hero__statTrack">
+          {[...stats, ...stats].map((s, i) => (
+            <div className="hg-hero__stat" key={`${s.label}-${i}`} aria-hidden={i >= stats.length || undefined}>
+              <dt className="hg-hero__statValue hg-mono">{s.value}</dt>
+              <dd className="hg-hero__statLabel">{s.label}</dd>
+            </div>
+          ))}
+        </dl>
+      </motion.div>
     </section>
   );
 }

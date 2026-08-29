@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import MobileNav from "./components/MobileNav";
 import Footer from "./components/Footer";
 import ConsultationModal from "./components/ConsultationModal";
+import SignInModal from "./components/SignInModal";
 import AskHomeGeniee from "./components/AskHomeGeniee";
 import FloatingActions from "./components/FloatingActions";
 import CookieBar from "./components/CookieBar";
@@ -66,6 +67,7 @@ export default function App() {
 
       <Footer />
       <ConsultationModal />
+      <SignInModal />
       <AskHomeGeniee />
       <FloatingActions />
       <CookieBar />

@@ -74,16 +74,42 @@
 }
 .hg-hero__chip:hover { color: var(--canvas); background: var(--accent-strong); transform: translateY(-2px); }
 
-.hg-hero__stats {
+/* A scrolling line rather than a static grid — the stat list doubles and
+   the track slides exactly one set's width, so the loop is invisible. Pure
+   CSS, pauses on hover, and freezes for prefers-reduced-motion via the
+   site-wide rule in tokens.css. */
+.hg-hero__statline {
   position: relative;
-  width: 100%; max-width: var(--shell); margin: var(--s-6) auto 0;
-  padding-inline: var(--gutter);
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-5);
-  border-top: 1px solid rgba(255,255,255,.22); padding-top: var(--s-5);
+  width: 100%; margin: var(--s-6) auto 0;
+  border-top: 1px solid rgba(255,255,255,.55);
+  padding-top: var(--s-5);
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
-@media (min-width: 760px) { .hg-hero__stats { grid-template-columns: repeat(4, 1fr); } }
-.hg-hero__statValue { font-size: var(--fs-xl); color: var(--gold); font-weight: 500; }
-.hg-hero__statLabel { margin: 4px 0 0; font-size: var(--fs-xs); color: var(--fg-faint); letter-spacing: 0.06em; text-transform: uppercase; }
+.hg-hero__statTrack {
+  margin: 0; display: flex; align-items: center; gap: clamp(1.75rem, 4vw, 3rem); width: max-content;
+  animation: hg-stats-scroll 32s linear infinite;
+}
+.hg-hero__statline:hover .hg-hero__statTrack { animation-play-state: paused; }
+@keyframes hg-stats-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.hg-hero__stat {
+  flex: none; position: relative;
+  padding-left: clamp(1.75rem, 4vw, 3rem);
+}
+.hg-hero__stat:first-child { padding-left: 0; }
+/* The small white line the ticker needed to read as a strip of distinct
+   items rather than one run-on sentence scrolling past. */
+.hg-hero__stat::before {
+  content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 1px;
+  background: rgba(255,255,255,.5);
+}
+.hg-hero__stat:first-child::before { display: none; }
+.hg-hero__statValue { font-size: var(--fs-base); color: var(--gold); font-weight: 500; white-space: nowrap; }
+.hg-hero__statTrack > *:nth-child(2n) .hg-hero__statValue { color: var(--clay-light); }
+.hg-hero__statLabel { margin: 3px 0 0; font-size: 0.68rem; color: var(--fg-faint); letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
 
 /* ===== Section heading ==================================== */
 .hg-heading { max-width: 74ch; margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem); position: relative; }
@@ -214,44 +240,48 @@
 }
 .hg-svc:hover .hg-svc__media img { transform: scale(1.06); }
 .hg-svc__body { padding: var(--s-5); flex: 1; transform: translateZ(18px); }
-.hg-svc__body .hg-eyebrow {
-  display: inline-block; padding: 4px 10px;
-  background: var(--canvas-2); border-radius: var(--r-pill);
+/* One line, ellipsised — a tag reads as a tag only if it stays a tag's
+   size. Letting it wrap to 2-3 lines is what made it look like a broken
+   highlighter block instead of a label. */
+.hg-svc__eyebrow {
+  display: block; max-width: 100%;
+  padding: 3px 9px;
+  background: var(--canvas-2); border-radius: var(--r-sm);
   margin-bottom: var(--s-3);
+  font-size: 0.65rem; line-height: 1.6;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.hg-services__grid > *:nth-child(3n+2) .hg-eyebrow { background: var(--sand-300); color: var(--gold-deep); }
-.hg-services__grid > *:nth-child(3n) .hg-eyebrow { background: #E4EEF9; color: var(--accent-strong); }
+.hg-services__grid > *:nth-child(3n+2) .hg-svc__eyebrow { background: var(--sand-300); color: var(--gold-deep); }
+.hg-services__grid > *:nth-child(3n) .hg-svc__eyebrow { background: #E4EEF9; color: var(--accent-strong); }
 .hg-svc__title { font-size: var(--fs-lg); margin-bottom: 10px; font-variation-settings: "opsz" 30; }
 .hg-svc__copy {
   font-size: var(--fs-sm); color: var(--fg-muted);
   display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4;
   -webkit-box-orient: vertical; overflow: hidden;
 }
-.hg-svc__more {
-  display: inline-flex; align-items: center; gap: 4px;
-  margin: 0 var(--s-5) var(--s-4);
-  padding: 7px 14px;
-  font-size: var(--fs-xs); color: var(--accent);
-  background: var(--canvas-2);
-  border-radius: var(--r-pill);
-  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
-              transform var(--dur-fast) var(--ease-out);
-}
-.hg-svc:hover .hg-svc__more { background: var(--accent); color: var(--canvas); transform: translateX(4px); }
-.hg-svc__more:active { transform: translateX(4px) scale(0.94); }
 
-.hg-svc__call {
-  display: block; margin: 0 var(--s-5) var(--s-5);
-  padding: 10px var(--s-4);
-  font-size: var(--fs-xs); color: var(--gold-deep); text-align: center;
-  background: var(--sand-100);
-  border: 1px solid var(--sand-300);
-  border-radius: var(--r-pill);
-  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
-              transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+/* Two real buttons, not one bar and one afterthought — blue for the page,
+   gold for the phone, same visual weight so neither reads as secondary. */
+.hg-svc__actions {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  padding: 0 var(--s-5) var(--s-5);
+  margin-top: auto;
 }
-.hg-svc__call:hover { background: var(--gold); border-color: var(--gold); color: var(--navy); }
-.hg-svc__call:active { transform: scale(0.96); background: var(--gold-deep); color: var(--canvas); }
+.hg-svc__more, .hg-svc__call {
+  flex: 1 1 auto; min-width: 108px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  min-height: 40px; padding: 0 var(--s-3);
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em; text-align: center;
+  border-radius: var(--r-pill); border: 1px solid transparent;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.hg-svc__more { background: var(--accent); color: var(--canvas); }
+.hg-svc__more:hover { background: var(--accent-strong); }
+.hg-svc__more:active { transform: scale(0.96); }
+.hg-svc__call { background: var(--gold); color: var(--navy); }
+.hg-svc__call:hover { background: var(--gold-deep); color: var(--canvas); }
+.hg-svc__call:active { transform: scale(0.96); }
 
 /* ===== Why us ============================================= */
 /* A numbered rail above the cards, so the four read as an order to follow —
@@ -329,11 +359,10 @@
   height: 2px; background: var(--accent); border-radius: 2px;
 }
 
-.hg-utility__grid, .hg-shop__grid {
+.hg-shop__grid {
   display: grid; gap: var(--s-5);
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
 }
-.hg-utility__cta { margin-top: var(--s-7); text-align: center; }
 
 .hg-prod {
   display: flex; flex-direction: column; height: 100%;

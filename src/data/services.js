@@ -9,23 +9,16 @@ export const services = [
     title: "Interior Design & Stylish Accessories",
     body: "Transform your home with curated interior design elements that blend elegance and functionality. From modern minimalism to timeless classics, our collection enhances every room with smart organization and sophisticated aesthetics. Redesign your living space with premium accessories that bring harmony, style, and inspiration.",
     image: `${IMG}/2025/08/WhatsApp-Image-2025-07-22-at-15.06.13-4.jpeg`,
-    sections: [],
+    sections: [
+      { id: "fabricator", label: "HomeGeniee Fabricator", body: "Our in-house fabrication team turns a design into fitted carpentry and metalwork — one contractor, not three, for anything built to order." },
+    ],
   },
   {
     slug: "modular-kitchen",
     eyebrow: "Modular Perfection",
     title: "Modular Kitchen Design",
     body: "Transform your kitchen with modular designs that blend elegance, functionality, and smart storage solutions. From modern minimalism to timeless classics, our premium collection enhances your space with efficiency and style. Upgrade to a sophisticated, well-organized kitchen that perfectly complements your lifestyle.",
-    image: "/img/services/modular-kitchen.png",
-    sections: [],
-  },
-  {
-    slug: "homegeniee-collection",
-    eyebrow: "Transform Your Home With Style",
-    title: "Home Geniee Collection",
-    body: "Discover a curated collection of stylish and functional home essentials. From modern designs to timeless classics, our selection enhances every corner of your home with elegance, comfort, and smart organization.",
-    image: `${IMG}/2024/09/M-10-RED-OPREN.png`,
-    href: "/collection",
+    image: "/img/services/modular-kitchen.jpg",
     sections: [],
   },
   {
@@ -49,15 +42,17 @@ export const services = [
     eyebrow: "Style Meets Comfort",
     title: "Modern Furniture",
     body: "Upgrade your home with sleek, contemporary furniture designed for elegance and functionality. Our curated collection combines premium materials, smart designs, and timeless aesthetics to create spaces that inspire.",
-    image: "/img/services/furniture.png",
-    sections: [],
+    image: "/img/services/furniture.jpg",
+    sections: [
+      { id: "collection", label: "HomeGeniee Collection", body: "Our ready-to-order utility line — puja units, kitchen and study storage, wall shelving — the pre-order catalogue that started as furniture, now its own showcase.", href: "/collection" },
+    ],
   },
   {
     slug: "facade-elevational",
     eyebrow: "Enhance Aesthetics, Elevate Impressions",
     title: "Interior & Exterior Facade Decor",
     body: "Enhance your home's aesthetics with stylish interior and exterior facade décor, featuring elegant textures, modern finishes, and timeless designs for a sophisticated look.",
-    image: "/img/services/facade-elevational.png",
+    image: "/img/services/facade-elevational.jpg",
     sections: [
       { id: "acp", label: "ACP Facade", body: "Aluminium composite panels in a wide finish range, cut and folded to the elevation drawing." },
       { id: "glass", label: "Glass Facade", body: "Structural and semi-structural glazing that opens the elevation up to daylight." },
@@ -69,7 +64,7 @@ export const services = [
     eyebrow: "Transform Your Walls With Style",
     title: "Home Geniee Wall Decor Collection",
     body: "Discover unique wall decor that brings character and style to your home. From modern panels to artistic finishes, our designs turn empty walls into elegant statements.",
-    image: "/img/services/wall-decor.png",
+    image: "/img/services/wall-decor.jpg",
     sections: [
       { id: "wall-paint", label: "Normal Wall Paint", body: "Emulsion and texture finishes, surface-prepped and applied to a clean, even coat." },
       { id: "mural", label: "Wall Mural / Art Painting", body: "Hand-painted murals scaled to the wall and the room's light." },
@@ -106,7 +101,7 @@ export const services = [
     eyebrow: "Seamless Design, Lasting Performance",
     title: "uPVC & Aluminium Windows & Doors",
     body: "Upgrade your space with high-performance uPVC and aluminium fittings—offering sleek aesthetics, superior insulation, and long-lasting durability for both modern and traditional homes.",
-    image: "/img/services/aluminium-upvc.png",
+    image: "/img/services/aluminium-upvc.jpg",
     sections: [
       { id: "sliding", label: "Sliding Window", body: "Space-saving sliding sashes for balconies and tight reveals." },
       { id: "casement", label: "Casement Window", body: "Side-hung sashes that open fully for maximum ventilation." },
@@ -118,7 +113,7 @@ export const services = [
     eyebrow: "Stylish Outdoor Spaces, Relaxed Living",
     title: "Balcony & Terrace Decor",
     body: "Transform your balcony or terrace with elegant decor, featuring cozy seating, lush greenery, and modern accents to create a serene and stylish outdoor retreat.",
-    image: "/img/services/green-scape.png",
+    image: "/img/services/green-scape.jpg",
     sections: [
       { id: "artificial", label: "Artificial Grass", body: "All-weather turf for terraces and balconies where real lawn will not survive." },
       { id: "vertical", label: "Vertical Gardening", body: "Living wall systems that add green without spending floor area." },
@@ -132,7 +127,7 @@ export const services = [
     eyebrow: "Style Meets Shade, Comfort Meets Craft",
     title: "Premium Shade Work Solutions",
     body: "Create cool, comfortable spaces with stylish shade structures—perfect for terraces, balconies, gardens, or commercial areas. Designed to elevate aesthetics while offering protection from heat, rain, and glare.",
-    image: "/img/services/shade-work.jpeg",
+    image: "/img/services/shade-work.jpg",
     sections: [
       { id: "shade", label: "Shade Work", body: "Fixed and retractable shade structures sized to the sun path on your site." },
       { id: "grill", label: "MS Grill for Window / Balcony / Terrace", body: "Fabricated steel grills that secure an opening without closing off the view." },
@@ -170,3 +165,8 @@ export const services = [
 ];
 
 export const getService = (slug) => services.find((s) => s.slug === slug);
+
+// The five verticals fronted on the homepage and in the nav — the rest of
+// the catalogue still lives at its own /services/:slug, just not headlined.
+export const FEATURED_SLUGS = ["interior-design", "modular-kitchen", "architectural-civil", "facade-elevational", "green-scape"];
+export const featuredServices = FEATURED_SLUGS.map(getService);

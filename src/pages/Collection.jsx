@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { products, productCategories } from "../data/products";
 import { useShop } from "../context/ShopContext";
@@ -29,6 +30,10 @@ export default function Collection() {
           <HeroSlider slides={products.slice(0, 6)} />
         </div>
         <div className="hg-shell hg-phead__copy">
+          <Reveal as="nav" className="hg-crumbs hg-mono" aria-label="Breadcrumb">
+            <Link to="/">Home</Link> <span aria-hidden="true">/</span>{" "}
+            <Link to="/services/furniture">Furniture</Link> <span aria-hidden="true">/</span> <span>Collection</span>
+          </Reveal>
           <Reveal delay={0.06}><span className="hg-eyebrow">Transform your home with style</span></Reveal>
           <Reveal delay={0.12}><h1 className="hg-phead__title">Home Geniee Collection</h1></Reveal>
           <Reveal delay={0.18}>

@@ -96,9 +96,22 @@ export const categoryMenu = [
 ];
 
 // Primary navigation, mirroring the WordPress header.
+// Trimmed to the five verticals the client wants fronted, per their nav
+// diagram. Interior Design carries the sub-dropdown (wall decor, false
+// ceiling, furniture, fabricator) the diagram shows under it — Furniture in
+// turn is where the HomeGeniee Collection now lives, not its own nav item.
 export const mainNav = [
-  { label: "Interior Design", to: "/services/interior-design" },
-  { label: "HomeGeniee Collection", to: "/collection" },
+  {
+    label: "Interior Design",
+    to: "/services/interior-design",
+    children: [
+      { label: "Wall Decor", to: "/services/wall-decor" },
+      { label: "False Ceiling", to: "/services/false-ceiling" },
+      { label: "Furniture", to: "/services/furniture" },
+      { label: "HomeGeniee Fabricator", to: "/services/interior-design#fabricator" },
+    ],
+  },
+  { label: "Modular Kitchen", to: "/services/modular-kitchen" },
   {
     label: "Architectural & Civil",
     to: "/services/architectural-civil",
@@ -114,11 +127,12 @@ export const mainNav = [
     ],
   },
   {
-    label: "Property Consultancy",
-    to: "/services/property-consultancy",
+    label: "Facade",
+    to: "/services/facade-elevational",
     children: [
-      { label: "KMC Mutation", to: "/services/property-consultancy#kmc" },
-      { label: "THIKA Mutation", to: "/services/property-consultancy#thika" },
+      { label: "ACP Facade", to: "/services/facade-elevational#acp" },
+      { label: "Glass Facade", to: "/services/facade-elevational#glass" },
+      { label: "MS Facade", to: "/services/facade-elevational#ms" },
     ],
   },
   {
@@ -132,7 +146,6 @@ export const mainNav = [
       { label: "Swing Installation", to: "/services/green-scape#swing" },
     ],
   },
-  { label: "Gallery", to: "/gallery" },
 ];
 
 export const footerLinks = {

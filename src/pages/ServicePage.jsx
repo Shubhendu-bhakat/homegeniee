@@ -6,6 +6,7 @@ import { useUI } from "../context/UIContext";
 import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
 import LouverDivider from "../components/LouverDivider";
 import HeroSlider from "../components/HeroSlider";
+import CostCalculator from "../components/CostCalculator";
 import TrustStrip from "../sections/TrustStrip";
 import useIsDesktop from "../hooks/useIsDesktop";
 
@@ -51,7 +52,11 @@ export default function ServicePage() {
           <Reveal delay={0.14}><h1 className="hg-phead__title">{service.title}</h1></Reveal>
           <Reveal delay={0.2}><p className="hg-lede">{service.body}</p></Reveal>
           <Reveal delay={0.26} className="hg-phead__actions">
-            <button className="hg-btn" onClick={() => openModal("consultation")}>Book free consultation</button>
+            {slug === "interior-design" ? (
+              <a href="#calculate-cost" className="hg-btn">Get free estimate ↓</a>
+            ) : (
+              <button className="hg-btn" onClick={() => openModal("consultation")}>Book free consultation</button>
+            )}
             <a
               href={callHref}
               className="hg-btn hg-btn--ghost"
@@ -63,6 +68,8 @@ export default function ServicePage() {
           </Reveal>
         </div>
       </header>
+
+      {slug === "interior-design" && <CostCalculator />}
 
       {service.sections.length > 0 && (
         <>
@@ -85,9 +92,13 @@ export default function ServicePage() {
                         <h2 className="hg-detail__title">{s.label}</h2>
                         <p className="hg-detail__body">{s.body}</p>
                       </div>
-                      <button className="hg-detail__cta hg-mono" onClick={() => openModal("consultation", service.title)}>
-                        Enquire →
-                      </button>
+                      {s.href ? (
+                        <Link to={s.href} className="hg-detail__cta hg-mono">View →</Link>
+                      ) : (
+                        <button className="hg-detail__cta hg-mono" onClick={() => openModal("consultation", service.title)}>
+                          Enquire →
+                        </button>
+                      )}
                     </article>
                   </RevealItem>
                 ))}
@@ -101,7 +112,7 @@ export default function ServicePage() {
 
       <section className="hg-section hg-related">
         <div className="hg-shell">
-          <p className="hg-sheet">Also from Home Geniee</p>
+          <p className="hg-sheet">Recent Interior Transformations</p>
           <RevealGroup className="hg-related__grid" stagger={0.05}>
             {others.map((o) => (
               <RevealItem key={o.slug}>
