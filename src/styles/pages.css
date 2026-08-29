@@ -20,7 +20,7 @@
   content: ""; position: absolute; inset: 0; z-index: -1;
   background: linear-gradient(180deg, rgba(4,34,59,.62) 0%, rgba(4,34,59,.32) 45%, rgba(4,34,59,.86) 100%);
 }
-.hg-phead__copy { position: relative; max-width: 74ch; }
+.hg-phead__copy { position: relative; max-width: 74ch; margin-inline: 0; }
 .hg-phead__copy .hg-eyebrow { color: var(--gold); }
 .hg-phead__title {
   font-size: var(--fs-3xl);
@@ -84,6 +84,13 @@
   width: 34px; height: 34px; display: grid; place-items: center;
   background: var(--canvas-2); border-radius: var(--r-pill);
 }
+/* Card variant: a small tag above the title instead of a circular badge —
+   the card itself already carries the visual weight. */
+.hg-detail__idx--inline {
+  width: auto; height: auto; display: inline-block;
+  background: none; padding: 0; font-size: var(--fs-xs);
+  color: var(--clay); letter-spacing: 0.06em;
+}
 .hg-detail__title { font-size: var(--fs-xl); font-variation-settings: "opsz" 30; }
 .hg-detail__body { margin-top: 8px; color: var(--fg-muted); max-width: 62ch; }
 .hg-detail__cta {
@@ -101,9 +108,16 @@
 .hg-related .hg-sheet { color: var(--clay); }
 .hg-related .hg-sheet::after { background: linear-gradient(90deg, var(--clay), transparent); }
 .hg-related__body .hg-eyebrow { color: var(--clay); }
-.hg-related__grid { display: grid; gap: var(--s-4); grid-template-columns: 1fr; }
-@media (min-width: 700px)  { .hg-related__grid { grid-template-columns: repeat(2, 1fr); } }
+.hg-related__grid { display: grid; gap: var(--s-3); grid-template-columns: 1fr; grid-auto-rows: 1fr; }
+@media (min-width: 560px)  { .hg-related__grid { gap: var(--s-4); } }
+@media (min-width: 751px)  { .hg-related__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1040px) { .hg-related__grid { grid-template-columns: repeat(3, 1fr); } }
+/* --btn: same card, but for a sub-item with no page of its own — a button
+   that opens the consultation modal instead of a link, native button
+   chrome reset so it reads identically to the linked cards beside it. */
+.hg-related__card--btn {
+  width: 100%; text-align: left; font: inherit; cursor: pointer;
+}
 .hg-related__card {
   display: flex; flex-direction: column; height: 100%;
   background: var(--surface);
@@ -119,7 +133,8 @@
 .hg-related__media { aspect-ratio: 16 / 10; overflow: hidden; }
 .hg-related__media img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease-out); }
 .hg-related__card:hover .hg-related__media img { transform: scale(1.06); }
-.hg-related__body { display: flex; flex-direction: column; gap: 6px; flex: 1; padding: var(--s-5); }
+.hg-related__body { display: flex; flex-direction: column; gap: 6px; flex: 1; padding: var(--s-3); }
+@media (min-width: 560px) { .hg-related__body { padding: var(--s-5); } }
 .hg-related__title { font-size: var(--fs-lg); font-variation-settings: "opsz" 30; }
 .hg-related__more { margin-top: auto; padding-top: var(--s-4); font-size: var(--fs-xs); color: var(--clay); }
 
@@ -168,6 +183,45 @@
 .hg-gallery__cap em { font-style: normal; font-size: var(--fs-xs); color: var(--accent); }
 .hg-gallery__cta { margin-top: var(--s-8); display: grid; gap: var(--s-4); justify-items: center; text-align: center; }
 
+/* ===== Single project page ================================= */
+.hg-proj-page { padding-top: calc(var(--header-h) + var(--s-6)); }
+.hg-proj-page__grid {
+  display: grid; gap: var(--s-6); margin-top: var(--s-5);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) { .hg-proj-page__grid { grid-template-columns: 1.6fr 1fr; align-items: start; } }
+
+.hg-proj-page__gallery {
+  display: grid; gap: var(--s-3); grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .hg-proj-page__gallery { grid-template-columns: repeat(2, 1fr); }
+  .hg-proj-page__gallery.is-single { grid-template-columns: 1fr; }
+}
+.hg-proj-page__gallery img {
+  width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+  border-radius: var(--r-lg); border: 1px solid var(--line-solid);
+}
+.hg-proj-page__gallery.is-single img { aspect-ratio: 16 / 10; }
+
+.hg-proj-page__video { margin-top: var(--s-4); }
+.hg-proj-page__video iframe {
+  width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: var(--r-lg);
+  border: 1px solid var(--line-solid);
+}
+
+.hg-proj-page__side {
+  background: var(--surface); border: 1px solid var(--line-solid); border-radius: var(--r-lg);
+  padding: var(--s-5); position: sticky; top: calc(var(--header-h) + var(--s-4));
+}
+.hg-proj-page__title { font-size: var(--fs-xl); font-variation-settings: "opsz" 30, "wght" 700; }
+.hg-proj-page__scope { color: var(--accent); display: block; margin-top: var(--s-2); }
+.hg-proj-page__side hr { border: 0; border-top: 1px solid var(--line-solid); margin-block: var(--s-4); }
+.hg-proj-page__details h2 { font-size: var(--fs-md); text-decoration: underline; text-underline-offset: 4px; margin-bottom: var(--s-3); }
+.hg-proj-page__detailsLead { color: var(--fg-muted); margin-bottom: var(--s-3); }
+.hg-proj-page__details ol { padding-left: 1.25em; display: grid; gap: var(--s-3); color: var(--fg-muted); font-size: var(--fs-sm); }
+.hg-proj-page__cta { display: block; width: 100%; text-align: center; margin-top: var(--s-5); }
+
 /* Every project as one scroll-snapped feed — scrolling to the next photo
    surfaces its own caption, since each panel carries its own. No JS scroll
    tracking: CSS scroll-snap does the whole job. */
@@ -205,7 +259,7 @@
   display: grid; place-items: center; gap: var(--s-4); justify-items: center;
   background: var(--navy); color: #fff; text-align: center;
 }
-.hg-lightbox__end .hg-lede { color: var(--fg-muted, #D3E1EE); }
+.hg-lightbox__end .hg-lede { color: #D3E1EE; }
 
 .hg-lightbox__close {
   position: absolute; top: var(--gutter); right: var(--gutter); z-index: 2;
@@ -333,7 +387,7 @@
   display: flex; flex-direction: column;
 }
 .hg-calc__empty {
-  margin: auto; text-align: center; color: var(--fg-muted, #D3E1EE);
+  margin: auto; text-align: center; color: #D3E1EE;
   display: grid; gap: var(--s-3); justify-items: center;
 }
 .hg-calc__empty span { font-size: 2rem; opacity: 0.6; }

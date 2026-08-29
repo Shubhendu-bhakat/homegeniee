@@ -54,25 +54,13 @@
 .hg-hero__line { display: block; }
 .hg-hero__lineWrap:nth-child(2) .hg-hero__line { color: var(--gold); font-style: italic; }
 
-.hg-hero__lede { max-width: 56ch; color: var(--fg-muted); font-size: var(--fs-lg); }
+.hg-hero__lede { max-width: 56ch; color: var(--fg-muted); font-size: clamp(0.75rem, 1vw + 0.55rem, 0.9375rem); }
 .hg-hero__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
 .hg-hero__actions .hg-btn:not(.hg-btn--ghost) { --btn-bg: var(--gold); --btn-fg: var(--navy); }
 .hg-hero__actions .hg-btn--ghost { border-color: rgba(255,255,255,.4); }
 .hg-hero__actions .hg-btn--ghost:hover { border-color: var(--gold); color: var(--gold); }
 .hg-hero .hg-sheet { color: var(--gold); }
 .hg-hero .hg-sheet::after { background: linear-gradient(90deg, rgba(255,255,255,.3), transparent); }
-
-.hg-hero__quick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--s-6); }
-.hg-hero__chip {
-  display: inline-block; padding: 7px 15px;
-  font-family: var(--font-mono); font-size: var(--fs-xs);
-  letter-spacing: 0.06em;
-  color: var(--navy);
-  border: 1px solid transparent; border-radius: var(--r-pill);
-  background: rgba(255,255,255,.86); backdrop-filter: blur(6px);
-  transition: color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast);
-}
-.hg-hero__chip:hover { color: var(--canvas); background: var(--accent-strong); transform: translateY(-2px); }
 
 /* A scrolling line rather than a static grid — the stat list doubles and
    the track slides exactly one set's width, so the loop is invisible. Pure
@@ -109,7 +97,7 @@
 .hg-hero__stat:first-child::before { display: none; }
 .hg-hero__statValue { font-size: var(--fs-base); color: var(--gold); font-weight: 500; white-space: nowrap; }
 .hg-hero__statTrack > *:nth-child(2n) .hg-hero__statValue { color: var(--clay-light); }
-.hg-hero__statLabel { margin: 3px 0 0; font-size: 0.68rem; color: var(--fg-faint); letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+.hg-hero__statLabel { margin: 3px 0 0; font-size: var(--fs-xs); color: var(--fg-faint); letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
 
 /* ===== Section heading ==================================== */
 .hg-heading { max-width: 74ch; margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem); position: relative; }
@@ -199,10 +187,17 @@
 /* ===== Services =========================================== */
 .hg-services { background: var(--canvas-2); }
 .hg-services__grid {
-  display: grid; gap: var(--s-5);
+  display: grid; gap: var(--s-3);
   grid-template-columns: 1fr;
+  /* Rows only stretch children to match the tallest card in that same row —
+     with cards of uneven copy length, a card at the end of one row can sit
+     right beside a shorter card from the next row and read as mismatched.
+     grid-auto-rows: 1fr makes every row match the tallest card in the whole
+     grid instead, so the cards are actually uniform, not just row-uniform. */
+  grid-auto-rows: 1fr;
 }
-@media (min-width: 700px)  { .hg-services__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 560px)  { .hg-services__grid { gap: var(--s-5); } }
+@media (min-width: 751px)  { .hg-services__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1080px) { .hg-services__grid { grid-template-columns: repeat(3, 1fr); } }
 
 .hg-svc {
@@ -213,10 +208,11 @@
   border-top: 3px solid var(--accent-bright);
   border-radius: var(--r-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-1);
   transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out),
               transform var(--dur) var(--ease-out);
 }
-.hg-svc:hover { border-color: var(--accent-soft); box-shadow: var(--shadow-3); transform: translateY(-4px); }
+.hg-svc:hover { border-color: var(--accent-soft); box-shadow: var(--shadow-3); transform: translateY(-6px); }
 /* Three colours cycle card to card so the grid reads as a palette, not a repeat.
    Each card sits inside its own Reveal wrapper, so the nth-child count has to
    run on the wrapper's position in the grid, not on .hg-svc itself. */
@@ -234,21 +230,22 @@
   background: linear-gradient(180deg, transparent, rgba(4, 34, 59, 0.55));
   pointer-events: none;
 }
-.hg-svc__media img {
+.hg-svc__media img, .hg-svc__media video {
   width: 100%; height: 100%; object-fit: cover;
   transition: transform var(--dur-slow) var(--ease-out);
 }
-.hg-svc:hover .hg-svc__media img { transform: scale(1.06); }
-.hg-svc__body { padding: var(--s-5); flex: 1; transform: translateZ(18px); }
+.hg-svc:hover .hg-svc__media img, .hg-svc:hover .hg-svc__media video { transform: scale(1.06); }
+.hg-svc__body { padding: var(--s-3); flex: 1; transform: translateZ(18px); }
+@media (min-width: 560px) { .hg-svc__body { padding: var(--s-5); } }
 /* One line, ellipsised — a tag reads as a tag only if it stays a tag's
    size. Letting it wrap to 2-3 lines is what made it look like a broken
    highlighter block instead of a label. */
 .hg-svc__eyebrow {
   display: block; max-width: 100%;
-  padding: 3px 9px;
-  background: var(--canvas-2); border-radius: var(--r-sm);
+  padding: 4px 10px;
+  background: var(--canvas-2); border-radius: 999px;
   margin-bottom: var(--s-3);
-  font-size: 0.65rem; line-height: 1.6;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; line-height: 1.6;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .hg-services__grid > *:nth-child(3n+2) .hg-svc__eyebrow { background: var(--sand-300); color: var(--gold-deep); }
@@ -263,10 +260,11 @@
 /* Two real buttons, not one bar and one afterthought — blue for the page,
    gold for the phone, same visual weight so neither reads as secondary. */
 .hg-svc__actions {
-  display: flex; flex-wrap: wrap; gap: 10px;
-  padding: 0 var(--s-5) var(--s-5);
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 0 var(--s-3) var(--s-3);
   margin-top: auto;
 }
+@media (min-width: 560px) { .hg-svc__actions { gap: 10px; padding: 0 var(--s-5) var(--s-5); } }
 .hg-svc__more, .hg-svc__call {
   flex: 1 1 auto; min-width: 108px;
   display: inline-flex; align-items: center; justify-content: center; gap: 4px;
@@ -302,11 +300,11 @@
 .hg-why__step:nth-child(2n) em { background: var(--gold); color: var(--navy); }
 .hg-why__stepLine { flex: 1; height: 2px; margin: 0 10px; background: var(--sand-300); }
 
-.hg-why__grid { display: grid; gap: var(--s-5); grid-template-columns: 1fr; }
-@media (min-width: 640px)  { .hg-why__grid { grid-template-columns: repeat(2, 1fr); } }
+.hg-why__grid { display: grid; gap: var(--s-3); grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 560px)  { .hg-why__grid { gap: var(--s-5); } }
 @media (min-width: 1040px) { .hg-why__grid { grid-template-columns: repeat(4, 1fr); } }
 .hg-why__card {
-  padding: var(--s-5);
+  padding: var(--s-3);
   background: var(--sand-100);
   border: 1px solid var(--sand-300);
   border-top: 3px solid var(--accent-bright);
@@ -414,8 +412,7 @@
 
 /* ===== Projects =========================================== */
 .hg-projects { background: var(--canvas); }
-.hg-projects__top { position: absolute; right: 0; bottom: 0; display: none; }
-@media (min-width: 860px) { .hg-projects__top { display: inline-flex; } }
+.hg-projects__foot { display: flex; justify-content: center; margin-top: var(--s-7); }
 .hg-projects__grid { display: grid; gap: var(--s-5); grid-template-columns: 1fr; }
 @media (min-width: 640px)  { .hg-projects__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1000px) { .hg-projects__grid { grid-template-columns: repeat(3, 1fr); } }
@@ -461,7 +458,7 @@
 
 .hg-quote {
   margin: 0; flex: none;
-  width: min(82vw, 300px); height: 208px;
+  width: min(82vw, 300px); height: 222px;
   display: flex; flex-direction: column; gap: 10px;
   padding: var(--s-4);
   background: var(--surface);
@@ -482,8 +479,8 @@
 .hg-quote__text {
   margin: 0; flex: 1; min-height: 0;
   font-family: var(--font-display); font-style: italic;
-  font-size: var(--fs-sm); line-height: 1.4;
-  font-variation-settings: "opsz" 14, "wght" 450;
+  font-size: var(--fs-base); line-height: 1.4;
+  font-variation-settings: "opsz" 16, "wght" 450;
   color: var(--fg);
   display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4;
   -webkit-box-orient: vertical; overflow: hidden;
@@ -501,3 +498,4 @@
 .hg-trust__item { border-left: 2px solid rgba(255,255,255,.45); padding-left: var(--s-4); }
 .hg-trust__title { font-size: var(--fs-lg); font-variation-settings: "opsz" 30; }
 .hg-trust__note { font-size: var(--fs-xs); margin-top: 4px; opacity: .78; }
+@media (min-width: 560px) { .hg-why__card { padding: var(--s-5); } }

@@ -48,7 +48,7 @@ export default function CostCalculator() {
   return (
     <section className="hg-section hg-calc" id="calculate-cost">
       <div className="hg-shell">
-        <div className="hg-heading hg-heading--center">
+        <div className="hg-heading">
           <span className="hg-eyebrow">New — instant estimate</span>
           <h2 className="hg-h2">What would your interior cost?</h2>
           <p className="hg-lede">Answer three quick questions for a real starting range — no obligation, no site visit needed yet.</p>

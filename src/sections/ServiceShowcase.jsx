@@ -24,17 +24,29 @@ export default function ServiceShowcase() {
       <div className="hg-shell">
         <SectionHeading
           eyebrow="What we build"
-          title={<span id="hg-services-title">Five verticals, one point of contact</span>}
+          title={<span id="hg-services-title">Multiple verticals, one point of contact</span>}
           lede="Interior design, modular kitchens, civil work, facades and greenscape. You brief one team and one team carries it through."
         />
 
         <RevealGroup className="hg-services__grid" stagger={0.06}>
           {featuredServices.map((s) => (
             <RevealItem key={s.slug}>
-              <TiltCard className="hg-svc">
+              <TiltCard className="hg-svc" glare={false}>
                 <Link to={s.href ?? `/services/${s.slug}`} className="hg-svc__link">
                   <div className="hg-svc__media">
-                    <img src={s.image} alt="" loading="lazy" decoding="async" />
+                    {s.video ? (
+                      <video
+                        src={s.video}
+                        poster={s.videoPoster}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="auto"
+                      />
+                    ) : (
+                      <img src={s.image} alt="" loading="lazy" decoding="async" />
+                    )}
                   </div>
                   <div className="hg-svc__body">
                     <span className="hg-eyebrow hg-svc__eyebrow">{s.eyebrow}</span>

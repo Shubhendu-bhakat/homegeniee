@@ -1,32 +1,25 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { projects } from "../data/projects";
 import SectionHeading from "../components/SectionHeading";
 import { RevealGroup, RevealItem } from "../components/Reveal";
-import ProjectLightbox from "../components/ProjectLightbox";
 
 /**
  * Portfolio. The card body sits on a 3D plane and the image scales inside a
  * fixed frame, so hover reads as leaning in rather than as a zoom effect.
- * Clicking a card opens the photo as a full-screen background right here,
- * instead of leaving the homepage — the full set still lives at /gallery.
+ * Clicking a card takes the visitor to that project's own page.
  */
 export default function Projects() {
-  const [openIndex, setOpenIndex] = useState(null);
-
   return (
     <section className="hg-section hg-projects" aria-labelledby="hg-projects-title">
       <div className="hg-shell">
         <SectionHeading
           eyebrow="Connect people"
           title={<span id="hg-projects-title">Some of our projects</span>}
-        >
-          <Link to="/gallery" className="hg-btn hg-btn--ghost hg-projects__top">View more</Link>
-        </SectionHeading>
+        />
 
         <RevealGroup className="hg-projects__grid" stagger={0.07}>
-          {projects.map((p, i) => (
+          {projects.map((p) => (
             <RevealItem key={p.slug}>
               <motion.article
                 className="hg-proj"
@@ -34,7 +27,7 @@ export default function Projects() {
                 initial="off"
                 animate="off"
               >
-                <button className="hg-proj__link" onClick={() => setOpenIndex(i)} aria-label={`View ${p.title}`}>
+                <Link to={`/projects/${p.slug}`} className="hg-proj__link" aria-label={`View ${p.title}`}>
                   <div className="hg-proj__frame">
                     <motion.img
                       src={p.image}
@@ -59,14 +52,16 @@ export default function Projects() {
                     <h3 className="hg-proj__title">{p.title}</h3>
                     <span className="hg-proj__scope hg-mono">{p.scope}</span>
                   </motion.div>
-                </button>
+                </Link>
               </motion.article>
             </RevealItem>
           ))}
         </RevealGroup>
-      </div>
 
-      <ProjectLightbox projects={projects} index={openIndex} onClose={() => setOpenIndex(null)} />
+        <div className="hg-projects__foot">
+          <Link to="/gallery" className="hg-btn hg-btn--ghost">View more</Link>
+        </div>
+      </div>
     </section>
   );
 }

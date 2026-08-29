@@ -1,14 +1,12 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { projects } from "../data/projects";
 import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
 import TrustStrip from "../sections/TrustStrip";
-import ProjectLightbox from "../components/ProjectLightbox";
 import HeroSlider from "../components/HeroSlider";
 import { useUI } from "../context/UIContext";
 
 export default function Gallery() {
-  const [openIndex, setOpenIndex] = useState(null);
   const { openModal } = useUI();
 
   return (
@@ -33,20 +31,15 @@ export default function Gallery() {
           <RevealGroup className="hg-gallery__grid" stagger={0.06}>
             {projects.map((p, i) => (
               <RevealItem key={p.slug} className={i % 3 === 0 ? "hg-gallery__cell--wide" : ""}>
-                <motion.button
-                  className="hg-gallery__item"
-                  id={p.slug}
-                  onClick={() => setOpenIndex(i)}
-                  whileHover={{ y: -6 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 22 }}
-                  aria-label={`View ${p.title}`}
-                >
-                  <img src={p.image} alt="" loading="lazy" decoding="async" />
-                  <span className="hg-gallery__cap">
-                    <strong>{p.title}</strong>
-                    <em className="hg-mono">{p.scope}</em>
-                  </span>
-                </motion.button>
+                <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 260, damping: 22 }}>
+                  <Link to={`/projects/${p.slug}`} className="hg-gallery__item" id={p.slug} aria-label={`View ${p.title}`}>
+                    <img src={p.image} alt="" loading="lazy" decoding="async" />
+                    <span className="hg-gallery__cap">
+                      <strong>{p.title}</strong>
+                      <em className="hg-mono">{p.scope}</em>
+                    </span>
+                  </Link>
+                </motion.div>
               </RevealItem>
             ))}
           </RevealGroup>
@@ -57,8 +50,6 @@ export default function Gallery() {
           </div>
         </div>
       </section>
-
-      <ProjectLightbox projects={projects} index={openIndex} onClose={() => setOpenIndex(null)} />
 
       <TrustStrip />
     </>

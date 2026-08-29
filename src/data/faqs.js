@@ -38,17 +38,17 @@ export const faqs = [
 ];
 
 export const aboutPromises = [
-  "Best Quality Products & Materials",
-  "Personalized Designs & Customization",
-  "On-Time Delivery & Execution",
-  "Transparent Pricing & Process",
-  "Green & Sustainable Solutions",
+  "Best Quality Products and Materials",
+  "Personalized Designs and Customization",
+  "On-Time Delivery and Execution",
+  "Transparent Pricing and Process",
+  "Green and Sustainable Solutions",
   "Complete Customer Satisfaction",
 ];
 
 export const aboutDoes = [
-  { title: "Interior Design & Decor", body: "Modular kitchens, wall finishes, ceilings, furniture, and more." },
-  { title: "Architecture & Civil Work", body: "From planning to construction with full transparency." },
+  { title: "Interior Design and Decor", body: "Modular kitchens, wall finishes, ceilings, furniture, and more." },
+  { title: "Architecture and Civil Work", body: "From planning to construction with full transparency." },
   { title: "Commercial Projects", body: "Modern, efficient, and functional office & retail spaces." },
-  { title: "Landscaping & Green Interiors", body: "Balconies, terraces, lawns, and indoor green décor." },
+  { title: "Landscaping and Green Interiors", body: "Balconies, terraces, lawns, and indoor green décor." },
 ];

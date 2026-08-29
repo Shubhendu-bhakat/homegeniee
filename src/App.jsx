@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigationType } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 
@@ -16,15 +16,39 @@ import Home from "./pages/Home";
 import ServicePage from "./pages/ServicePage";
 import Collection from "./pages/Collection";
 import Gallery from "./pages/Gallery";
+import ProjectPage from "./pages/ProjectPage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 
-/** Reset scroll on navigation, except when the URL carries an anchor. */
+// Per-path scroll memory for the life of the tab — lets "back" return to
+// the section the user was actually looking at (e.g. the Projects grid)
+// instead of dumping them at the top of the homepage.
+const scrollPositions = new Map();
+
+/** Reset scroll on a fresh navigation; restore it on back/forward. */
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
+  const navType = useNavigationType();
+
   useEffect(() => {
-    if (!hash) window.scrollTo({ top: 0, behavior: "instant" });
-  }, [pathname, hash]);
+    history.scrollRestoration = "manual";
+  }, []);
+
+  useEffect(() => {
+    if (hash) return;
+    if (navType === "POP") {
+      window.scrollTo({ top: scrollPositions.get(pathname) ?? 0, behavior: "instant" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }, [pathname, hash, navType]);
+
+  useEffect(() => {
+    const onScroll = () => scrollPositions.set(pathname, window.scrollY);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pathname]);
+
   return null;
 }
 
@@ -53,6 +77,7 @@ export default function App() {
               <Route path="/services/:slug" element={<ServicePage />} />
               <Route path="/collection" element={<Collection />} />
               <Route path="/gallery" element={<Gallery />} />
+              <Route path="/projects/:slug" element={<ProjectPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               {/* Legacy WordPress paths kept alive so old links still resolve. */}

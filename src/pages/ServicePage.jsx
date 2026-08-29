@@ -6,6 +6,7 @@ import { useUI } from "../context/UIContext";
 import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
 import LouverDivider from "../components/LouverDivider";
 import HeroSlider from "../components/HeroSlider";
+import HeroVideoBackground from "../components/HeroVideoBackground";
 import CostCalculator from "../components/CostCalculator";
 import TrustStrip from "../sections/TrustStrip";
 import useIsDesktop from "../hooks/useIsDesktop";
@@ -42,7 +43,7 @@ export default function ServicePage() {
     <>
       <header className="hg-phead">
         <div className="hg-phead__media" aria-hidden="true">
-          <HeroSlider slides={slides} />
+          {slug === "interior-design" ? <HeroVideoBackground /> : <HeroSlider slides={slides} />}
         </div>
         <div className="hg-shell hg-phead__copy">
           <Reveal as="nav" className="hg-crumbs hg-mono" aria-label="Breadcrumb">
@@ -83,23 +84,90 @@ export default function ServicePage() {
 
           <section className="hg-section hg-detail">
             <div className="hg-shell">
-              <RevealGroup className="hg-detail__list" stagger={0.06}>
-                {service.sections.map((s, i) => (
-                  <RevealItem key={s.id}>
-                    <article className="hg-detail__row" id={s.id}>
-                      <span className="hg-detail__idx hg-mono">{String(i + 1).padStart(2, "0")}</span>
-                      <div>
-                        <h2 className="hg-detail__title">{s.label}</h2>
-                        <p className="hg-detail__body">{s.body}</p>
+              {service.sections.every((s) => s.image) ? (
+                // Every sub-module here is a real page of its own — the
+                // whole card is the link, same photo-card treatment as
+                // "Recent Interior Transformations" below, not a text row.
+                <RevealGroup className="hg-related__grid" stagger={0.06}>
+                  {service.sections.map((s, i) => {
+                    const card = (
+                      <>
+                        <div className="hg-related__media">
+                          <img src={s.image} alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div className="hg-related__body">
+                          <span className="hg-mono hg-detail__idx hg-detail__idx--inline">{String(i + 1).padStart(2, "0")}</span>
+                          <h3 className="hg-related__title">{s.label}</h3>
+                          <p className="hg-detail__body">{s.body}</p>
+                          <span className="hg-mono hg-related__more">{s.href ? "View →" : "Enquire →"}</span>
+                        </div>
+                      </>
+                    );
+                    return (
+                      <RevealItem key={s.id}>
+                        {s.href ? (
+                          <Link to={s.href} className="hg-related__card" id={s.id}>{card}</Link>
+                        ) : (
+                          <button
+                            type="button"
+                            className="hg-related__card hg-related__card--btn"
+                            id={s.id}
+                            onClick={() => openModal("consultation", service.title)}
+                          >
+                            {card}
+                          </button>
+                        )}
+                      </RevealItem>
+                    );
+                  })}
+                </RevealGroup>
+              ) : (
+                <RevealGroup className="hg-detail__list" stagger={0.06}>
+                  {service.sections.map((s, i) => (
+                    <RevealItem key={s.id}>
+                      <article className="hg-detail__row" id={s.id}>
+                        <span className="hg-detail__idx hg-mono">{String(i + 1).padStart(2, "0")}</span>
+                        <div>
+                          <h2 className="hg-detail__title">{s.label}</h2>
+                          <p className="hg-detail__body">{s.body}</p>
+                        </div>
+                        {s.href ? (
+                          <Link to={s.href} className="hg-detail__cta hg-mono">View →</Link>
+                        ) : (
+                          <button className="hg-detail__cta hg-mono" onClick={() => openModal("consultation", service.title)}>
+                            Enquire →
+                          </button>
+                        )}
+                      </article>
+                    </RevealItem>
+                  ))}
+                </RevealGroup>
+              )}
+            </div>
+          </section>
+        </>
+      )}
+
+      {slug !== "interior-design" && slug !== "wall-decor" && (
+        <>
+          <LouverDivider label="More services" />
+
+          <section className="hg-section hg-related">
+            <div className="hg-shell">
+              <p className="hg-sheet">Recent Interior Transformations</p>
+              <RevealGroup className="hg-related__grid" stagger={0.05}>
+                {others.map((o) => (
+                  <RevealItem key={o.slug}>
+                    <Link to={o.href ?? `/services/${o.slug}`} className="hg-related__card">
+                      <div className="hg-related__media">
+                        <img src={o.image} alt="" loading="lazy" decoding="async" />
                       </div>
-                      {s.href ? (
-                        <Link to={s.href} className="hg-detail__cta hg-mono">View →</Link>
-                      ) : (
-                        <button className="hg-detail__cta hg-mono" onClick={() => openModal("consultation", service.title)}>
-                          Enquire →
-                        </button>
-                      )}
-                    </article>
+                      <div className="hg-related__body">
+                        <span className="hg-eyebrow">{o.eyebrow}</span>
+                        <h3 className="hg-related__title">{o.title}</h3>
+                        <span className="hg-mono hg-related__more">View →</span>
+                      </div>
+                    </Link>
                   </RevealItem>
                 ))}
               </RevealGroup>
@@ -107,30 +175,6 @@ export default function ServicePage() {
           </section>
         </>
       )}
-
-      <LouverDivider label="More services" />
-
-      <section className="hg-section hg-related">
-        <div className="hg-shell">
-          <p className="hg-sheet">Recent Interior Transformations</p>
-          <RevealGroup className="hg-related__grid" stagger={0.05}>
-            {others.map((o) => (
-              <RevealItem key={o.slug}>
-                <Link to={o.href ?? `/services/${o.slug}`} className="hg-related__card">
-                  <div className="hg-related__media">
-                    <img src={o.image} alt="" loading="lazy" decoding="async" />
-                  </div>
-                  <div className="hg-related__body">
-                    <span className="hg-eyebrow">{o.eyebrow}</span>
-                    <h3 className="hg-related__title">{o.title}</h3>
-                    <span className="hg-mono hg-related__more">View →</span>
-                  </div>
-                </Link>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </div>
-      </section>
 
       <TrustStrip />
     </>

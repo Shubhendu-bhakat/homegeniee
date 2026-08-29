@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { site } from "../data/site";
 import { projects } from "../data/projects";
@@ -6,18 +5,9 @@ import { useUI } from "../context/UIContext";
 import MagneticButton from "../components/MagneticButton";
 import HeroSlider from "../components/HeroSlider";
 
-/** Banner destinations carried over from the homepage slider. */
-const quickEntries = [
-  { label: "Interior Design", to: "/services/interior-design" },
-  { label: "Modular Kitchen", to: "/services/modular-kitchen" },
-  { label: "Architecture & Civil", to: "/services/architectural-civil" },
-  { label: "Facade", to: "/services/facade-elevational" },
-  { label: "Green Scape", to: "/services/green-scape" },
-];
-
 const stats = [
   { value: "2016", label: "Designing since" },
-  { value: "14", label: "Service verticals" },
+  { value: "Multiple", label: "Service verticals" },
   { value: "10 yrs", label: "Upto, warranty" },
   { value: "24 hrs", label: "Callback window" },
   { value: "No hidden cost", label: "One transparent estimate" },
@@ -37,7 +27,6 @@ export default function Hero() {
   const { openModal } = useUI();
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
-  const copyY = useTransform(scrollY, [0, 700], [0, 90]);
   const sceneY = useTransform(scrollY, [0, 700], [0, -60]);
 
   return (
@@ -48,7 +37,11 @@ export default function Hero() {
 
       <div className="hg-hero__veil" aria-hidden="true" />
 
-      <motion.div className="hg-hero__copy hg-shell" style={reduce ? undefined : { y: copyY }}>
+      {/* No parallax here any more — it used to drift .hg-hero__copy down
+          on scroll while .hg-hero__statline stayed put in normal flow,
+          which is exactly what let the two overlap mid-scroll. Only the
+          background now parallaxes. */}
+      <motion.div className="hg-hero__copy hg-shell">
         <motion.p
           className="hg-sheet"
           initial={{ opacity: 0 }}
@@ -87,19 +80,6 @@ export default function Hero() {
         >
           <MagneticButton onClick={() => openModal("consultation")}>Book free consultation</MagneticButton>
         </motion.div>
-
-        <motion.ul
-          className="hg-hero__quick"
-          initial="hidden"
-          animate="shown"
-          variants={{ shown: { transition: { delayChildren: 0.95, staggerChildren: 0.06 } } }}
-        >
-          {quickEntries.map((q) => (
-            <motion.li key={q.label} variants={{ hidden: { opacity: 0, y: 12 }, shown: { opacity: 1, y: 0 } }}>
-              <Link to={q.to} className="hg-hero__chip">{q.label}</Link>
-            </motion.li>
-          ))}
-        </motion.ul>
       </motion.div>
 
       <motion.div

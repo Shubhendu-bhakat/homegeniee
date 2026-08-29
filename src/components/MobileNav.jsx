@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { mainNav, categoryMenu, site } from "../data/site";
+import { mainNav, site } from "../data/site";
 import { useUI } from "../context/UIContext";
 
 const panel = {
@@ -59,17 +59,6 @@ export default function MobileNav() {
                 </motion.li>
               ))}
             </ul>
-
-            <motion.div variants={row} className="hg-mobile__cats">
-              <span className="hg-mono hg-mobile__label">Categories</span>
-              <ul>
-                {categoryMenu.map((c) => (
-                  <li key={c.label}>
-                    <Link to={c.to} onClick={closeMobileNav}>{c.label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
 
             <motion.div variants={row} className="hg-mobile__foot">
               <button className="hg-btn" onClick={() => openModal("consultation")}>Book free consultation</button>

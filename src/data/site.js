@@ -98,8 +98,10 @@ export const categoryMenu = [
 // Primary navigation, mirroring the WordPress header.
 // Trimmed to the five verticals the client wants fronted, per their nav
 // diagram. Interior Design carries the sub-dropdown (wall decor, false
-// ceiling, furniture, fabricator) the diagram shows under it — Furniture in
-// turn is where the HomeGeniee Collection now lives, not its own nav item.
+// ceiling, furniture) — Furniture in turn is where the HomeGeniee Collection
+// now lives, not its own nav item. Architectural & Civil now points to the
+// single Fabricator anchor rather than the full drawing-office task list.
+// Facade and Green Scape are plain links — no dropdown, by request.
 export const mainNav = [
   {
     label: "Interior Design",
@@ -108,7 +110,6 @@ export const mainNav = [
       { label: "Wall Decor", to: "/services/wall-decor" },
       { label: "False Ceiling", to: "/services/false-ceiling" },
       { label: "Furniture", to: "/services/furniture" },
-      { label: "HomeGeniee Fabricator", to: "/services/interior-design#fabricator" },
     ],
   },
   { label: "Modular Kitchen", to: "/services/modular-kitchen" },
@@ -116,36 +117,11 @@ export const mainNav = [
     label: "Architectural & Civil",
     to: "/services/architectural-civil",
     children: [
-      { label: "Surveying", to: "/services/architectural-civil#survey" },
-      { label: "Architectural & Civil Construction Drawing", to: "/services/architectural-civil#drawing" },
-      { label: "Estimation and BOQ", to: "/services/architectural-civil#boq" },
-      { label: "LBS Certification", to: "/services/architectural-civil#lbs" },
-      { label: "Soil Test", to: "/services/architectural-civil#soil-test" },
-      { label: "Civil Consultancy", to: "/services/architectural-civil#consultancy" },
-      { label: "Civil Work Execution Contractor", to: "/services/architectural-civil#contractor" },
-      { label: "MEP Drawing", to: "/services/architectural-civil#mep" },
+      { label: "HomeGeniee Fabricator", to: "/services/architectural-civil#fabricator" },
     ],
   },
-  {
-    label: "Facade",
-    to: "/services/facade-elevational",
-    children: [
-      { label: "ACP Facade", to: "/services/facade-elevational#acp" },
-      { label: "Glass Facade", to: "/services/facade-elevational#glass" },
-      { label: "MS Facade", to: "/services/facade-elevational#ms" },
-    ],
-  },
-  {
-    label: "Green Scape",
-    to: "/services/green-scape",
-    children: [
-      { label: "Artificial Grass", to: "/services/green-scape#artificial" },
-      { label: "Vertical Gardening", to: "/services/green-scape#vertical" },
-      { label: "Terrace Gardening", to: "/services/green-scape#terrace" },
-      { label: "Balcony Gardening", to: "/services/green-scape#balcony" },
-      { label: "Swing Installation", to: "/services/green-scape#swing" },
-    ],
-  },
+  { label: "Facade", to: "/services/facade-elevational" },
+  { label: "Green Scape", to: "/services/green-scape" },
 ];
 
 export const footerLinks = {
