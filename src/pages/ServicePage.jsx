@@ -43,7 +43,11 @@ export default function ServicePage() {
     <>
       <header className="hg-phead">
         <div className="hg-phead__media" aria-hidden="true">
-          {slug === "interior-design" ? <HeroVideoBackground /> : <HeroSlider slides={slides} />}
+          {slug === "interior-design" ? (
+            <HeroVideoBackground clips={[{ src: "/videos/hero-2.mp4", poster: "/videos/hero-2-poster.jpg" }]} />
+          ) : (
+            <HeroSlider slides={slides} />
+          )}
         </div>
         <div className="hg-shell hg-phead__copy">
           <Reveal as="nav" className="hg-crumbs hg-mono" aria-label="Breadcrumb">

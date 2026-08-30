@@ -8,16 +8,17 @@ import { useReducedMotion } from "motion/react";
  * and inline, then hands off to the next; `key` on the <video> forces a
  * clean remount per clip instead of juggling imperative play() calls.
  */
-const clips = [
-  { src: "/videos/hero-1.mp4", poster: "/videos/hero-1-poster.jpg" },
-  { src: "/videos/hero-2.mp4", poster: "/videos/hero-2-poster.jpg" },
+// hero-2 is reserved for the Interior Design page (see ServicePage.jsx) so
+// the two pages never show the same footage.
+const defaultClips = [
   { src: "/videos/hero-3.mp4", poster: "/videos/hero-3-poster.jpg" },
+  { src: "/videos/hero-1.mp4", poster: "/videos/hero-1-poster.jpg" },
 ];
 
-export default function HeroVideoBackground() {
+export default function HeroVideoBackground({ clips = defaultClips }) {
   const reduce = useReducedMotion();
   const [i, setI] = useState(0);
-  const clip = clips[i];
+  const clip = clips[i % clips.length];
 
   return (
     <div className="hg-hero__slider">

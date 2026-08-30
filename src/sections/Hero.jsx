@@ -1,9 +1,8 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { site } from "../data/site";
-import { projects } from "../data/projects";
 import { useUI } from "../context/UIContext";
 import MagneticButton from "../components/MagneticButton";
-import HeroSlider from "../components/HeroSlider";
+import HeroVideoBackground from "../components/HeroVideoBackground";
 
 const stats = [
   { value: "2016", label: "Designing since" },
@@ -32,7 +31,7 @@ export default function Hero() {
   return (
     <section className="hg-hero" aria-labelledby="hg-hero-title">
       <motion.div className="hg-hero__scene" style={reduce ? undefined : { y: sceneY }} aria-hidden="true">
-        <HeroSlider slides={projects} />
+        <HeroVideoBackground />
       </motion.div>
 
       <div className="hg-hero__veil" aria-hidden="true" />
