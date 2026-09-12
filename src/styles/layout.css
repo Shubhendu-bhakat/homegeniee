@@ -15,7 +15,12 @@
    nav styles. */
 .hg-header {
   position: fixed; inset: 0 0 auto 0; z-index: 100;
-  background: linear-gradient(180deg, rgba(4, 34, 59, 0.75), rgba(4, 34, 59, 0.5));
+  /* Brand blues, not near-black — the old rgba(4,34,59,…) sat so close to
+     the logo's own darkest navy (the "H") that the letter nearly vanished
+     into it. The gradient now runs lightest exactly where the logo sits
+     (far left) and deepens toward the nav/CTA side, so the mark always has
+     a brighter blue behind it instead of matching it. */
+  background: linear-gradient(100deg, rgba(0, 132, 218, 0.5) 0%, rgba(0, 89, 154, 0.78) 26%, rgba(0, 61, 112, 0.88) 60%, rgba(0, 61, 112, 0.88) 100%);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: background var(--dur) var(--ease-out), backdrop-filter var(--dur), border-color var(--dur),
@@ -31,7 +36,7 @@
   color: var(--fg);
 }
 .hg-header.is-condensed {
-  background: var(--navy);
+  background: linear-gradient(100deg, var(--accent-bright) 0%, var(--accent-soft) 22%, var(--navy) 55%);
   border-bottom-color: rgba(255, 255, 255, 0.14);
   box-shadow: 0 12px 30px -18px rgba(4, 34, 59, 0.6);
 }
@@ -179,6 +184,8 @@
 .hg-field { display: grid; gap: 6px; }
 .hg-field--wide { grid-column: 1 / -1; }
 .hg-field label { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); }
+.hg-field__req { color: #C0392B; }
+.hg-form__legend { grid-column: 1 / -1; margin: 0; font-size: var(--fs-xs); color: var(--fg-muted); }
 .hg-field input, .hg-field select, .hg-field textarea {
   width: 100%; min-height: 48px; padding: 12px 14px;
   font: inherit; font-size: var(--fs-base);
@@ -212,8 +219,8 @@
   position: relative; z-index: 2;
   padding: 6px 16px;
   font-size: var(--fs-xs); letter-spacing: var(--track-wide); text-transform: uppercase;
-  color: var(--clay); background: var(--canvas);
-  border: 1px solid var(--clay-tint); border-radius: var(--r-pill);
+  color: var(--accent-strong); background: var(--canvas);
+  border: 1px solid var(--canvas-2); border-radius: var(--r-pill);
 }
 
 /* ===== Tilt card ========================================== */
@@ -420,7 +427,7 @@
   border: 2px solid var(--sand-300); border-radius: var(--r-md);
   background: var(--canvas);
 }
-.hg-ai__form input:focus { outline: none; border-color: var(--accent); }
+.hg-ai__form input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 132, 218, 0.18); }
 
 .hg-ai__cta {
   display: block; width: 100%; padding: 12px var(--s-5);

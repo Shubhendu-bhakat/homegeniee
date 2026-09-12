@@ -148,6 +148,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 .hg-btn--sm { min-height: 38px; padding: 0 var(--s-4); font-size: var(--fs-xs); }
+.hg-btn--gold { --btn-bg: var(--gold); --btn-fg: var(--navy); }
 
 /* --- Fine print / badges ------------------------------------ */
 .hg-badge {

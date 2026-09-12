@@ -1,15 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link, Navigate, useLocation } from "react-router-dom";
+import { motion } from "motion/react";
 import { services, getService } from "../data/services";
+import { projects } from "../data/projects";
 import { site } from "../data/site";
 import { useUI } from "../context/UIContext";
 import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
+import SectionHeading from "../components/SectionHeading";
 import LouverDivider from "../components/LouverDivider";
 import HeroSlider from "../components/HeroSlider";
 import HeroVideoBackground from "../components/HeroVideoBackground";
 import CostCalculator from "../components/CostCalculator";
 import TrustStrip from "../sections/TrustStrip";
 import useIsDesktop from "../hooks/useIsDesktop";
+
+const featuredProjects = projects.slice(0, 3);
 
 /**
  * One route serves all fourteen verticals. The anchor sub-sections preserve the
@@ -26,11 +31,33 @@ export default function ServicePage() {
     ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Hi Home Geniee, I'd like to talk about a project.")}`
     : `tel:${site.phonePrimary}`;
 
+  // The calculator stays out of the page entirely until a "Get free
+  // estimate" CTA asks for it — a link carrying the #calculate-cost hash
+  // (from another page) counts as asking for it too, so it still opens
+  // straight to the calculator instead of landing on a dead anchor.
+  const [showCalculator, setShowCalculator] = useState(hash === "#calculate-cost");
+  const revealCalculator = () => setShowCalculator(true);
+
+  useEffect(() => {
+    if (hash === "#calculate-cost") setShowCalculator(true);
+  }, [hash]);
+
   useEffect(() => {
     if (!hash) return;
     const el = document.querySelector(hash);
     if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
-  }, [hash, slug]);
+  }, [hash, slug, showCalculator]);
+
+  // The calculator now sits at the very bottom of the page — a click on
+  // "Get free estimate" needs to scroll down to it itself, it can't rely on
+  // the hash-driven effect above (there's no hash on a plain button click).
+  useEffect(() => {
+    if (!showCalculator) return;
+    const t = setTimeout(() => {
+      document.getElementById("calculate-cost")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 150);
+    return () => clearTimeout(t);
+  }, [showCalculator]);
 
   if (!service) return <Navigate to="/" replace />;
 
@@ -58,23 +85,71 @@ export default function ServicePage() {
           <Reveal delay={0.2}><p className="hg-lede">{service.body}</p></Reveal>
           <Reveal delay={0.26} className="hg-phead__actions">
             {slug === "interior-design" ? (
-              <a href="#calculate-cost" className="hg-btn">Get free estimate ↓</a>
+              <>
+                <button className="hg-btn" onClick={revealCalculator}>Get free estimation ↓</button>
+                <a href="#interior-projects" className="hg-btn hg-btn--ghost">View our projects</a>
+              </>
             ) : (
-              <button className="hg-btn" onClick={() => openModal("consultation")}>Book free consultation</button>
+              <>
+                <button className="hg-btn" onClick={() => openModal("consultation")}>Book free consultation</button>
+                <a
+                  href={callHref}
+                  className="hg-btn hg-btn--ghost"
+                  target={isDesktop ? "_blank" : undefined}
+                  rel={isDesktop ? "noreferrer noopener" : undefined}
+                >
+                  Call now
+                </a>
+              </>
             )}
-            <a
-              href={callHref}
-              className="hg-btn hg-btn--ghost"
-              target={isDesktop ? "_blank" : undefined}
-              rel={isDesktop ? "noreferrer noopener" : undefined}
-            >
-              Call now
-            </a>
           </Reveal>
         </div>
       </header>
 
-      {slug === "interior-design" && <CostCalculator />}
+      {slug === "interior-design" && (
+        <section className="hg-section hg-projects" id="interior-projects" aria-labelledby="hg-interior-projects-title">
+          <div className="hg-shell">
+            <SectionHeading
+              eyebrow="Connect people"
+              title={<span id="hg-interior-projects-title">Some of our interior design projects</span>}
+            />
+
+            <RevealGroup className="hg-projects__grid" stagger={0.07}>
+              {featuredProjects.map((p) => (
+                <RevealItem key={p.slug}>
+                  <motion.article className="hg-proj" whileHover="on" initial="off" animate="off">
+                    <Link to={`/projects/${p.slug}`} className="hg-proj__link" aria-label={`View ${p.title}`}>
+                      <div className="hg-proj__frame">
+                        <motion.img
+                          src={p.image}
+                          alt={p.title}
+                          loading="lazy"
+                          decoding="async"
+                          variants={{ off: { scale: 1 }, on: { scale: 1.07 } }}
+                          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                        />
+                      </div>
+                      <motion.div
+                        className="hg-proj__meta"
+                        variants={{ off: { y: 0 }, on: { y: -6 } }}
+                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <h3 className="hg-proj__title">{p.title}</h3>
+                        <span className="hg-proj__scope hg-mono">{p.scope}</span>
+                      </motion.div>
+                    </Link>
+                  </motion.article>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+
+            <div className="hg-projects__foot">
+              <button className="hg-btn hg-btn--gold" onClick={revealCalculator}>Get free estimation ↓</button>
+              <Link to="/gallery" className="hg-btn">View more</Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {service.sections.length > 0 && (
         <>
@@ -179,6 +254,8 @@ export default function ServicePage() {
           </section>
         </>
       )}
+
+      {slug === "interior-design" && showCalculator && <CostCalculator />}
 
       <TrustStrip />
     </>

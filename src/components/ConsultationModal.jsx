@@ -3,13 +3,14 @@ import { motion, AnimatePresence } from "motion/react";
 import { useUI } from "../context/UIContext";
 import { consultationInterests, site } from "../data/site";
 
-const EMPTY = { name: "", phone: "", email: "", interest: "", message: "" };
+const EMPTY = { name: "", phone: "", email: "", location: "", interest: "", message: "" };
 
 function validate(values) {
   const errors = {};
   if (!values.name.trim()) errors.name = "Enter your name so we know who to ask for.";
   if (!/^[\d\s+()-]{8,}$/.test(values.phone.trim())) errors.phone = "Enter a phone number we can reach you on.";
   if (values.email && !/^\S+@\S+\.\S+$/.test(values.email.trim())) errors.email = "That email address looks incomplete.";
+  if (!values.location.trim()) errors.location = "Enter your location so we know where to send the team.";
   if (!values.interest) errors.interest = "Pick the service closest to what you need.";
   return errors;
 }
@@ -112,11 +113,13 @@ export default function ConsultationModal() {
                   </p>
 
                   <form className="hg-form" onSubmit={submit} noValidate>
+                    <p className="hg-form__legend">Fields marked <span className="hg-field__req">*</span> are required.</p>
+
                     <div className="hg-field">
-                      <label htmlFor="hg-name">Name</label>
+                      <label htmlFor="hg-name">Name <span className="hg-field__req" aria-hidden="true">*</span></label>
                       <input
                         id="hg-name" ref={firstField} value={values.name} onChange={set("name")}
-                        autoComplete="name"
+                        autoComplete="name" required aria-required="true"
                         aria-invalid={Boolean(errors.name)}
                         aria-describedby={errors.name ? "hg-name-err" : undefined}
                       />
@@ -124,14 +127,27 @@ export default function ConsultationModal() {
                     </div>
 
                     <div className="hg-field">
-                      <label htmlFor="hg-phone">Phone</label>
+                      <label htmlFor="hg-phone">Phone <span className="hg-field__req" aria-hidden="true">*</span></label>
                       <input
                         id="hg-phone" type="tel" inputMode="tel" value={values.phone} onChange={set("phone")}
-                        autoComplete="tel"
+                        autoComplete="tel" required aria-required="true"
                         aria-invalid={Boolean(errors.phone)}
                         aria-describedby={errors.phone ? "hg-phone-err" : undefined}
                       />
                       {errors.phone && <p className="hg-field__err" id="hg-phone-err">{errors.phone}</p>}
+                    </div>
+
+                    <div className="hg-field hg-field--wide">
+                      <label htmlFor="hg-location">Location <span className="hg-field__req" aria-hidden="true">*</span></label>
+                      <input
+                        id="hg-location" value={values.location} onChange={set("location")}
+                        autoComplete="address-level2"
+                        placeholder="e.g. Salt Lake, Kolkata"
+                        required aria-required="true"
+                        aria-invalid={Boolean(errors.location)}
+                        aria-describedby={errors.location ? "hg-location-err" : undefined}
+                      />
+                      {errors.location && <p className="hg-field__err" id="hg-location-err">{errors.location}</p>}
                     </div>
 
                     <div className="hg-field">
@@ -146,9 +162,10 @@ export default function ConsultationModal() {
                     </div>
 
                     <div className="hg-field">
-                      <label htmlFor="hg-interest">Interested in</label>
+                      <label htmlFor="hg-interest">Interested in <span className="hg-field__req" aria-hidden="true">*</span></label>
                       <select
                         id="hg-interest" value={values.interest} onChange={set("interest")}
+                        required aria-required="true"
                         aria-invalid={Boolean(errors.interest)}
                         aria-describedby={errors.interest ? "hg-interest-err" : undefined}
                       >

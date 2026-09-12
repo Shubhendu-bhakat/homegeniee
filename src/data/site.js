@@ -20,81 +20,6 @@ export const site = {
   ],
 };
 
-// Mega-menu categories, carried over from the Woodmart category sidebar.
-export const categoryMenu = [
-  {
-    label: "Wall Decor",
-    to: "/services/wall-decor",
-    children: [
-      { label: "Normal Wall Paint", to: "/services/wall-decor#wall-paint" },
-      { label: "Wall Mural / Art Painting", to: "/services/wall-decor#mural" },
-      { label: "Customised Wall Painting", to: "/services/wall-decor#painting" },
-      { label: "Customised Wallpaper", to: "/services/wall-decor#wallpaper" },
-      { label: "3D Wallpaper", to: "/services/wall-decor#3d" },
-      { label: "POP Panel", to: "/services/wall-decor#pop" },
-      { label: "Wood / Plywood Panel", to: "/services/wall-decor#wood" },
-      { label: "PVC Panel", to: "/services/wall-decor#pvc" },
-      { label: "Louver Panel", to: "/services/wall-decor#louver" },
-      { label: "Glass Panel", to: "/services/wall-decor#glass" },
-      { label: "Fabric Panel", to: "/services/wall-decor#fabric" },
-    ],
-  },
-  { label: "Modular Kitchen", to: "/services/modular-kitchen", children: [] },
-  {
-    label: "False Ceiling",
-    to: "/services/false-ceiling",
-    children: [
-      { label: "POP Ceiling", to: "/services/false-ceiling#pop" },
-      { label: "Gypsum Ceiling", to: "/services/false-ceiling#gypsum" },
-      { label: "Grid Ceiling", to: "/services/false-ceiling#grid" },
-      { label: "Wooden Ceiling", to: "/services/false-ceiling#wooden" },
-      { label: "Metal Ceiling", to: "/services/false-ceiling#metal" },
-      { label: "PVC Panel Ceiling", to: "/services/false-ceiling#pvc" },
-      { label: "Jafri / CNC Ceiling", to: "/services/false-ceiling#jafri" },
-    ],
-  },
-  { label: "Furniture", to: "/services/furniture", children: [] },
-  {
-    label: "Green Scape",
-    to: "/services/green-scape",
-    children: [
-      { label: "Artificial Grass", to: "/services/green-scape#artificial" },
-      { label: "Vertical Gardening", to: "/services/green-scape#vertical" },
-      { label: "Terrace Gardening", to: "/services/green-scape#terrace" },
-      { label: "Balcony Gardening", to: "/services/green-scape#balcony" },
-      { label: "Swing Installation", to: "/services/green-scape#swing" },
-    ],
-  },
-  {
-    label: "Facade Elevational Work",
-    to: "/services/facade-elevational",
-    children: [
-      { label: "ACP Facade", to: "/services/facade-elevational#acp" },
-      { label: "Glass Facade", to: "/services/facade-elevational#glass" },
-      { label: "MS Facade", to: "/services/facade-elevational#ms" },
-    ],
-  },
-  {
-    label: "MS Elevational Work",
-    to: "/services/shade-work",
-    children: [
-      { label: "Shade Work", to: "/services/shade-work#shade" },
-      { label: "MS Grill for Window / Balcony / Terrace", to: "/services/shade-work#grill" },
-      { label: "Collapsible Gate", to: "/services/shade-work#collapsible" },
-      { label: "Shutter Gate", to: "/services/shade-work#shutter" },
-    ],
-  },
-  {
-    label: "Aluminium / uPVC Door Window",
-    to: "/services/aluminium-upvc",
-    children: [
-      { label: "Sliding Window", to: "/services/aluminium-upvc#sliding" },
-      { label: "Casement Window", to: "/services/aluminium-upvc#casement" },
-      { label: "Louvers Window", to: "/services/aluminium-upvc#louvers" },
-    ],
-  },
-];
-
 // Primary navigation, mirroring the WordPress header.
 // Trimmed to the five verticals the client wants fronted, per their nav
 // diagram. Interior Design carries the sub-dropdown (wall decor, false
@@ -114,7 +39,7 @@ export const mainNav = [
   },
   { label: "Modular Kitchen", to: "/services/modular-kitchen" },
   {
-    label: "Architectural & Civil",
+    label: "Architectural and Civil",
     to: "/services/architectural-civil",
     children: [
       { label: "HomeGeniee Fabricator", to: "/services/architectural-civil#fabricator" },
@@ -135,7 +60,7 @@ export const footerLinks = {
   ],
   "Policy Links": [
     { label: "Privacy Policy", to: "/privacy-policy" },
-    { label: "Terms & Conditions", to: "/terms-conditions" },
+    { label: "Terms and Conditions", to: "/terms-conditions" },
   ],
   "Our Links": [
     { label: "About Us", to: "/about" },
@@ -164,7 +89,7 @@ export const differentiators = [
 
 // The 4 trust pillars in the pre-footer strip.
 export const trustPillars = [
-  { title: "Best Quality Products", note: "Premium & Trusted." },
+  { title: "Best Quality Products", note: "Premium and Trusted." },
   { title: "Personalized Support", note: "Guidance at Every Step." },
   { title: "Complete Solutions", note: "One-Stop Décor Partner." },
   { title: "On-Time Delivery", note: "Commitment You Can Trust." },
@@ -175,7 +100,7 @@ export const consultationInterests = [
   "Green Scape",
   "HomeGeniee Collections",
   "Interior Design",
-  "Architectural & Civil",
+  "Architectural and Civil",
   "Property Consultancy",
 ];
 

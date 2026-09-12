@@ -54,7 +54,7 @@ export const testimonials = [
   {
     name: "Tuhin Saha",
     location: "Rajarhat, Kolkata",
-    service: "Balcony & Terrace",
+    service: "Balcony and Terrace",
     rating: 5,
     avatar: AVATAR(53),
     quote:

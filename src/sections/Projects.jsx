@@ -37,12 +37,6 @@ export default function Projects() {
                       variants={{ off: { scale: 1 }, on: { scale: 1.07 } }}
                       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                     />
-                    <motion.span
-                      className="hg-proj__wash"
-                      variants={{ off: { opacity: 0.55 }, on: { opacity: 0.2 } }}
-                      transition={{ duration: 0.4 }}
-                      aria-hidden="true"
-                    />
                   </div>
                   <motion.div
                     className="hg-proj__meta"
@@ -59,6 +53,7 @@ export default function Projects() {
         </RevealGroup>
 
         <div className="hg-projects__foot">
+          <Link to="/services/interior-design#calculate-cost" className="hg-btn hg-btn--gold">Get free estimation</Link>
           <Link to="/gallery" className="hg-btn hg-btn--ghost">View more</Link>
         </div>
       </div>

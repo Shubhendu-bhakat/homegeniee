@@ -44,7 +44,7 @@ export default function ProjectPage() {
               {vid && (
                 <Reveal delay={0.1} className="hg-proj-page__video">
                   <iframe
-                    src={`https://www.youtube-nocookie.com/embed/${vid}`}
+                    src={`https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&mute=1`}
                     title={`${project.title} walkthrough`}
                     loading="lazy"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

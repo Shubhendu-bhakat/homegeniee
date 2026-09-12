@@ -59,7 +59,7 @@ export const services = [
   {
     slug: "facade-elevational",
     eyebrow: "Enhance Aesthetics, Elevate Impressions",
-    title: "Interior & Exterior Facade Decor",
+    title: "Interior and Exterior Facade Decor",
     body: "Enhance your home's aesthetics with stylish interior and exterior facade décor, featuring elegant textures, modern finishes, and timeless designs for a sophisticated look.",
     image: "/img/services/facade-elevational.jpg",
     video: "/videos/services/facade-elevational.mp4",
@@ -93,7 +93,7 @@ export const services = [
   {
     slug: "architectural-civil",
     eyebrow: "Building The Future",
-    title: "Architecture & Civil",
+    title: "Architecture and Civil",
     body: "Experience innovative architecture and civil engineering solutions that blend functionality, aesthetics, and durability. From modern structures to timeless designs, we craft spaces that inspire and endure.",
     image: "/img/services/architectural-civil.jpg",
     video: "/videos/services/architectural-civil.mp4",
@@ -105,7 +105,7 @@ export const services = [
   {
     slug: "aluminium-upvc",
     eyebrow: "Seamless Design, Lasting Performance",
-    title: "uPVC & Aluminium Windows & Doors",
+    title: "uPVC and Aluminium Windows and Doors",
     body: "Upgrade your space with high-performance uPVC and aluminium fittings—offering sleek aesthetics, superior insulation, and long-lasting durability for both modern and traditional homes.",
     image: "/img/services/aluminium-upvc.jpg",
     sections: [
@@ -117,7 +117,7 @@ export const services = [
   {
     slug: "green-scape",
     eyebrow: "Stylish Outdoor Spaces, Relaxed Living",
-    title: "Balcony & Terrace Decor",
+    title: "Balcony and Terrace Decor",
     body: "Transform your balcony or terrace with elegant decor, featuring cozy seating, lush greenery, and modern accents to create a serene and stylish outdoor retreat.",
     image: "/img/services/green-scape.jpg",
     video: "/videos/services/green-scape.mp4",

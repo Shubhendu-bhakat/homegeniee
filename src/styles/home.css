@@ -16,6 +16,12 @@
   --fg-faint: #A9C2D8;
   color: var(--fg);
 }
+/* Content is bottom-anchored, so the tall 88svh box that reads as
+   "full-bleed hero" on desktop just becomes dead air above the text on a
+   phone screen — shrink the box so the copy sits higher instead. */
+@media (max-width: 640px) {
+  .hg-hero { min-height: min(70svh, 620px); }
+}
 .hg-hero__scene { position: absolute; inset: -6% 0 0 0; z-index: -2; }
 .hg-hero__slider { position: relative; width: 100%; height: 100%; background: var(--navy); }
 .hg-hero__slide {
@@ -28,20 +34,32 @@
   display: flex; gap: 8px;
 }
 .hg-hero__dot {
+  position: relative;
   width: 22px; height: 4px; padding: 0; border: 0; border-radius: 2px;
   background: rgba(255, 255, 255, 0.4);
   transition: background var(--dur) var(--ease-out), width var(--dur) var(--ease-out);
 }
+/* The visual bar stays thin, but the real tap target is too small on its
+   own (22x4px) — this pseudo-element pads the actual clickable area out
+   without changing how the indicator looks. */
+.hg-hero__dot::before { content: ""; position: absolute; inset: -16px -8px; }
 .hg-hero__dot.is-on { background: var(--gold); width: 34px; }
 
 .hg-hero__veil {
   position: absolute; inset: 0; z-index: -1;
-  background:
-    linear-gradient(180deg, rgba(4,34,59,.7) 0%, rgba(4,34,59,.32) 32%, rgba(4,34,59,.92) 90%),
-    linear-gradient(90deg, rgba(4,34,59,.8) 0%, transparent 62%);
+  /* Navy stays confined to the left, over the title/copy — cut off well
+     before mid-frame so the rest of the video plays completely clear. */
+  background: linear-gradient(90deg, rgba(4,34,59,.65) 0%, rgba(4,34,59,.45) 18%, transparent 34%);
 }
 
 .hg-hero__copy { position: relative; }
+/* The left-side scrim isn't always enough on its own — a light frame of
+   video underneath (a bright wall, a window) can still wash out white
+   text. A consistent dark text-shadow keeps every line readable no matter
+   what's playing behind it, on top of the scrim rather than instead of it. */
+.hg-hero__copy, .hg-hero .hg-sheet {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 4px 18px rgba(0, 0, 0, 0.4);
+}
 .hg-hero__title {
   font-size: var(--fs-4xl);
   line-height: var(--lh-tight);
@@ -69,8 +87,13 @@
 .hg-hero__statline {
   position: relative;
   width: 100%; margin: var(--s-6) auto 0;
-  border-top: 1px solid rgba(255,255,255,.55);
-  padding-top: var(--s-5);
+  /* No backing panel here meant the ticker sat straight on the video — on
+     a bright frame the white/gold text nearly disappeared into it. A
+     dedicated dark strip keeps it legible no matter what's playing behind. */
+  background: rgba(4, 34, 59, 0.6);
+  border-top: 1px solid rgba(255,255,255,.3);
+  border-radius: var(--r-lg);
+  padding: var(--s-4) var(--s-5);
   overflow: hidden;
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
@@ -412,7 +435,7 @@
 
 /* ===== Projects =========================================== */
 .hg-projects { background: var(--canvas); }
-.hg-projects__foot { display: flex; justify-content: center; margin-top: var(--s-7); }
+.hg-projects__foot { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-3); margin-top: var(--s-7); }
 .hg-projects__grid { display: grid; gap: var(--s-5); grid-template-columns: 1fr; }
 @media (min-width: 640px)  { .hg-projects__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1000px) { .hg-projects__grid { grid-template-columns: repeat(3, 1fr); } }
@@ -423,10 +446,6 @@
 }
 .hg-proj__frame { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--surface); }
 .hg-proj__frame img { width: 100%; height: 100%; object-fit: cover; }
-.hg-proj__wash {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 35%, var(--canvas));
-}
 .hg-proj__meta { padding: var(--s-4) 2px 0; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
 .hg-proj__title { font-size: var(--fs-lg); font-variation-settings: "opsz" 30; }
 .hg-proj__scope { font-size: var(--fs-xs); color: var(--accent-soft); }

@@ -24,7 +24,7 @@ function Slat({ i, count, progress, tone }) {
   );
 }
 
-export default function LouverDivider({ count = 28, tone = "var(--clay)", label }) {
+export default function LouverDivider({ count = 28, tone = "var(--accent-bright)", label }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({

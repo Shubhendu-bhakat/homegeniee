@@ -49,6 +49,6 @@ export const aboutPromises = [
 export const aboutDoes = [
   { title: "Interior Design and Decor", body: "Modular kitchens, wall finishes, ceilings, furniture, and more." },
   { title: "Architecture and Civil Work", body: "From planning to construction with full transparency." },
-  { title: "Commercial Projects", body: "Modern, efficient, and functional office & retail spaces." },
+  { title: "Commercial Projects", body: "Modern, efficient, and functional office and retail spaces." },
   { title: "Landscaping and Green Interiors", body: "Balconies, terraces, lawns, and indoor green décor." },
 ];

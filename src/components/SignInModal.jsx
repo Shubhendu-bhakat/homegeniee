@@ -61,13 +61,16 @@ export default function SignInModal() {
                 <input id="hg-signin-name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
               </div>
               <div className="hg-field hg-field--wide">
-                <label htmlFor="hg-signin-phone">Phone number</label>
+                <label htmlFor="hg-signin-phone">Phone number <span className="hg-field__req" aria-hidden="true">*</span></label>
                 <input
                   id="hg-signin-phone" type="tel" value={phone}
                   onChange={(e) => { setPhone(e.target.value); setError(""); }}
-                  aria-invalid={Boolean(error)} autoComplete="tel" placeholder="+91 98XXX XXXXX"
+                  required aria-required="true"
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={error ? "hg-signin-phone-err" : undefined}
+                  autoComplete="tel" placeholder="+91 98XXX XXXXX"
                 />
-                {error && <span className="hg-field__err">{error}</span>}
+                {error && <span className="hg-field__err" id="hg-signin-phone-err">{error}</span>}
               </div>
               <button className="hg-btn hg-field--wide" type="submit">Sign in &amp; view cost</button>
             </form>
