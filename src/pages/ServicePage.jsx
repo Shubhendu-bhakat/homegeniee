@@ -84,8 +84,6 @@ export default function ServicePage() {
         </div>
       </header>
 
-      {slug === "interior-design" && <CostCalculator />}
-
       {slug === "interior-design" && (
         <section className="hg-section hg-projects" id="interior-projects" aria-labelledby="hg-interior-projects-title">
           <div className="hg-shell">
@@ -130,6 +128,8 @@ export default function ServicePage() {
           </div>
         </section>
       )}
+
+      {slug === "interior-design" && <CostCalculator />}
 
       {service.sections.length > 0 && (
         <>
