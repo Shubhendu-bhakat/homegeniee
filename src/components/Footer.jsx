@@ -6,7 +6,7 @@ import LouverDivider from "./LouverDivider";
 export default function Footer() {
   return (
     <footer className="hg-footer">
-      <LouverDivider count={34} tone="rgba(255,255,255,.14)" />
+      <LouverDivider count={34} tone="var(--accent-bright)" />
       <div className="hg-shell hg-footer__grid">
         <Reveal className="hg-footer__brand">
           <Link to="/" aria-label={`${site.name} — home`}>

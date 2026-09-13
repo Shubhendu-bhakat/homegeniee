@@ -12,10 +12,10 @@ export default function Home() {
     <>
       <Hero />
       {/* <ProcessJourney /> */}
-      <LouverDivider label="Services" />
+      <LouverDivider label="Services" tone="var(--accent-bright)" />
       <ServiceShowcase />
       <WhyUs />
-      <LouverDivider label="Portfolio" />
+      <LouverDivider label="Portfolio" tone="var(--gold)" />
       <Projects />
       <Testimonials />
       <TrustStrip />

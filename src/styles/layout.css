@@ -17,10 +17,13 @@
   position: fixed; inset: 0 0 auto 0; z-index: 100;
   /* Brand blues, not near-black — the old rgba(4,34,59,…) sat so close to
      the logo's own darkest navy (the "H") that the letter nearly vanished
-     into it. The gradient now runs lightest exactly where the logo sits
-     (far left) and deepens toward the nav/CTA side, so the mark always has
-     a brighter blue behind it instead of matching it. */
-  background: linear-gradient(100deg, rgba(0, 132, 218, 0.5) 0%, rgba(0, 89, 154, 0.78) 26%, rgba(0, 61, 112, 0.88) 60%, rgba(0, 61, 112, 0.88) 100%);
+     into it. The gradient runs lightest exactly where the logo sits (far
+     left) and deepens toward the nav/CTA side. The logo-side stop is kept
+     near-opaque (not the glassy 0.5 it was) specifically so a dark frame
+     of hero video behind the transparent header can't blend back into it —
+     the rest of the bar can stay lighter/glassier since nothing there has
+     the same contrast requirement. */
+  background: linear-gradient(100deg, rgba(0, 132, 218, 0.92) 0%, rgba(0, 89, 154, 0.85) 26%, rgba(0, 61, 112, 0.88) 60%, rgba(0, 61, 112, 0.88) 100%);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: background var(--dur) var(--ease-out), backdrop-filter var(--dur), border-color var(--dur),

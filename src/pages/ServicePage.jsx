@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, Link, Navigate, useLocation } from "react-router-dom";
 import { motion } from "motion/react";
 import { services, getService } from "../data/services";
@@ -31,33 +31,11 @@ export default function ServicePage() {
     ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Hi Home Geniee, I'd like to talk about a project.")}`
     : `tel:${site.phonePrimary}`;
 
-  // The calculator stays out of the page entirely until a "Get free
-  // estimate" CTA asks for it — a link carrying the #calculate-cost hash
-  // (from another page) counts as asking for it too, so it still opens
-  // straight to the calculator instead of landing on a dead anchor.
-  const [showCalculator, setShowCalculator] = useState(hash === "#calculate-cost");
-  const revealCalculator = () => setShowCalculator(true);
-
-  useEffect(() => {
-    if (hash === "#calculate-cost") setShowCalculator(true);
-  }, [hash]);
-
   useEffect(() => {
     if (!hash) return;
     const el = document.querySelector(hash);
     if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
-  }, [hash, slug, showCalculator]);
-
-  // The calculator now sits at the very bottom of the page — a click on
-  // "Get free estimate" needs to scroll down to it itself, it can't rely on
-  // the hash-driven effect above (there's no hash on a plain button click).
-  useEffect(() => {
-    if (!showCalculator) return;
-    const t = setTimeout(() => {
-      document.getElementById("calculate-cost")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 150);
-    return () => clearTimeout(t);
-  }, [showCalculator]);
+  }, [hash, slug]);
 
   if (!service) return <Navigate to="/" replace />;
 
@@ -86,7 +64,7 @@ export default function ServicePage() {
           <Reveal delay={0.26} className="hg-phead__actions">
             {slug === "interior-design" ? (
               <>
-                <button className="hg-btn" onClick={revealCalculator}>Get free estimation ↓</button>
+                <a href="#calculate-cost" className="hg-btn">Get free estimation ↓</a>
                 <a href="#interior-projects" className="hg-btn hg-btn--ghost">View our projects</a>
               </>
             ) : (
@@ -105,6 +83,8 @@ export default function ServicePage() {
           </Reveal>
         </div>
       </header>
+
+      {slug === "interior-design" && <CostCalculator />}
 
       {slug === "interior-design" && (
         <section className="hg-section hg-projects" id="interior-projects" aria-labelledby="hg-interior-projects-title">
@@ -144,7 +124,7 @@ export default function ServicePage() {
             </RevealGroup>
 
             <div className="hg-projects__foot">
-              <button className="hg-btn hg-btn--gold" onClick={revealCalculator}>Get free estimation ↓</button>
+              <a href="#calculate-cost" className="hg-btn hg-btn--gold">Get free estimation ↓</a>
               <Link to="/gallery" className="hg-btn">View more</Link>
             </div>
           </div>
@@ -254,8 +234,6 @@ export default function ServicePage() {
           </section>
         </>
       )}
-
-      {slug === "interior-design" && showCalculator && <CostCalculator />}
 
       <TrustStrip />
     </>
