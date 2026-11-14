@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useUI } from "../context/UIContext";
 import { consultationInterests, site } from "../data/site";
+import { sendLead, honeypot } from "../lib/leads";
 
 const EMPTY = { name: "", phone: "", email: "", location: "", interest: "", message: "" };
 
@@ -22,12 +23,14 @@ export default function ConsultationModal() {
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | sent
+  const [sendError, setSendError] = useState("");
   const firstField = useRef(null);
 
   useEffect(() => {
     if (!open) return;
     setValues({ ...EMPTY, interest: modalPreset || "" });
     setErrors({});
+    setSendError("");
     setStatus("idle");
     const t = setTimeout(() => firstField.current?.focus(), 240);
     return () => clearTimeout(t);
@@ -40,15 +43,24 @@ export default function ConsultationModal() {
 
   const submit = async (e) => {
     e.preventDefault();
+    const formEl = e.currentTarget;
     const found = validate(values);
     setErrors(found);
     if (Object.keys(found).length) return;
 
     setStatus("sending");
-    // ponytail: no backend in this phase. Swap for POST /api/enquiry in phase 2 —
-    // the payload shape below is already what the endpoint should accept.
-    await new Promise((r) => setTimeout(r, 900));
-    setStatus("sent");
+    setSendError("");
+    try {
+      await sendLead("consultation", {
+        name: values.name.trim(), phone: values.phone.trim(), email: values.email.trim(),
+        location: values.location.trim(), interest: values.interest, message: values.message.trim(),
+        website: honeypot(formEl),
+      });
+      setStatus("sent");
+    } catch (err) {
+      setSendError(err.message);
+      setStatus("idle");
+    }
   };
 
   return (
@@ -180,6 +192,8 @@ export default function ConsultationModal() {
                       <textarea id="hg-message" rows="3" value={values.message} onChange={set("message")} />
                     </div>
 
+                    <input type="text" name="website" className="hg-hp" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
+                    {sendError && <p className="hg-field__err hg-field--wide" role="alert">{sendError}</p>}
                     <button className="hg-btn hg-field--wide" type="submit" disabled={status === "sending"}>
                       {status === "sending" ? "Sending…" : "Book free consultation"}
                     </button>

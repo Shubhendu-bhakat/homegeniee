@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useUI } from "../context/UIContext";
 import { useAuth } from "../context/AuthContext";
 import { estimators } from "../data/estimators";
+import { sendLead } from "../lib/leads";
 
 /**
  * Adapted from the client's calculator prototype: three quick questions,
@@ -15,7 +16,7 @@ const fmtLakh = (n) => (n >= 100000 ? `₹${(n / 100000).toFixed(2).replace(/\.0
 export default function CostCalculator({ service = "interior-design" }) {
   const cfg = estimators[service] ?? estimators["interior-design"];
   const { openModal } = useUI();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, user } = useAuth();
   const [size, setSize] = useState(cfg.size.initial);
   const [scope, setScope] = useState(cfg.scope.initial);
   const [tier, setTier] = useState(cfg.tier.initial);
@@ -33,7 +34,21 @@ export default function CostCalculator({ service = "interior-design" }) {
 
   const calculate = () => {
     const base = cfg.size.options[size].area * cfg.scope.options[scope].mult * cfg.tier.options[tier].rate;
-    setResult({ low: base * 0.9, high: base * 1.15, base });
+    const low = base * 0.9, high = base * 1.15;
+    // What gets saved in the "Cost estimates" sheet tab.
+    const lead = {
+      service: cfg.subject,
+      size: cfg.size.options[size].label,
+      scope: cfg.scope.options[scope].label,
+      tier: cfg.tier.options[tier].label,
+      low: Math.round(low),
+      high: Math.round(high),
+    };
+    setResult({ low, high, base, lead });
+    // Already signed in: the cost shows straight away, so record it now.
+    if (isSignedIn) {
+      sendLead("estimate", { name: user?.name || "Returning visitor", phone: user?.phone, estimate: lead }).catch(() => {});
+    }
   };
 
   const questions = [
@@ -80,7 +95,7 @@ export default function CostCalculator({ service = "interior-design" }) {
               <div className="hg-calc__lock hg-calc__lock--full">
                 <span aria-hidden="true">🔒</span>
                 <p>Your estimate is ready. Sign in with your phone number to view the cost — no numbers are shown until then.</p>
-                <button className="hg-btn hg-calc__signin" onClick={() => openModal("signin")}>Please Sign in to view Cost</button>
+                <button className="hg-btn hg-calc__signin" onClick={() => openModal("signin", result.lead)}>Please Sign in to view Cost</button>
               </div>
             ) : (
               <>

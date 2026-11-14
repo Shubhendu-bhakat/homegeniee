@@ -5,6 +5,7 @@ import { projects } from "../data/projects";
 import Reveal from "../components/Reveal";
 import HeroSlider from "../components/HeroSlider";
 import TrustStrip from "../sections/TrustStrip";
+import { sendLead, honeypot, readFile, MAX_UPLOAD_MB } from "../lib/leads";
 
 const EMPTY = { name: "", email: "", phone: "", purpose: "", message: "", file: "" };
 
@@ -12,8 +13,11 @@ export default function Contact() {
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle");
+  const [file, setFile] = useState(null); // the picked design file itself
+  const [sendError, setSendError] = useState("");
 
   const set = (k) => (e) => {
+    if (e.target.type === "file") setFile(e.target.files?.[0] ?? null);
     const v = e.target.type === "file" ? (e.target.files?.[0]?.name ?? "") : e.target.value;
     setValues((s) => ({ ...s, [k]: v }));
     setErrors((x) => ({ ...x, [k]: undefined }));
@@ -21,19 +25,31 @@ export default function Contact() {
 
   const submit = async (e) => {
     e.preventDefault();
+    const formEl = e.currentTarget;
     const found = {};
     if (!values.name.trim()) found.name = "Enter your name.";
     if (!/^[\d\s+()-]{8,}$/.test(values.phone.trim())) found.phone = "Enter a phone number we can reach you on.";
     if (values.email && !/^\S+@\S+\.\S+$/.test(values.email.trim())) found.email = "That email address looks incomplete.";
+    if (file && file.size > MAX_UPLOAD_MB * 1024 * 1024) found.file = `Please choose a file under ${MAX_UPLOAD_MB} MB.`;
     setErrors(found);
     if (Object.keys(found).length) return;
 
     setStatus("sending");
-    // ponytail: no backend this phase. Wire to POST /api/enquiry with multipart
-    // for the design upload when the Node service lands.
-    await new Promise((r) => setTimeout(r, 900));
-    setStatus("sent");
-    setValues(EMPTY);
+    setSendError("");
+    try {
+      await sendLead("contact", {
+        name: values.name.trim(), phone: values.phone.trim(), email: values.email.trim(),
+        purpose: values.purpose, message: values.message.trim(),
+        file: file ? await readFile(file) : undefined,
+        website: honeypot(formEl),
+      });
+      setStatus("sent");
+      setValues(EMPTY);
+      setFile(null);
+    } catch (err) {
+      setSendError(err.message);
+      setStatus("idle");
+    }
   };
 
   return (
@@ -110,14 +126,14 @@ export default function Contact() {
             ) : (
               <form className="hg-form" onSubmit={submit} noValidate>
                 <div className="hg-field">
-                  <label htmlFor="c-name">Name</label>
+                  <label htmlFor="c-name">Name <span className="hg-field__req" aria-hidden="true">*</span></label>
                   <input id="c-name" value={values.name} onChange={set("name")} autoComplete="name"
                          aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "c-name-e" : undefined} />
                   {errors.name && <p className="hg-field__err" id="c-name-e">{errors.name}</p>}
                 </div>
 
                 <div className="hg-field">
-                  <label htmlFor="c-phone">Phone number</label>
+                  <label htmlFor="c-phone">Phone number <span className="hg-field__req" aria-hidden="true">*</span></label>
                   <input id="c-phone" type="tel" inputMode="tel" value={values.phone} onChange={set("phone")} autoComplete="tel"
                          aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "c-phone-e" : undefined} />
                   {errors.phone && <p className="hg-field__err" id="c-phone-e">{errors.phone}</p>}
@@ -147,8 +163,11 @@ export default function Contact() {
                   <label htmlFor="c-file">Upload your design</label>
                   <input id="c-file" type="file" onChange={set("file")} accept="image/*,.pdf" />
                   {values.file && <p className="hg-field__hint hg-mono">{values.file}</p>}
+                  {errors.file && <p className="hg-field__err">{errors.file}</p>}
                 </div>
 
+                <input type="text" name="website" className="hg-hp" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
+                {sendError && <p className="hg-field__err hg-field--wide" role="alert">{sendError}</p>}
                 <button className="hg-btn hg-field--wide" type="submit" disabled={status === "sending"}>
                   {status === "sending" ? "Sending…" : "Submit"}
                 </button>
