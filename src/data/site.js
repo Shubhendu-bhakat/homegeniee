@@ -8,6 +8,9 @@ export const site = {
   phoneSecondary: "8777253087",
   phoneSecondaryLabel: "8777253087",
   whatsapp: "919831687191",
+  // Google Sheet lead capture (Apps Script web app, scripts/google-apps-script/leads.gs).
+  // Overridable with VITE_LEADS_URL. Not a secret: it can only append rows.
+  leadsEndpoint: "https://script.google.com/macros/s/AKfycbwbtEFzgJQDtf72dlBbein2To43CFsEUXVOUF-fF2XElBIqsnpp2or-u5iU8Ykxj3E2dA/exec",
   appointment: "+918697015633",
   address: {
     line1: "70, Serpentine Lane, Kolkata - 700014",

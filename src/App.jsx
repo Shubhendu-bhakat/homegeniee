@@ -9,7 +9,10 @@ import ConsultationModal from "./components/ConsultationModal";
 import SignInModal from "./components/SignInModal";
 import AskHomeGeniee from "./components/AskHomeGeniee";
 import FloatingActions from "./components/FloatingActions";
-import CookieBar from "./components/CookieBar";
+// Deliberately neutral name: ad/tracker blockers (Brave Shields, uBlock)
+// block file URLs and classes containing "cookie"/"consent", which in dev
+// broke the whole app with ERR_BLOCKED_BY_CLIENT.
+import SiteNotice from "./components/SiteNotice";
 import ScrollProgress from "./components/ScrollProgress";
 
 import Home from "./pages/Home";
@@ -97,7 +100,7 @@ export default function App() {
       <SignInModal />
       <AskHomeGeniee />
       <FloatingActions />
-      <CookieBar />
+      <SiteNotice />
     </>
   );
 }

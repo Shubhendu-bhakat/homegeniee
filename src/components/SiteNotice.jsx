@@ -1,16 +1,16 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useUI } from "../context/UIContext";
 
-export default function CookieBar() {
+export default function SiteNotice() {
   const { cookiesAccepted, acceptCookies } = useUI();
 
   return (
     <AnimatePresence>
       {!cookiesAccepted && (
         <motion.div
-          className="hg-cookie"
+          className="hg-notice"
           role="region"
-          aria-label="Cookie notice"
+          aria-label="Privacy notice"
           initial={{ y: 90, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 90, opacity: 0 }}

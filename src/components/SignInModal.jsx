@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useUI } from "../context/UIContext";
 import { useAuth } from "../context/AuthContext";
+import { sendLead, honeypot } from "../lib/leads";
 
 /**
  * Gates the calculator's cost reveal. There's no backend yet (phase 2 —
@@ -10,20 +11,39 @@ import { useAuth } from "../context/AuthContext";
  * authentication, and doesn't pretend otherwise.
  */
 export default function SignInModal() {
-  const { modal, closeModal } = useUI();
+  // modalPreset carries the estimate the visitor just calculated.
+  const { modal, modalPreset, closeModal } = useUI();
   const { signIn } = useAuth();
   const open = modal === "signin";
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [sending, setSending] = useState(false);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    if (!/^[\d\s+()-]{8,}$/.test(phone.trim())) {
-      setError("Enter a phone number we can reach you on.");
+    const formEl = e.currentTarget;
+    const badName = !name.trim();
+    const badPhone = !/^[\d\s+()-]{8,}$/.test(phone.trim());
+    setNameError(badName ? "Enter your name." : "");
+    if (badPhone) setError("Enter a phone number we can reach you on.");
+    if (badName || badPhone) return;
+
+    setSending(true);
+    try {
+      await sendLead("estimate", {
+        name: name.trim(), phone: phone.trim(),
+        estimate: typeof modalPreset === "object" ? modalPreset : undefined,
+        website: honeypot(formEl),
+      });
+    } catch (err) {
+      setError(err.message);
+      setSending(false);
       return;
     }
+    setSending(false);
     signIn({ name: name.trim(), phone: phone.trim() });
     closeModal();
     setName("");
@@ -57,8 +77,15 @@ export default function SignInModal() {
 
             <form className="hg-form" onSubmit={submit} noValidate>
               <div className="hg-field hg-field--wide">
-                <label htmlFor="hg-signin-name">Name (optional)</label>
-                <input id="hg-signin-name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
+                <label htmlFor="hg-signin-name">Name <span className="hg-field__req" aria-hidden="true">*</span></label>
+                <input
+                  id="hg-signin-name" value={name}
+                  onChange={(e) => { setName(e.target.value); setNameError(""); }}
+                  autoComplete="name" required aria-required="true"
+                  aria-invalid={Boolean(nameError)}
+                  aria-describedby={nameError ? "hg-signin-name-err" : undefined}
+                />
+                {nameError && <span className="hg-field__err" id="hg-signin-name-err">{nameError}</span>}
               </div>
               <div className="hg-field hg-field--wide">
                 <label htmlFor="hg-signin-phone">Phone number <span className="hg-field__req" aria-hidden="true">*</span></label>
@@ -72,7 +99,10 @@ export default function SignInModal() {
                 />
                 {error && <span className="hg-field__err" id="hg-signin-phone-err">{error}</span>}
               </div>
-              <button className="hg-btn hg-field--wide" type="submit">Sign in &amp; view cost</button>
+              <input type="text" name="website" className="hg-hp" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
+              <button className="hg-btn hg-field--wide" type="submit" disabled={sending}>
+                {sending ? "Sending…" : <>Sign in &amp; view cost</>}
+              </button>
             </form>
             <p className="hg-signin__note">No password needed — we'll only use this to share your estimate.</p>
           </motion.div>

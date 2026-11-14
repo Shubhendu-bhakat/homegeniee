@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useUI } from "../context/UIContext";
 import { useAuth } from "../context/AuthContext";
 import { estimators } from "../data/estimators";
+import { sendLead } from "../lib/leads";
 
 /**
  * Adapted from the client's calculator prototype: three quick questions,
@@ -21,6 +22,7 @@ const splitLabel = (label) => {
 export default function CostCalculator({ service = "interior-design" }) {
   const cfg = estimators[service] ?? estimators["interior-design"];
   const { openModal } = useUI();
+  const { isSignedIn, user } = useAuth();
   const { isSignedIn } = useAuth();
   const [layout, setLayout] = useState(cfg.layout?.initial ?? 0);
   const [size, setSize] = useState(cfg.size.initial);
@@ -43,6 +45,22 @@ export default function CostCalculator({ service = "interior-design" }) {
   }, [cfg]);
 
   const calculate = () => {
+    const base = cfg.size.options[size].area * cfg.scope.options[scope].mult * cfg.tier.options[tier].rate;
+    const low = base * 0.9, high = base * 1.15;
+    // What gets saved in the "Cost estimates" sheet tab.
+    const lead = {
+      service: cfg.subject,
+      size: cfg.size.options[size].label,
+      scope: cfg.scope.options[scope].label,
+      tier: cfg.tier.options[tier].label,
+      low: Math.round(low),
+      high: Math.round(high),
+    };
+    setResult({ low, high, base, lead });
+    // Already signed in: the cost shows straight away, so record it now.
+    if (isSignedIn) {
+      sendLead("estimate", { name: user?.name || "Returning visitor", phone: user?.phone, estimate: lead }).catch(() => {});
+    }
     // Kitchens price by running feet, which depend on layout and size together.
     const units = cfg.layout ? cfg.layout.feet[layout][size] : cfg.size.options[size].area;
     const base = units * (cfg.scope ? cfg.scope.options[scope].mult : 1) * cfg.tier.options[tier].rate;
@@ -101,7 +119,7 @@ export default function CostCalculator({ service = "interior-design" }) {
               <div className="hg-calc__lock hg-calc__lock--full">
                 <svg className="hg-calc__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="21" width="28" height="19" rx="4" fill="none" stroke="currentColor" strokeWidth="2.2" /><path d="M16 21v-5a8 8 0 0 1 16 0v5M24 28v6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
                 <p>Your estimate is ready. Sign in with your phone number to view the cost — no numbers are shown until then.</p>
-                <button className="hg-btn hg-calc__signin" onClick={() => openModal("signin")}>Please Sign in to view Cost</button>
+                <button className="hg-btn hg-calc__signin" onClick={() => openModal("signin", result.lead)}>Please Sign in to view Cost</button>
               </div>
             ) : (
               <>
