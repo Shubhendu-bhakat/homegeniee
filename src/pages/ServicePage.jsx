@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useParams, Link, Navigate, useLocation } from "react-router-dom";
-import { motion } from "motion/react";
-import { services, getService } from "../data/services";
-import { projects } from "../data/projects";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { services, getService, FEATURED_SLUGS } from "../data/services";
+import { projectsFor } from "../data/projects";
 import { site } from "../data/site";
 import { useUI } from "../context/UIContext";
 import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
@@ -11,10 +11,11 @@ import LouverDivider from "../components/LouverDivider";
 import HeroSlider from "../components/HeroSlider";
 import HeroVideoBackground from "../components/HeroVideoBackground";
 import CostCalculator from "../components/CostCalculator";
+import ProjectCarousel from "../components/ProjectCarousel";
+import KitchenLayouts from "../components/KitchenLayouts";
 import TrustStrip from "../sections/TrustStrip";
 import useIsDesktop from "../hooks/useIsDesktop";
-
-const featuredProjects = projects.slice(0, 3);
+import useHeroExit from "../hooks/useHeroExit";
 
 /**
  * One route serves all fourteen verticals. The anchor sub-sections preserve the
@@ -27,6 +28,11 @@ export default function ServicePage() {
   const { openModal } = useUI();
   const service = getService(slug);
   const isDesktop = useIsDesktop();
+  // Same gentle parallax drift as the homepage hero.
+  const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  const sceneY = useTransform(scrollY, [0, 700], [0, -60]);
+  const { ref: heroRef, hero: heroStyle, copy: copyStyle, dim: dimStyle } = useHeroExit();
   const callHref = isDesktop
     ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Hi Home Geniee, I'd like to talk about a project.")}`
     : `tel:${site.phonePrimary}`;
@@ -39,6 +45,17 @@ export default function ServicePage() {
 
   if (!service) return <Navigate to="/" replace />;
 
+  // The four headline verticals share the interior design page layout:
+  // video hero, project carousel, cost calculator and sub-module cards.
+  const featured = FEATURED_SLUGS.includes(slug);
+  const heroClip = slug === "interior-design"
+    ? { src: "/videos/hero-2.mp4", poster: "/videos/hero-2-poster.jpg" }
+    : service.heroVideo
+      ? { src: service.heroVideo, poster: service.heroPoster }
+      : service.video && { src: service.video, poster: service.videoPoster };
+  const pageProjects = projectsFor(slug);
+  const subject = service.short ?? service.title;
+
   const others = services.filter((s) => s.slug !== slug).slice(0, 6);
   // This service's own photo leads, then three others slide through behind
   // it — the same carousel the homepage runs, not a single static frame.
@@ -46,15 +63,18 @@ export default function ServicePage() {
 
   return (
     <>
-      <header className="hg-phead">
-        <div className="hg-phead__media" aria-hidden="true">
-          {slug === "interior-design" ? (
-            <HeroVideoBackground clips={[{ src: "/videos/hero-2.mp4", poster: "/videos/hero-2-poster.jpg" }]} />
+      {/* Full-screen hero, same size as the homepage's; eases into a card
+          and dims as the content sheet below slides up over it. */}
+      <motion.header className="hg-phead hg-phead--hero" ref={heroRef} style={heroStyle}>
+        <motion.div className="hg-hero-dim" style={dimStyle} aria-hidden="true" />
+        <motion.div className="hg-phead__media" style={reduce ? undefined : { y: sceneY }} aria-hidden="true">
+          {featured && heroClip ? (
+            <HeroVideoBackground clips={[heroClip]} />
           ) : (
             <HeroSlider slides={slides} />
           )}
-        </div>
-        <div className="hg-shell hg-phead__copy">
+        </motion.div>
+        <motion.div className="hg-shell hg-phead__copy" style={copyStyle}>
           <Reveal as="nav" className="hg-crumbs hg-mono" aria-label="Breadcrumb">
             <Link to="/">Home</Link> <span aria-hidden="true">/</span> <span>{service.title}</span>
           </Reveal>
@@ -62,10 +82,10 @@ export default function ServicePage() {
           <Reveal delay={0.14}><h1 className="hg-phead__title">{service.title}</h1></Reveal>
           <Reveal delay={0.2}><p className="hg-lede">{service.body}</p></Reveal>
           <Reveal delay={0.26} className="hg-phead__actions">
-            {slug === "interior-design" ? (
+            {featured ? (
               <>
                 <a href="#calculate-cost" className="hg-btn">Get free estimation ↓</a>
-                <a href="#interior-projects" className="hg-btn hg-btn--ghost">View our projects</a>
+                <a href="#service-projects" className="hg-btn hg-btn--ghost">View our projects</a>
               </>
             ) : (
               <>
@@ -81,45 +101,24 @@ export default function ServicePage() {
               </>
             )}
           </Reveal>
-        </div>
-      </header>
+        </motion.div>
+      </motion.header>
 
-      {slug === "interior-design" && (
-        <section className="hg-section hg-projects" id="interior-projects" aria-labelledby="hg-interior-projects-title">
+      <div className="hg-sheetOver">
+
+      {slug === "modular-kitchen" && <KitchenLayouts />}
+
+      {featured && pageProjects.length > 0 && (
+        <section className="hg-section hg-projects" id="service-projects" aria-labelledby="hg-service-projects-title">
           <div className="hg-shell">
             <SectionHeading
               eyebrow="Connect people"
-              title={<span id="hg-interior-projects-title">Some of our interior design projects</span>}
+              title={<span id="hg-service-projects-title">Some of our {subject.toLowerCase()} projects</span>}
             />
 
-            <RevealGroup className="hg-projects__grid" stagger={0.07}>
-              {featuredProjects.map((p) => (
-                <RevealItem key={p.slug}>
-                  <motion.article className="hg-proj" whileHover="on" initial="off" animate="off">
-                    <Link to={`/projects/${p.slug}`} className="hg-proj__link" aria-label={`View ${p.title}`}>
-                      <div className="hg-proj__frame">
-                        <motion.img
-                          src={p.image}
-                          alt={p.title}
-                          loading="lazy"
-                          decoding="async"
-                          variants={{ off: { scale: 1 }, on: { scale: 1.07 } }}
-                          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                        />
-                      </div>
-                      <motion.div
-                        className="hg-proj__meta"
-                        variants={{ off: { y: 0 }, on: { y: -6 } }}
-                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                      >
-                        <h3 className="hg-proj__title">{p.title}</h3>
-                        <span className="hg-proj__scope hg-mono">{p.scope}</span>
-                      </motion.div>
-                    </Link>
-                  </motion.article>
-                </RevealItem>
-              ))}
-            </RevealGroup>
+            <Reveal delay={0.08}>
+              <ProjectCarousel key={slug} items={pageProjects} label={`${subject} projects`} />
+            </Reveal>
 
             <div className="hg-projects__foot">
               <a href="#calculate-cost" className="hg-btn hg-btn--gold">Get free estimation ↓</a>
@@ -129,10 +128,11 @@ export default function ServicePage() {
         </section>
       )}
 
-      {slug === "interior-design" && <CostCalculator />}
+      {featured && <CostCalculator key={slug} service={slug} />}
 
       {service.sections.length > 0 && (
         <>
+          {!featured && (
           <nav className="hg-anchors" aria-label="On this page">
             <ul className="hg-shell hg-anchors__list">
               {service.sections.map((s) => (
@@ -140,6 +140,7 @@ export default function ServicePage() {
               ))}
             </ul>
           </nav>
+          )}
 
           <section className="hg-section hg-detail">
             <div className="hg-shell">
@@ -207,7 +208,7 @@ export default function ServicePage() {
         </>
       )}
 
-      {slug !== "interior-design" && slug !== "wall-decor" && (
+      {!featured && slug !== "wall-decor" && (
         <>
           <LouverDivider label="More services" />
 
@@ -236,6 +237,7 @@ export default function ServicePage() {
       )}
 
       <TrustStrip />
+      </div>
     </>
   );
 }

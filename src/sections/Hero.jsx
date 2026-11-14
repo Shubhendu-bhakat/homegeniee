@@ -3,6 +3,7 @@ import { site } from "../data/site";
 import { useUI } from "../context/UIContext";
 import MagneticButton from "../components/MagneticButton";
 import HeroVideoBackground from "../components/HeroVideoBackground";
+import useHeroExit from "../hooks/useHeroExit";
 
 const stats = [
   { value: "2016", label: "Designing since" },
@@ -27,20 +28,22 @@ export default function Hero() {
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
   const sceneY = useTransform(scrollY, [0, 700], [0, -60]);
+  const { ref: heroRef, hero: heroStyle, copy: copyStyle, dim: dimStyle } = useHeroExit();
 
   return (
-    <section className="hg-hero" aria-labelledby="hg-hero-title">
+    <motion.section className="hg-hero" aria-labelledby="hg-hero-title" ref={heroRef} style={heroStyle}>
       <motion.div className="hg-hero__scene" style={reduce ? undefined : { y: sceneY }} aria-hidden="true">
         <HeroVideoBackground />
       </motion.div>
 
       <div className="hg-hero__veil" aria-hidden="true" />
+      <motion.div className="hg-hero-dim" style={dimStyle} aria-hidden="true" />
 
       {/* No parallax here any more — it used to drift .hg-hero__copy down
           on scroll while .hg-hero__statline stayed put in normal flow,
           which is exactly what let the two overlap mid-scroll. Only the
           background now parallaxes. */}
-      <motion.div className="hg-hero__copy hg-shell">
+      <motion.div className="hg-hero__copy hg-shell" style={copyStyle}>
         <motion.p
           className="hg-sheet"
           initial={{ opacity: 0 }}
@@ -96,6 +99,6 @@ export default function Hero() {
           ))}
         </dl>
       </motion.div>
-    </section>
+    </motion.section>
   );
 }

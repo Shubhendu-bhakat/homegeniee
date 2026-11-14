@@ -123,7 +123,7 @@
 .hg-hero__statLabel { margin: 3px 0 0; font-size: var(--fs-xs); color: var(--fg-faint); letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
 
 /* ===== Section heading ==================================== */
-.hg-heading { max-width: 74ch; margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem); position: relative; }
+.hg-heading { max-width: 74ch; margin-bottom: clamp(1rem, 2.2vw, 1.75rem); position: relative; }
 .hg-heading--center { margin-inline: auto; text-align: center; }
 .hg-heading--center .hg-lede { margin-inline: auto; }
 .hg-heading--center .hg-sheet::after { display: none; }
@@ -205,7 +205,7 @@
 .hg-journey__body { flex: 1; }
 .hg-journey__title { font-size: var(--fs-2xl); font-variation-settings: "opsz" 30; }
 .hg-journey__note { margin-top: 8px; color: var(--fg-muted); max-width: 46ch; }
-.hg-journey__cta { margin-top: clamp(2rem, 4vw, 3rem); }
+.hg-journey__cta { margin-top: clamp(1.25rem, 2.5vw, 2rem); }
 
 /* ===== Services =========================================== */
 .hg-services { background: var(--canvas-2); }
@@ -219,9 +219,9 @@
      grid instead, so the cards are actually uniform, not just row-uniform. */
   grid-auto-rows: 1fr;
 }
-@media (min-width: 560px)  { .hg-services__grid { gap: var(--s-5); } }
-@media (min-width: 751px)  { .hg-services__grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1080px) { .hg-services__grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 560px)  { .hg-services__grid { gap: var(--s-4); } }
+@media (min-width: 751px)  { .hg-services__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .hg-services__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 .hg-svc {
   height: 100%;
@@ -243,7 +243,7 @@
 .hg-services__grid > *:nth-child(3n) .hg-svc { border-top-color: var(--navy); }
 .hg-svc__link { display: flex; flex-direction: column; flex: 1; }
 .hg-svc__media {
-  aspect-ratio: 16 / 10; overflow: hidden; position: relative;
+  aspect-ratio: 16 / 9; overflow: hidden; position: relative;
   background: linear-gradient(145deg, #EAF6FE, #CDE8FA);
   display: grid; place-items: center;
   transform: translateZ(28px);
@@ -259,7 +259,7 @@
 }
 .hg-svc:hover .hg-svc__media img, .hg-svc:hover .hg-svc__media video { transform: scale(1.06); }
 .hg-svc__body { padding: var(--s-3); flex: 1; transform: translateZ(18px); }
-@media (min-width: 560px) { .hg-svc__body { padding: var(--s-5); } }
+@media (min-width: 560px) { .hg-svc__body { padding: var(--s-4); } }
 /* One line, ellipsised — a tag reads as a tag only if it stays a tag's
    size. Letting it wrap to 2-3 lines is what made it look like a broken
    highlighter block instead of a label. */
@@ -267,16 +267,16 @@
   display: block; max-width: 100%;
   padding: 4px 10px;
   background: var(--canvas-2); border-radius: 999px;
-  margin-bottom: var(--s-3);
+  margin-bottom: var(--s-2);
   font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; line-height: 1.6;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .hg-services__grid > *:nth-child(3n+2) .hg-svc__eyebrow { background: var(--sand-300); color: var(--gold-deep); }
 .hg-services__grid > *:nth-child(3n) .hg-svc__eyebrow { background: #E4EEF9; color: var(--accent-strong); }
-.hg-svc__title { font-size: var(--fs-lg); margin-bottom: 10px; font-variation-settings: "opsz" 30; }
+.hg-svc__title { font-size: var(--fs-md); line-height: 1.25; margin-bottom: 6px; font-variation-settings: "opsz" 30; }
 .hg-svc__copy {
   font-size: var(--fs-sm); color: var(--fg-muted);
-  display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4;
+  display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3;
   -webkit-box-orient: vertical; overflow: hidden;
 }
 
@@ -287,12 +287,12 @@
   padding: 0 var(--s-3) var(--s-3);
   margin-top: auto;
 }
-@media (min-width: 560px) { .hg-svc__actions { gap: 10px; padding: 0 var(--s-5) var(--s-5); } }
+@media (min-width: 560px) { .hg-svc__actions { gap: 8px; padding: 0 var(--s-4) var(--s-4); } }
 .hg-svc__more, .hg-svc__call {
-  flex: 1 1 auto; min-width: 108px;
+  flex: 1 1 0; min-width: 0; white-space: nowrap;
   display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  min-height: 40px; padding: 0 var(--s-3);
-  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em; text-align: center;
+  min-height: 36px; padding: 0 var(--s-2);
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em; text-align: center;
   border-radius: var(--r-pill); border: 1px solid transparent;
   transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
               border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
@@ -352,7 +352,7 @@
 }
 .hg-why__title { font-size: var(--fs-lg); color: var(--fg-inv); font-variation-settings: "opsz" 30; }
 .hg-why__note { margin-top: 8px; font-size: var(--fs-sm); color: var(--fg-inv-muted); }
-.hg-why__cta { margin-top: clamp(2.25rem, 4vw, 3.25rem); }
+.hg-why__cta { margin-top: clamp(1.25rem, 2.5vw, 2rem); }
 
 /* ===== Tabs + collection ================================== */
 .hg-tabs {
@@ -435,7 +435,7 @@
 
 /* ===== Projects =========================================== */
 .hg-projects { background: var(--canvas); }
-.hg-projects__foot { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-3); margin-top: var(--s-7); }
+.hg-projects__foot { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-3); margin-top: var(--s-5); }
 .hg-projects__grid { display: grid; gap: var(--s-5); grid-template-columns: 1fr; }
 @media (min-width: 640px)  { .hg-projects__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1000px) { .hg-projects__grid { grid-template-columns: repeat(3, 1fr); } }
@@ -450,6 +450,40 @@
 .hg-proj__title { font-size: var(--fs-lg); font-variation-settings: "opsz" 30; }
 .hg-proj__scope { font-size: var(--fs-xs); color: var(--accent-soft); }
 
+/* Project row (interior design page) — the same .hg-proj cards as the old
+   grid (one / two / three per view), looping endlessly (see ProjectCarousel). */
+.hg-rank { position: relative; }
+.hg-rank__track {
+  --gap: var(--s-5);
+  --per: 1.15;
+  display: flex; gap: var(--gap);
+  margin: 0; padding: 0 0 6px; list-style: none;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scrollbar-width: none;
+}
+@media (min-width: 640px)  { .hg-rank__track { --per: 2; } }
+@media (min-width: 1000px) { .hg-rank__track { --per: 3; } }
+.hg-rank__track::-webkit-scrollbar { display: none; }
+.hg-rank__item {
+  flex: 0 0 calc((100% - (var(--per) - 1) * var(--gap)) / var(--per));
+  min-width: 0; scroll-snap-align: start;
+}
+.hg-rank__nav {
+  position: absolute; z-index: 2; top: 40%; translate: 0 -50%;
+  display: grid; place-items: center;
+  width: 44px; height: 88px; padding: 0; border: 0; border-radius: var(--r-md, 10px);
+  background: rgba(8, 18, 34, 0.62); color: #fff; cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background var(--dur-fast, .15s);
+}
+.hg-rank__nav:hover, .hg-rank__nav:focus-visible { background: rgba(8, 18, 34, 0.85); }
+.hg-rank__nav svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.hg-rank__nav--prev { left: -6px; }
+.hg-rank__nav--next { right: -6px; }
+@media (max-width: 640px) {
+  .hg-rank__nav { width: 34px; height: 64px; }
+}
+
 /* ===== Testimonials ======================================= */
 .hg-quotes { background: var(--canvas-2); }
 /* Self-scrolling strip: the list is rendered twice back to back and the
@@ -458,7 +492,7 @@
    reduced-motion rule (tokens.css) already collapses its duration to
    ~0 for anyone who prefers that. */
 .hg-quotes__viewport {
-  margin-top: clamp(2rem, 4vw, 3rem);
+  margin-top: clamp(1.25rem, 2.5vw, 2rem);
   overflow: hidden;
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
@@ -501,7 +535,7 @@
   font-size: var(--fs-base); line-height: 1.4;
   font-variation-settings: "opsz" 16, "wght" 450;
   color: var(--fg);
-  display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4;
+  display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3;
   -webkit-box-orient: vertical; overflow: hidden;
 }
 .hg-quote__by { flex: none; display: flex; align-items: center; gap: 10px; }
@@ -510,7 +544,7 @@
 .hg-quote__role { font-size: 0.68rem; color: var(--fg-faint); letter-spacing: 0.02em; }
 
 /* ===== Trust strip ======================================== */
-.hg-trust { background: var(--accent); color: var(--canvas); padding-block: var(--s-6); }
+.hg-trust { background: var(--accent); color: var(--canvas); padding-block: var(--s-5); }
 .hg-trust__grid { display: grid; gap: var(--s-5); grid-template-columns: 1fr; }
 @media (min-width: 640px)  { .hg-trust__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1000px) { .hg-trust__grid { grid-template-columns: repeat(4, 1fr); } }

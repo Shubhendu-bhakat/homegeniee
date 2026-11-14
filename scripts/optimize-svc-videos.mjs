@@ -8,7 +8,7 @@ import path from "path";
 const SCRATCH = "C:/Users/HP/AppData/Local/Temp/claude/C--Users-HP-Downloads-homegeniee-react-homegeniee-react/445335dd-d74f-4e96-9820-15ee94611d09/scratchpad/svc-videos";
 const outDir = path.resolve(import.meta.dirname, "../public/videos/services");
 
-const sources = ["interior-design", "modular-kitchen", "architectural-civil", "facade-elevational", "green-scape"];
+const sources = ["interior-design", "modular-kitchen", "architectural-civil", "green-scape"];
 
 for (const slug of sources) {
   const src = path.join(SCRATCH, `${slug}.mp4`);

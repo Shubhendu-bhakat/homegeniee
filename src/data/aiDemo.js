@@ -8,7 +8,7 @@ export const aiSuggestions = [
   {
     q: "What services do you offer?",
     keywords: ["service", "offer", "what do you do", "vertical", "work"],
-    a: "We cover 14 verticals under one roof: interior design, modular kitchens, false ceilings, furniture, facade decor, wall decor, architecture and civil, uPVC/aluminium, balcony and terrace, shade work, room makeovers, renovation and property consultancy.",
+    a: "We cover 13 verticals under one roof: interior design, modular kitchens, false ceilings, furniture, wall decor, architecture and civil, uPVC/aluminium, balcony and terrace, shade work, room makeovers, renovation and property consultancy.",
   },
   {
     q: "How much does a modular kitchen cost?",

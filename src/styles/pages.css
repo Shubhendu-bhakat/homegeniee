@@ -6,7 +6,7 @@
 .hg-phead {
   position: relative;
   padding-top: calc(var(--header-h) + clamp(1rem, 2.5vw, 1.75rem));
-  padding-bottom: clamp(1.75rem, 4vw, 3rem);
+  padding-bottom: clamp(1.25rem, 3vw, 2.25rem);
   overflow: hidden;
   isolation: isolate;
   --fg: #FBFCFE;
@@ -15,6 +15,48 @@
   color: var(--fg);
 }
 .hg-phead__media { position: absolute; inset: 0; z-index: -2; }
+/* Service landing pages: same full-height hero as the homepage — copy
+   anchored to the bottom, media bleeding a little above the top so the
+   parallax drift never shows an edge. */
+.hg-phead--hero {
+  min-height: min(88svh, 760px);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding-bottom: var(--s-6);
+}
+.hg-phead--hero .hg-phead__media { inset: -6% 0 0 0; }
+@media (max-width: 640px) {
+  .hg-phead--hero { min-height: min(70svh, 620px); }
+}
+
+/* Larger screens: the video hero fills the whole first screen, homepage
+   and service pages alike. */
+@media (min-width: 900px) {
+  /* + the 36px the content sheet overlaps, so nothing peeks in on load */
+  .hg-phead--hero, .hg-hero {
+    min-height: calc(100vh + 36px); min-height: calc(100svh + 36px);
+    padding-bottom: calc(var(--s-6) + 36px);
+  }
+}
+/* Scroll exit (see useHeroExit): the hero scales back from its top edge
+   into a rounded card while the content sheet slides over it. */
+.hg-phead--hero, .hg-hero { transform-origin: 50% 0; will-change: transform; }
+.hg-hero-dim {
+  position: absolute; inset: 0; z-index: -1;
+  background: #04223b; opacity: 0; pointer-events: none;
+}
+.hg-phead--hero .hg-phead__copy, .hg-hero .hg-hero__copy { z-index: 1; }
+.hg-sheetOver {
+  position: relative; z-index: 2;
+  margin-top: -36px;
+  border-radius: 36px 36px 0 0;
+  background: var(--canvas);
+  /* clip, not hidden: keeps sticky children (anchor nav) working */
+  overflow: clip;
+  box-shadow: 0 -20px 44px -14px rgba(4, 34, 59, 0.38);
+}
+@media (max-width: 640px) {
+  .hg-sheetOver { margin-top: -22px; border-radius: 22px 22px 0 0; }
+}
 .hg-phead__media img { width: 100%; height: 100%; object-fit: cover; }
 .hg-phead::after {
   content: ""; position: absolute; inset: 0; z-index: -1;
@@ -356,7 +398,7 @@
 .hg-contact__socials a { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--fg-muted); }
 .hg-contact__socials a:hover { color: var(--accent); }
 .hg-contact__formWrap {
-  padding: clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(1.25rem, 3vw, 2rem);
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
 }
 .hg-contact__lede { margin-top: var(--s-3); color: var(--fg-muted); }
@@ -365,6 +407,10 @@
 
 /* ===== Cost calculator (interior design page) ============== */
 .hg-calc { background: var(--canvas-2); }
+/* Same background as the sub-service cards that follow it on the interior
+   design page — drop the doubled padding so the two read as one block. */
+.hg-calc + .hg-anchors + .hg-detail,
+.hg-calc + .hg-detail { padding-top: 0; }
 .hg-calc__card {
   display: grid; grid-template-columns: 1fr;
   background: var(--surface);
@@ -375,12 +421,12 @@
 }
 @media (min-width: 800px) { .hg-calc__card { grid-template-columns: 1fr 1fr; } }
 
-.hg-calc__form { padding: clamp(1.5rem, 4vw, 2.5rem); }
+.hg-calc__form { padding: clamp(1.25rem, 3vw, 2rem); }
 .hg-calc__form h3 { font-size: var(--fs-lg); margin: 0 0 4px; }
-.hg-calc__hint { font-size: var(--fs-xs); color: var(--fg-faint); margin: 0 0 var(--s-5); }
+.hg-calc__hint { font-size: var(--fs-xs); color: var(--fg-faint); margin: 0 0 var(--s-3); }
 .hg-calc__seg { display: flex; flex-wrap: wrap; gap: 8px; }
 .hg-calc__seg button {
-  flex: 1; min-width: 100px; padding: 10px 10px;
+  flex: 1; min-width: 100px; padding: 8px 10px;
   border: 1.5px solid var(--line-solid); border-radius: var(--r-md);
   background: var(--canvas); font-size: var(--fs-xs); font-weight: 600; color: var(--fg);
   transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
@@ -390,7 +436,7 @@
 
 .hg-calc__result {
   background: var(--navy); color: #fff;
-  padding: clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(1.25rem, 3vw, 2rem);
   display: flex; flex-direction: column;
 }
 .hg-calc__empty {
@@ -433,3 +479,133 @@
 .hg-calc__note { font-size: var(--fs-xs); color: #C8DAEC; text-align: center; margin: 10px 0 0; }
 
 .hg-calc__caveat { max-width: 900px; margin: var(--s-4) auto 0; font-size: var(--fs-xs); color: var(--fg-faint); text-align: center; }
+
+/* ===== Kitchen layout picker + 3D demo (Modular Kitchen page) ===== */
+.hg-klay { background: var(--canvas); }
+.hg-klay__picker { display: grid; gap: var(--s-2); grid-template-columns: 1fr; }
+@media (min-width: 720px) { .hg-klay__picker { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); } }
+.hg-klay__opt {
+  position: relative; display: flex; align-items: center; gap: var(--s-3);
+  padding: 14px 16px; text-align: left; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--line-solid); border-radius: var(--r-lg);
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast), background var(--dur-fast);
+}
+.hg-klay__opt:hover { border-color: var(--accent-soft); box-shadow: 0 6px 18px -12px rgba(0, 40, 80, .35); }
+.hg-klay__opt.is-on {
+  border-color: var(--accent); background: var(--canvas-2);
+  box-shadow: inset 0 0 0 1px var(--accent), 0 8px 22px -14px rgba(0, 61, 112, .45);
+}
+.hg-klay__opt:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.hg-klay__plan { flex: 0 0 auto; width: 44px; height: 44px; }
+.hg-klay__planRoom { fill: var(--canvas); stroke: var(--line-solid); stroke-width: 1.5; }
+.hg-klay__planRun { fill: none; stroke: var(--fg-muted); stroke-width: 6; stroke-linecap: square; stroke-linejoin: miter; }
+.hg-klay__opt.is-on .hg-klay__planRun { stroke: var(--accent); }
+.hg-klay__optText { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.hg-klay__optTitle { font-family: var(--font-display); font-size: var(--fs-md); line-height: 1.2; color: var(--fg); }
+.hg-klay__optTag { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-muted); }
+.hg-klay__optCheck {
+  flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid var(--line-solid); background: var(--surface);
+  transition: border-color var(--dur-fast), background var(--dur-fast);
+}
+.hg-klay__opt.is-on .hg-klay__optCheck {
+  border-color: var(--accent);
+  background: radial-gradient(circle, var(--accent) 0 4px, var(--surface) 4.5px);
+}
+.hg-klay__shots {
+  position: absolute; z-index: 2; top: 12px; right: 12px;
+  display: inline-flex; padding: 4px; gap: 2px;
+  background: rgba(255,255,255,.85); border-radius: var(--r-pill); backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px -8px rgba(0,0,0,.35);
+}
+.hg-klay__shots button {
+  min-height: 30px; padding: 0 10px; border: 0; border-radius: var(--r-pill);
+  background: none; font-size: 0.68rem; font-weight: 700; color: var(--fg-muted); cursor: pointer;
+}
+.hg-klay__shots button.is-on { background: var(--navy); color: #fff; }
+@media (max-width: 520px) {
+  .hg-klay__shots { top: auto; bottom: 40px; right: 50%; translate: 50% 0; }
+}
+
+.hg-klay__demo {
+  display: grid; gap: var(--s-4); margin-top: var(--s-5);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) { .hg-klay__demo { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: start; } }
+.hg-klay__stage {
+  position: relative; border-radius: var(--r-lg); overflow: hidden;
+  background: linear-gradient(180deg, #F4F6F9, #E4E9EF);
+  border: 1px solid var(--line-solid);
+}
+.hg-klay__views {
+  position: absolute; z-index: 2; top: 12px; left: 12px;
+  display: inline-flex; padding: 4px; gap: 4px;
+  background: rgba(255,255,255,.85); border-radius: var(--r-pill); backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px -8px rgba(0,0,0,.35);
+}
+.hg-klay__views button {
+  min-height: 34px; padding: 0 14px; border: 0; border-radius: var(--r-pill);
+  background: none; font-size: var(--fs-xs); font-weight: 700; color: var(--fg-muted); cursor: pointer;
+}
+.hg-klay__views button.is-on { background: var(--accent); color: #fff; }
+.hg-k3d { width: 100%; height: clamp(320px, 52vw, 480px); touch-action: none; }
+.hg-k3d canvas { display: block; width: 100% !important; height: 100% !important; cursor: grab; }
+.hg-k3d canvas:active { cursor: grabbing; }
+.hg-k3d--loading { display: grid; place-items: center; color: var(--fg-muted); font-size: var(--fs-sm); }
+.hg-klay__hint {
+  position: absolute; left: 50%; bottom: 10px; translate: -50% 0; margin: 0;
+  padding: 4px 10px; border-radius: var(--r-pill); background: rgba(255,255,255,.8);
+  font-size: 0.65rem; color: var(--fg-muted); white-space: nowrap; pointer-events: none;
+}
+.hg-klay__photos {
+  display: grid; gap: 8px; padding: 58px 12px 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-height: clamp(320px, 52vw, 480px); overflow-y: auto;
+}
+@media (min-width: 640px) { .hg-klay__photos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hg-klay__photo { position: relative; display: block; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 4 / 3; }
+.hg-klay__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.hg-klay__photo:hover img { transform: scale(1.05); }
+.hg-klay__photo span {
+  position: absolute; inset: auto 0 0 0; padding: 18px 8px 6px;
+  background: linear-gradient(to top, rgba(8,18,34,.8), transparent);
+  color: #fff; font-size: var(--fs-xs); font-weight: 600;
+}
+
+.hg-klay__info {
+  padding: var(--s-4); background: var(--surface);
+  border: 1px solid var(--line-solid); border-radius: var(--r-lg);
+}
+.hg-klay__name { font-size: var(--fs-xl); margin: 0 0 var(--s-2); }
+.hg-klay__body { color: var(--fg-muted); font-size: var(--fs-sm); margin: 0 0 var(--s-4); }
+.hg-klay__info .hg-sheet { margin: 0 0 var(--s-2); }
+.hg-klay__best { margin: 0 0 var(--s-4); padding-left: 1.1em; display: grid; gap: 4px; font-size: var(--fs-sm); }
+.hg-klay__swatches { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: var(--s-4); }
+.hg-klay__swatch {
+  width: 32px; height: 32px; padding: 0; border-radius: 50%; cursor: pointer;
+  background: var(--sw); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--line-solid);
+  transition: box-shadow var(--dur-fast), transform var(--dur-fast);
+}
+.hg-klay__swatch:hover { transform: scale(1.08); }
+.hg-klay__swatch.is-on { box-shadow: 0 0 0 2px var(--accent); }
+.hg-klay__cta { width: 100%; justify-content: center; }
+.hg-klay__areas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-bottom: var(--s-3); }
+.hg-klay__area {
+  display: flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 10px;
+  background: var(--canvas); border: 1px solid var(--line-solid); border-radius: var(--r-md);
+  font-size: var(--fs-xs); font-weight: 600; color: var(--fg-muted); text-align: left; cursor: pointer;
+  transition: border-color var(--dur-fast), color var(--dur-fast), background var(--dur-fast);
+}
+.hg-klay__area:hover { border-color: var(--accent-soft); }
+.hg-klay__area.is-on { border-color: var(--accent); color: var(--accent-strong); background: var(--canvas-2); box-shadow: inset 0 0 0 1px var(--accent); }
+.hg-klay__areaDot { flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; background: var(--sw); box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
+.hg-klay__swatches { margin-bottom: var(--s-2) !important; }
+.hg-klay__swatch--orig { position: relative; }
+.hg-klay__swatch--orig::after {
+  content: "↺"; position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 14px; color: rgba(0,0,0,.55); text-shadow: 0 0 2px #fff;
+}
+.hg-klay__swatchName { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 var(--s-4); font-size: var(--fs-xs); color: var(--fg-muted); }
+.hg-klay__swatchName strong { color: var(--fg); }
+.hg-klay__reset { padding: 4px 10px; background: none; border: 1px solid var(--line-solid); border-radius: var(--r-pill); font-size: 0.68rem; font-weight: 700; color: var(--accent); cursor: pointer; }
+.hg-klay__reset:hover { border-color: var(--accent); }

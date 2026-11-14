@@ -21,12 +21,12 @@ export const site = {
 };
 
 // Primary navigation, mirroring the WordPress header.
-// Trimmed to the five verticals the client wants fronted, per their nav
+// Trimmed to the four verticals the client wants fronted, per their nav
 // diagram. Interior Design carries the sub-dropdown (wall decor, false
 // ceiling, furniture) — Furniture in turn is where the HomeGeniee Collection
 // now lives, not its own nav item. Architectural & Civil now points to the
 // single Fabricator anchor rather than the full drawing-office task list.
-// Facade and Green Scape are plain links — no dropdown, by request.
+// Green Scape is a plain link — no dropdown, by request.
 export const mainNav = [
   {
     label: "Interior Design",
@@ -45,7 +45,6 @@ export const mainNav = [
       { label: "HomeGeniee Fabricator", to: "/services/architectural-civil#fabricator" },
     ],
   },
-  { label: "Facade", to: "/services/facade-elevational" },
   { label: "Green Scape", to: "/services/green-scape" },
 ];
 

@@ -1,90 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUI } from "../context/UIContext";
 import { useAuth } from "../context/AuthContext";
+import { estimators } from "../data/estimators";
 
 /**
  * Adapted from the client's calculator prototype: three quick questions,
  * an instant range, then a gate — sign in to see the itemised breakdown.
- * Rates are illustrative placeholders, same caveat the prototype carried,
- * until Home Geniee provides real pricing.
+ * The questions, options and rates come from data/estimators.js per vertical
+ * (`service` slug). Rates are illustrative placeholders, same caveat the
+ * prototype carried, until Home Geniee provides real pricing.
  */
-const BHK = [
-  { label: "1 BHK", sqft: 600 },
-  { label: "2 BHK", sqft: 900 },
-  { label: "3 BHK", sqft: 1300 },
-  { label: "4 BHK", sqft: 1800 },
-];
-const SCOPE = [
-  { label: "Partial (2–3 rooms)", mult: 0.55 },
-  { label: "Full home", mult: 1 },
-];
-const TIER = [
-  { label: "Standard", rate: 950 },
-  { label: "Premium", rate: 1400 },
-  { label: "Luxury", rate: 2100 },
-];
-const BREAKDOWN = [
-  { label: "Design & space planning", share: 0.28 },
-  { label: "Furniture & furnishing", share: 0.34 },
-  { label: "Ceiling, walls & finishes", share: 0.2 },
-  { label: "Execution & project management", share: 0.18 },
-];
-
 const fmtLakh = (n) => (n >= 100000 ? `₹${(n / 100000).toFixed(2).replace(/\.00$/, "")}L` : `₹${Math.round(n).toLocaleString("en-IN")}`);
 
-export default function CostCalculator() {
+export default function CostCalculator({ service = "interior-design" }) {
+  const cfg = estimators[service] ?? estimators["interior-design"];
   const { openModal } = useUI();
   const { isSignedIn } = useAuth();
-  const [bhk, setBhk] = useState(1);
-  const [scope, setScope] = useState(1);
-  const [tier, setTier] = useState(0);
+  const [size, setSize] = useState(cfg.size.initial);
+  const [scope, setScope] = useState(cfg.scope.initial);
+  const [tier, setTier] = useState(cfg.tier.initial);
   const [result, setResult] = useState(null);
 
+  // Other sections (e.g. the kitchen layout picker) can pre-select an option.
+  useEffect(() => {
+    const onPreset = (e) => {
+      const i = e.detail?.size;
+      if (Number.isInteger(i) && cfg.size.options[i]) setSize(i);
+    };
+    window.addEventListener("hg:calc-preset", onPreset);
+    return () => window.removeEventListener("hg:calc-preset", onPreset);
+  }, [cfg]);
+
   const calculate = () => {
-    const base = BHK[bhk].sqft * SCOPE[scope].mult * TIER[tier].rate;
+    const base = cfg.size.options[size].area * cfg.scope.options[scope].mult * cfg.tier.options[tier].rate;
     setResult({ low: base * 0.9, high: base * 1.15, base });
   };
+
+  const questions = [
+    [cfg.size, size, setSize],
+    [cfg.scope, scope, setScope],
+    [cfg.tier, tier, setTier],
+  ];
 
   return (
     <section className="hg-section hg-calc" id="calculate-cost">
       <div className="hg-shell">
         <div className="hg-heading">
           <span className="hg-eyebrow">New — instant estimate</span>
-          <h2 className="hg-h2">What would your interior cost?</h2>
+          <h2 className="hg-h2">What would your {cfg.subject} cost?</h2>
           <p className="hg-lede">Answer three quick questions for a real starting range — no obligation, no site visit needed yet.</p>
         </div>
 
         <div className="hg-calc__card">
           <div className="hg-calc__form">
-            <h3>Tell us about your space</h3>
+            <h3>{cfg.formTitle}</h3>
             <p className="hg-calc__hint">Takes less than 30 seconds</p>
 
-            <div className="hg-field">
-              <label>Flat / home size</label>
-              <div className="hg-calc__seg">
-                {BHK.map((b, i) => (
-                  <button key={b.label} type="button" className={i === bhk ? "is-on" : ""} onClick={() => setBhk(i)}>{b.label}</button>
-                ))}
+            {questions.map(([q, value, set]) => (
+              <div className="hg-field" key={q.label}>
+                <label>{q.label}</label>
+                <div className="hg-calc__seg">
+                  {q.options.map((o, i) => (
+                    <button key={o.label} type="button" className={i === value ? "is-on" : ""} onClick={() => set(i)}>{o.label}</button>
+                  ))}
+                </div>
               </div>
-            </div>
-
-            <div className="hg-field">
-              <label>Scope of work</label>
-              <div className="hg-calc__seg">
-                {SCOPE.map((s, i) => (
-                  <button key={s.label} type="button" className={i === scope ? "is-on" : ""} onClick={() => setScope(i)}>{s.label}</button>
-                ))}
-              </div>
-            </div>
-
-            <div className="hg-field">
-              <label>Finish tier</label>
-              <div className="hg-calc__seg">
-                {TIER.map((t, i) => (
-                  <button key={t.label} type="button" className={i === tier ? "is-on" : ""} onClick={() => setTier(i)}>{t.label}</button>
-                ))}
-              </div>
-            </div>
+            ))}
 
             <button className="hg-btn hg-calc__go" onClick={calculate}>Calculate my estimate</button>
           </div>
@@ -109,7 +90,7 @@ export default function CostCalculator() {
 
                 <div className="hg-calc__breakdown">
                   <dl>
-                    {BREAKDOWN.map((b) => (
+                    {cfg.breakdown.map((b) => (
                       <div className="hg-calc__row" key={b.label}>
                         <dt>{b.label}</dt>
                         <dd>{fmtLakh(result.base * b.share)}</dd>
@@ -118,7 +99,7 @@ export default function CostCalculator() {
                   </dl>
                   <a
                     className="hg-calc__wa"
-                    href={`https://wa.me/919831687191?text=${encodeURIComponent("Hi Home Geniee, I got an estimate of " + fmtLakh(result.low) + " – " + fmtLakh(result.high) + " for my interior — I'd like to talk next steps.")}`}
+                    href={`https://wa.me/919831687191?text=${encodeURIComponent("Hi Home Geniee, I got an estimate of " + fmtLakh(result.low) + " – " + fmtLakh(result.high) + " for my " + cfg.subject + " — I'd like to talk next steps.")}`}
                     target="_blank" rel="noreferrer noopener"
                   >
                     Continue on WhatsApp →

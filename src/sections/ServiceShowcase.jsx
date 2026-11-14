@@ -25,7 +25,7 @@ export default function ServiceShowcase() {
         <SectionHeading
           eyebrow="What we build"
           title={<span id="hg-services-title">Multiple verticals, one point of contact</span>}
-          lede="Interior design, modular kitchens, civil work, facades and greenscape. You brief one team and one team carries it through."
+          lede="Interior design, modular kitchens, civil work and greenscape. You brief one team and one team carries it through."
         />
 
         <RevealGroup className="hg-services__grid" stagger={0.06}>

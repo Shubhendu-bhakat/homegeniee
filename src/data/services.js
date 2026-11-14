@@ -5,6 +5,7 @@ const IMG = "https://homegeniee.com/wp-content/uploads";
 export const services = [
   {
     slug: "interior-design",
+    short: "Interior design",
     eyebrow: "Elevate Your Living Space",
     title: "Interior Design and Stylish Accessories",
     body: "Transform your home with curated interior design elements that blend elegance and functionality. From modern minimalism to timeless classics, our collection enhances every room with smart organization and sophisticated aesthetics. Redesign your living space with premium accessories that bring harmony, style, and inspiration.",
@@ -22,12 +23,16 @@ export const services = [
   },
   {
     slug: "modular-kitchen",
+    short: "Modular kitchen",
     eyebrow: "Modular Perfection",
     title: "Modular Kitchen Design",
     body: "Transform your kitchen with modular designs that blend elegance, functionality, and smart storage solutions. From modern minimalism to timeless classics, our premium collection enhances your space with efficiency and style. Upgrade to a sophisticated, well-organized kitchen that perfectly complements your lifestyle.",
     image: "/img/services/modular-kitchen.jpg",
     video: "/videos/services/modular-kitchen.mp4",
     videoPoster: "/videos/services/modular-kitchen-poster.jpg",
+    // Full-HD cut for the page hero; `video` stays the light card version.
+    heroVideo: "/videos/services/modular-kitchen-hero.mp4",
+    heroPoster: "/videos/services/modular-kitchen-hero-poster.jpg",
     sections: [],
   },
   {
@@ -57,20 +62,6 @@ export const services = [
     ],
   },
   {
-    slug: "facade-elevational",
-    eyebrow: "Enhance Aesthetics, Elevate Impressions",
-    title: "Interior and Exterior Facade Decor",
-    body: "Enhance your home's aesthetics with stylish interior and exterior facade décor, featuring elegant textures, modern finishes, and timeless designs for a sophisticated look.",
-    image: "/img/services/facade-elevational.jpg",
-    video: "/videos/services/facade-elevational.mp4",
-    videoPoster: "/videos/services/facade-elevational-poster.jpg",
-    sections: [
-      { id: "acp", label: "ACP Facade", body: "Aluminium composite panels in a wide finish range, cut and folded to the elevation drawing.", image: "/img/services/facade-elevational.jpg"},
-      { id: "glass", label: "Glass Facade", body: "Structural and semi-structural glazing that opens the elevation up to daylight.", image: "/img/services/facade-elevational.jpg"},
-      { id: "ms", label: "MS Facade", body: "Mild steel framing and cladding for robust, weldable elevation features.", image: "/img/services/facade-elevational.jpg"},
-    ],
-  },
-  {
     slug: "wall-decor",
     eyebrow: "Transform Your Walls With Style",
     title: "Home Geniee Wall Decor Collection",
@@ -92,6 +83,7 @@ export const services = [
   },
   {
     slug: "architectural-civil",
+    short: "Architecture and civil",
     eyebrow: "Building The Future",
     title: "Architecture and Civil",
     body: "Experience innovative architecture and civil engineering solutions that blend functionality, aesthetics, and durability. From modern structures to timeless designs, we craft spaces that inspire and endure.",
@@ -116,19 +108,15 @@ export const services = [
   },
   {
     slug: "green-scape",
+    short: "Green scape",
     eyebrow: "Stylish Outdoor Spaces, Relaxed Living",
     title: "Balcony and Terrace Decor",
     body: "Transform your balcony or terrace with elegant decor, featuring cozy seating, lush greenery, and modern accents to create a serene and stylish outdoor retreat.",
     image: "/img/services/green-scape.jpg",
     video: "/videos/services/green-scape.mp4",
     videoPoster: "/videos/services/green-scape-poster.jpg",
-    sections: [
-      { id: "artificial", label: "Artificial Grass", body: "All-weather turf for terraces and balconies where real lawn will not survive.", image: "/img/services/green-scape.jpg"},
-      { id: "vertical", label: "Vertical Gardening", body: "Living wall systems that add green without spending floor area.", image: "/img/services/green-scape.jpg"},
-      { id: "terrace", label: "Terrace Gardening", body: "Waterproofed, drained and planted terraces built to last through monsoon.", image: "/img/services/green-scape.jpg"},
-      { id: "balcony", label: "Balcony Gardening", body: "Compact planting, seating and screening for city balconies.", image: "/img/services/green-scape.jpg"},
-      { id: "swing", label: "Swing Installation", body: "Anchored swings sized and fixed to the structure they hang from.", image: "/img/services/green-scape.jpg"},
-    ],
+    // No sub-modules, by request — the page runs the shared featured layout only.
+    sections: [],
   },
   {
     slug: "shade-work",
@@ -174,7 +162,7 @@ export const services = [
 
 export const getService = (slug) => services.find((s) => s.slug === slug);
 
-// The five verticals fronted on the homepage and in the nav — the rest of
+// The four verticals fronted on the homepage and in the nav — the rest of
 // the catalogue still lives at its own /services/:slug, just not headlined.
-export const FEATURED_SLUGS = ["interior-design", "modular-kitchen", "architectural-civil", "facade-elevational", "green-scape"];
+export const FEATURED_SLUGS = ["interior-design", "modular-kitchen", "architectural-civil", "green-scape"];
 export const featuredServices = FEATURED_SLUGS.map(getService);

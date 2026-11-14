@@ -50,7 +50,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   padding-inline: var(--gutter);
 }
 
-.hg-section { padding-block: clamp(2rem, 4.5vw, 3.5rem); position: relative; }
+.hg-section { padding-block: clamp(1.5rem, 3vw, 2.5rem); position: relative; }
 .hg-section--light { background: var(--sand); color: var(--fg-inv); }
 .hg-section--light .hg-eyebrow { color: var(--accent-soft); }
 .hg-section--light .hg-lede { color: var(--fg-inv-muted); }
@@ -85,7 +85,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   text-transform: uppercase;
   color: var(--accent);
   display: block;
-  margin-bottom: var(--s-3);
+  margin-bottom: var(--s-2);
 }
 
 .hg-h2 { font-size: var(--fs-3xl); }
@@ -94,8 +94,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 .hg-lede {
   color: var(--fg-muted);
   max-width: 62ch;
-  font-size: var(--fs-lg);
-  margin-top: var(--s-4);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+  margin-top: var(--s-2);
 }
 
 .hg-mono {
