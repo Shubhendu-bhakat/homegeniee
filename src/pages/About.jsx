@@ -4,8 +4,8 @@ import { faqs, aboutPromises, aboutDoes } from "../data/faqs";
 import { site } from "../data/site";
 import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
 import LouverDivider from "../components/LouverDivider";
-import HeroSlider from "../components/HeroSlider";
-import { projects } from "../data/projects";
+import HeroVideoBackground from "../components/HeroVideoBackground";
+import { pageClips } from "../data/heroClips";
 import TrustStrip from "../sections/TrustStrip";
 
 const U = "https://homegeniee.com/wp-content/uploads";
@@ -72,7 +72,7 @@ export default function About() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <header className="hg-phead">
         <div className="hg-phead__media" aria-hidden="true">
-          <HeroSlider slides={projects} />
+          <HeroVideoBackground clips={pageClips.about} />
         </div>
         <div className="hg-shell hg-phead__copy">
           <Reveal delay={0.06}><span className="hg-eyebrow">Some words about us</span></Reveal>

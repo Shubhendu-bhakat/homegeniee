@@ -77,6 +77,25 @@
   margin-block: var(--s-2) var(--s-4);
   color: var(--fg);
 }
+/* Service hero copy mirrors the homepage hero's type scale so every
+   landing hero reads the same. The homepage has a stat strip under its
+   copy that service pages lack, so reserve that height to keep the text at
+   the same distance from the top. */
+.hg-phead--hero .hg-phead__title {
+  font-size: var(--fs-4xl);
+  line-height: var(--lh-tight);
+  font-variation-settings: "opsz" 30, "wght" 600;
+  max-width: 20ch;
+  margin-block: var(--s-2) var(--s-5);
+}
+.hg-phead--hero .hg-lede {
+  max-width: 56ch;
+  font-size: clamp(0.75rem, 1vw + 0.55rem, 0.9375rem);
+}
+.hg-phead--hero .hg-crumbs { margin-bottom: var(--s-2); }
+@media (min-width: 900px) {
+  .hg-phead--hero { padding-bottom: calc(var(--s-6) + 36px + 8.4rem); }
+}
 .hg-phead__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
 .hg-phead__actions .hg-btn:not(.hg-btn--ghost) { --btn-bg: var(--gold); --btn-fg: var(--navy); }
 .hg-phead__actions .hg-btn--ghost { border-color: rgba(255,255,255,.4); }
@@ -421,21 +440,41 @@
 }
 @media (min-width: 800px) { .hg-calc__card { grid-template-columns: 1fr 1fr; } }
 
-.hg-calc__form { padding: clamp(1.25rem, 3vw, 2rem); }
-.hg-calc__form h3 { font-size: var(--fs-lg); margin: 0 0 4px; }
-.hg-calc__hint { font-size: var(--fs-xs); color: var(--fg-faint); margin: 0 0 var(--s-3); }
-.hg-calc__seg { display: flex; flex-wrap: wrap; gap: 8px; }
-.hg-calc__seg button {
-  flex: 1; min-width: 100px; padding: 8px 10px;
-  border: 1.5px solid var(--line-solid); border-radius: var(--r-md);
-  background: var(--canvas); font-size: var(--fs-xs); font-weight: 600; color: var(--fg);
-  transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
+.hg-calc__form { padding: clamp(1.5rem, 3vw, 2.25rem); display: flex; flex-direction: column; gap: var(--s-5); }
+.hg-calc__form h3 { font-size: var(--fs-xl); margin: 0; }
+.hg-calc__hint { font-size: var(--fs-xs); color: var(--fg-faint); margin: -14px 0 0; }
+.hg-calc__q { gap: 10px; }
+.hg-calc__q label { display: flex; align-items: center; gap: 10px; letter-spacing: 0.08em; }
+.hg-calc__step {
+  display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent); color: #fff; font-size: 0.68rem; font-weight: 700; letter-spacing: 0;
 }
-.hg-calc__seg button.is-on { border-color: var(--accent); background: var(--canvas-2); color: var(--accent-strong); }
-.hg-calc__go { width: 100%; margin-top: var(--s-2); }
+/* Equal-width option cards: a bold title, a quieter detail line underneath. */
+.hg-calc__seg { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 10px; }
+.hg-calc__seg button {
+  position: relative; display: grid; align-content: center; justify-items: center; gap: 2px;
+  min-height: 56px; padding: 10px 8px; text-align: center; cursor: pointer;
+  border: 1.5px solid var(--line-solid); border-radius: var(--r-md);
+  background: var(--surface); color: var(--fg);
+  transition: border-color var(--dur-fast), background var(--dur-fast), box-shadow var(--dur-fast), transform var(--dur-fast);
+}
+.hg-calc__seg button:hover { border-color: var(--accent-soft); transform: translateY(-1px); }
+.hg-calc__seg button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.hg-calc__optTitle { font-size: var(--fs-sm); font-weight: 700; line-height: 1.2; }
+.hg-calc__optSub { font-size: 0.7rem; font-weight: 500; color: var(--fg-muted); line-height: 1.25; }
+.hg-calc__seg button.is-on {
+  border-color: var(--accent); background: var(--canvas-2); color: var(--accent-strong);
+  box-shadow: inset 0 0 0 1px var(--accent), 0 8px 18px -12px rgba(0, 61, 112, .5);
+}
+.hg-calc__seg button.is-on .hg-calc__optSub { color: var(--accent-soft); }
+.hg-calc__seg button.is-on::after {
+  content: ""; position: absolute; top: 4px; right: 4px; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.6 7.3l2.1 2.1 4.7-4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat;
+}
+.hg-calc__go { width: 100%; margin-top: var(--s-1); min-height: 52px; }
 
 .hg-calc__result {
-  background: var(--navy); color: #fff;
+  background: radial-gradient(120% 90% at 100% 0%, #0A5A9E 0%, var(--navy) 55%, #002F57 100%); color: #fff;
   padding: clamp(1.25rem, 3vw, 2rem);
   display: flex; flex-direction: column;
 }
@@ -443,7 +482,7 @@
   margin: auto; text-align: center; color: #D3E1EE;
   display: grid; gap: var(--s-3); justify-items: center;
 }
-.hg-calc__empty span { font-size: 2rem; opacity: 0.6; }
+.hg-calc__icon { width: 54px; height: 54px; color: var(--gold); opacity: .85; }
 .hg-calc__empty p { max-width: 26ch; font-size: var(--fs-sm); margin: 0; }
 .hg-calc__result .hg-eyebrow { color: var(--gold); }
 .hg-calc__range { font-family: var(--font-display); font-style: italic; font-size: var(--fs-3xl); margin: 8px 0 4px; }
@@ -458,7 +497,7 @@
   margin: auto; width: min(100%, 300px);
   padding: var(--s-5); display: grid; gap: var(--s-3); text-align: center;
 }
-.hg-calc__lock--full span { font-size: 2rem; }
+.hg-calc__lock--full .hg-calc__icon { justify-self: center; }
 .hg-calc__signin {
   width: 100%; min-width: 0; --btn-bg: var(--gold); --btn-fg: var(--navy);
   padding-inline: var(--s-4); font-size: 0.7rem; letter-spacing: 0.04em;
@@ -482,6 +521,9 @@
 
 /* ===== Kitchen layout picker + 3D demo (Modular Kitchen page) ===== */
 .hg-klay { background: var(--canvas); }
+.hg-klay .hg-heading { max-width: none; margin-bottom: clamp(0.75rem, 1.6vw, 1.25rem); }
+.hg-klay .hg-h2 { white-space: nowrap; }
+@media (max-width: 640px) { .hg-klay .hg-h2 { white-space: normal; } }
 .hg-klay__picker { display: grid; gap: var(--s-2); grid-template-columns: 1fr; }
 @media (min-width: 720px) { .hg-klay__picker { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); } }
 .hg-klay__opt {
@@ -519,6 +561,7 @@
   box-shadow: 0 4px 14px -8px rgba(0,0,0,.35);
 }
 .hg-klay__shots button {
+  white-space: nowrap;
   min-height: 30px; padding: 0 10px; border: 0; border-radius: var(--r-pill);
   background: none; font-size: 0.68rem; font-weight: 700; color: var(--fg-muted); cursor: pointer;
 }
@@ -609,3 +652,11 @@
 .hg-klay__swatchName strong { color: var(--fg); }
 .hg-klay__reset { padding: 4px 10px; background: none; border: 1px solid var(--line-solid); border-radius: var(--r-pill); font-size: 0.68rem; font-weight: 700; color: var(--accent); cursor: pointer; }
 .hg-klay__reset:hover { border-color: var(--accent); }
+
+/* Wall Decor 3D explorer: reuses the kitchen picker panel; only the extras live here. */
+.hg-wall__target button { padding: 0 12px; }
+.hg-wall__finishes { margin-bottom: var(--s-4); }
+.hg-wall__finishes .hg-klay__area { min-height: 40px; padding-block: 6px; line-height: 1.2; }
+@media (max-width: 520px) {
+  .hg-wall__target { left: 50%; translate: -50% 0; }
+}

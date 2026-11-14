@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { site, consultationPurposes } from "../data/site";
-import { projects } from "../data/projects";
 import Reveal from "../components/Reveal";
-import HeroSlider from "../components/HeroSlider";
+import HeroVideoBackground from "../components/HeroVideoBackground";
+import { pageClips } from "../data/heroClips";
 import TrustStrip from "../sections/TrustStrip";
 
 const EMPTY = { name: "", email: "", phone: "", purpose: "", message: "", file: "" };
@@ -40,7 +40,7 @@ export default function Contact() {
     <>
       <header className="hg-phead">
         <div className="hg-phead__media" aria-hidden="true">
-          <HeroSlider slides={projects} />
+          <HeroVideoBackground clips={pageClips.contact} />
         </div>
         <div className="hg-shell hg-phead__copy">
           <Reveal delay={0.06}><span className="hg-eyebrow">Send your design, we will make it</span></Reveal>

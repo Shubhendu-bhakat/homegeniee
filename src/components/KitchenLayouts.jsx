@@ -93,7 +93,7 @@ const AREAS = [
  * and the real kitchens Home Geniee has designed in that layout.
  */
 export default function KitchenLayouts() {
-  const [active, setActive] = useState("l");
+  const [active, setActive] = useState("u");
   const [view, setView] = useState("3d");
   const [shot, setShot] = useState("overview");
   // Chosen colour per area; a missing key means "as shown".
@@ -165,7 +165,7 @@ export default function KitchenLayouts() {
                     </button>
                   ))}
                 </div>
-                <p className="hg-klay__hint hg-mono">Drag to rotate · scroll or pinch to zoom</p>
+                <p className="hg-klay__hint hg-mono">Drag to rotate · click, then scroll or pinch to zoom</p>
               </>
             ) : (
               <div className="hg-klay__photos">
@@ -234,7 +234,7 @@ export default function KitchenLayouts() {
             <a
               href="#calculate-cost"
               className="hg-btn hg-klay__cta"
-              onClick={() => window.dispatchEvent(new CustomEvent("hg:calc-preset", { detail: { size: layout.calcIndex } }))}
+              onClick={() => window.dispatchEvent(new CustomEvent("hg:calc-preset", { detail: { layout: layout.calcIndex } }))}
             >
               Get estimate for this layout ↓
             </a>

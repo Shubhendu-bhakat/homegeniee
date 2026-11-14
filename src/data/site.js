@@ -64,8 +64,8 @@ export const footerLinks = {
   "Our Links": [
     { label: "About Us", to: "/about" },
     { label: "Contact Us", to: "/contact" },
-    { label: "Offer / Promotions", to: "/collection" },
-    { label: "Stores", to: "/collection" },
+    { label: "Offer / Promotions", to: "/services/furniture" },
+    { label: "Stores", to: "/services/furniture" },
   ],
 };
 

@@ -50,7 +50,7 @@ function canvasTex(w, h, draw, repeat = [1, 1]) {
   t.colorSpace = THREE.SRGBColorSpace;
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(...repeat);
-  t.anisotropy = 4;
+  t.anisotropy = 16;
   return t;
 }
 // Seeded random so the textures look the same on every visit.
@@ -92,7 +92,7 @@ const marbleTex = (repeat, tiles = 0) => canvasTex(1024, 1024, (g, w, h) => {
   }
 }, repeat);
 
-const tileTex = (base, grout, n, jitter, repeat) => canvasTex(512, 512, (g, w, h) => {
+const tileTex = (base, grout, n, jitter, repeat) => canvasTex(1024, 1024, (g, w, h) => {
   const r = rng(11);
   const s = w / n;
   g.fillStyle = grout; g.fillRect(0, 0, w, h);
@@ -100,7 +100,7 @@ const tileTex = (base, grout, n, jitter, repeat) => canvasTex(512, 512, (g, w, h
     const k = 1 + (r() - 0.5) * jitter;
     const c = new THREE.Color(base).multiplyScalar(k);
     g.fillStyle = `#${c.getHexString()}`;
-    g.fillRect(i * s + 2, j * s + 2, s - 4, s - 4);
+    g.fillRect(i * s + 3, j * s + 3, s - 6, s - 6);
   }
 }, repeat);
 
@@ -125,6 +125,73 @@ const concreteTex = (base, repeat) => canvasTex(256, 256, (g, w, h) => {
     g.fillRect(r() * w, r() * h, 2 + r() * 4, 2 + r() * 4);
   }
 }, repeat);
+
+// Speckled granite / engineered quartz: near-white so the chosen colour tints
+// it, with fine grain, soft clouds and the odd vein.
+const graniteTex = (repeat, seed = 17, grain = 3400) => canvasTex(1024, 1024, (g, w, h) => {
+  const r = rng(seed);
+  g.fillStyle = "#f4f3f1"; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 26; i++) {
+    const x = r() * w, y = r() * h, rad = 40 + r() * 140;
+    const grd = g.createRadialGradient(x, y, 0, x, y, rad);
+    grd.addColorStop(0, "rgba(170,170,176,0.10)"); grd.addColorStop(1, "rgba(170,170,176,0)");
+    g.fillStyle = grd; g.fillRect(0, 0, w, h);
+  }
+  for (let i = 0; i < grain * 2; i++) {
+    const k = r();
+    g.fillStyle = k < 0.55 ? `rgba(90,90,96,${0.12 + r() * 0.25})` : k < 0.8 ? `rgba(255,255,255,${0.4 + r() * 0.5})` : `rgba(40,40,44,${0.15 + r() * 0.3})`;
+    const s = 1.6 + r() * 4.4;
+    g.fillRect(r() * w, r() * h, s, s);
+  }
+  g.strokeStyle = "rgba(130,132,140,0.16)"; g.lineWidth = 2.8;
+  for (let i = 0; i < 4; i++) {
+    g.beginPath(); let x = r() * w, y = 0; g.moveTo(x, y);
+    while (y < h) { x += (r() - 0.5) * 60; y += 20 + r() * 40; g.lineTo(x, y); }
+    g.stroke();
+  }
+}, repeat);
+
+// Polished terrazzo: pale cement with scattered marble chips.
+const terrazzoTex = (repeat) => canvasTex(1024, 1024, (g, w, h) => {
+  const r = rng(31);
+  g.fillStyle = "#dedbd6"; g.fillRect(0, 0, w, h);
+  const cols = ["#8a8987", "#b9b5ae", "#6f6e6d", "#f1efea", "#a29a8e", "#c9c5bd"];
+  for (let i = 0; i < 5200; i++) {
+    g.fillStyle = cols[(r() * cols.length) | 0];
+    const x = r() * w, y = r() * h, s = 3 + r() * r() * 18;
+    g.beginPath();
+    const n = 5 + ((r() * 3) | 0);
+    for (let k = 0; k < n; k++) {
+      const a = (k / n) * Math.PI * 2, rr = s * (0.6 + r() * 0.5);
+      g[k ? "lineTo" : "moveTo"](x + Math.cos(a) * rr, y + Math.sin(a) * rr * 0.8);
+    }
+    g.closePath(); g.fill();
+  }
+}, repeat);
+
+// Fine plaster / painted wall: barely-there mottling.
+const plasterTex = (base, repeat) => canvasTex(256, 256, (g, w, h) => {
+  const r = rng(41);
+  g.fillStyle = base; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 2200; i++) {
+    g.fillStyle = `rgba(${r() > 0.5 ? "255,255,255" : "0,0,0"},${r() * 0.035})`;
+    const s = 1 + r() * 5;
+    g.fillRect(r() * w, r() * h, s, s);
+  }
+}, repeat);
+
+// Woven runner: soft stripes with a plain border.
+const rugTex = (a, b) => canvasTex(256, 128, (g, w, h) => {
+  const r = rng(21);
+  g.fillStyle = a; g.fillRect(0, 0, w, h);
+  g.fillStyle = b;
+  for (let x = 28; x < w - 20; x += 32) g.fillRect(x, 14, 14, h - 28);
+  g.strokeStyle = b; g.lineWidth = 5; g.strokeRect(6, 6, w - 12, h - 12);
+  for (let i = 0; i < 900; i++) {
+    g.fillStyle = `rgba(0,0,0,${r() * 0.05})`;
+    g.fillRect(r() * w, r() * h, 1, 2);
+  }
+});
 
 /* ------------------------------------------------------------------ */
 /* Mesh helpers                                                        */
@@ -156,17 +223,33 @@ function box(parent, w, h, d, mat, x, y, z, { shadow = true } = {}) {
   parent.add(m);
   return m;
 }
-function cyl(parent, rt, rb, h, mat, x, y, z, seg = 20) {
+function cyl(parent, rt, rb, h, mat, x, y, z, seg = 24) {
   const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat);
   m.position.set(x, y, z);
   m.castShadow = true; m.receiveShadow = true;
   parent.add(m);
   return m;
 }
+// Smooth spheres (not faceted), cached by radius so repeats share a buffer.
 function sphere(parent, r, mat, x, y, z) {
-  const m = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), mat);
+  const key = `sph|${r.toFixed(4)}`;
+  let geo = geoCache.get(key);
+  if (!geo) {
+    geo = new THREE.SphereGeometry(r, 24, 16);
+    geo.userData.cacheKey = key;
+    geoCache.set(key, geo);
+  }
+  const m = new THREE.Mesh(geo, mat);
   m.position.set(x, y, z);
   m.castShadow = true;
+  parent.add(m);
+  return m;
+}
+// Turned objects (bowls, vases, jars, pots) from a [radius, height] profile.
+function lathe(parent, pts, mat, x, y, z, seg = 32) {
+  const m = new THREE.Mesh(new THREE.LatheGeometry(pts.map(([r, h]) => new THREE.Vector2(r, h)), seg), mat);
+  m.position.set(x, y, z);
+  m.castShadow = true; m.receiveShadow = true;
   parent.add(m);
   return m;
 }
@@ -188,9 +271,10 @@ function front(g, P, style, x, y, w, h, zf, mat) {
 }
 function knob(g, P, x, y, z) { sphere(g, 0.014, P.metal, x, y, z + 0.014); }
 function bar(g, P, x, y, z, len, vertical = false) {
-  box(g, vertical ? 0.012 : len, vertical ? len : 0.012, 0.012, P.metal, x, y, z + 0.022);
-  box(g, 0.01, 0.01, 0.02, P.metal, x - (vertical ? 0 : len / 2 - 0.02), y - (vertical ? len / 2 - 0.02 : 0), z + 0.01);
-  box(g, 0.01, 0.01, 0.02, P.metal, x + (vertical ? 0 : len / 2 - 0.02), y + (vertical ? len / 2 - 0.02 : 0), z + 0.01);
+  // slim profile handle: a thin rail on two small stand-offs
+  box(g, vertical ? 0.008 : len, vertical ? len : 0.008, 0.008, P.metal, x, y, z + 0.02);
+  box(g, 0.006, 0.006, 0.018, P.metal, x - (vertical ? 0 : len / 2 - 0.02), y - (vertical ? len / 2 - 0.02 : 0), z + 0.009);
+  box(g, 0.006, 0.006, 0.018, P.metal, x + (vertical ? 0 : len / 2 - 0.02), y + (vertical ? len / 2 - 0.02 : 0), z + 0.009);
 }
 
 // One base module's fronts. `kind`: doors | drawers | oven | open
@@ -239,7 +323,12 @@ function baseFronts(g, P, x, w, kind, style) {
 }
 function handleFor(g, P, style, x, w, y, h, z) {
   if (style === "shaker") knob(g, P, x + w / 2, y + h / 2, z);
-  else if (style === "slab") bar(g, P, x + w / 2, y + h - 0.045, z, Math.min(0.3, w * 0.5));
+  else if (style === "slab") {
+    // Finger-pull profile: a dark recessed channel along the top edge with a
+    // thin brushed-aluminium lip, as on the reference renders.
+    box(g, w - 0.02, 0.018, 0.004, P.black, x + w / 2, y + h - 0.016, z + 0.001, { shadow: false });
+    box(g, w - 0.02, 0.004, 0.016, P.steel, x + w / 2, y + h - 0.027, z + 0.006, { shadow: false });
+  }
 }
 
 function oven(g, P, x, y, w, h, zf) {
@@ -271,47 +360,92 @@ function hob(g, P, cx, cz, w = 0.6) {
     box(g, 0.004, 0.006, 0.026, P.black, cx + dx, top + 0.022, cz + 0.21);
   }
 }
+// Sink basin sits in a real cut-out in the worktop (see sinkCut): a steel
+// rim, vertical walls going down, a floor with a drain, and a mixer tap.
+const SINK_D = 0.42;
+function sinkCut(w, bowls) { return { w: Math.min(w - 0.08, bowls === 2 ? 0.8 : 0.55), d: SINK_D, cz: H.depth / 2 + 0.02 }; }
 function sink(g, P, cx, cz, w, bowls = 1) {
-  box(g, w, 0.006, 0.46, P.steel, cx, COUNTER_Y + 0.003, cz);
-  const bw = (w - 0.06 * (bowls + 1)) / bowls;
+  const d = SINK_D, depth = 0.19, t = 0.006, top = COUNTER_Y;
+  // rim
+  box(g, w + 0.03, 0.006, 0.014, P.steel, cx, top + 0.003, cz - d / 2 - 0.005, { shadow: false });
+  box(g, w + 0.03, 0.006, 0.014, P.steel, cx, top + 0.003, cz + d / 2 + 0.005, { shadow: false });
+  box(g, 0.014, 0.006, d, P.steel, cx - w / 2 - 0.005, top + 0.003, cz, { shadow: false });
+  box(g, 0.014, 0.006, d, P.steel, cx + w / 2 + 0.005, top + 0.003, cz, { shadow: false });
+  // walls + floor
+  box(g, w, depth, t, P.steel, cx, top - depth / 2, cz - d / 2);
+  box(g, w, depth, t, P.steel, cx, top - depth / 2, cz + d / 2);
+  box(g, t, depth, d, P.steel, cx - w / 2, top - depth / 2, cz);
+  box(g, t, depth, d, P.steel, cx + w / 2, top - depth / 2, cz);
+  box(g, w, t, d, P.sinkIn, cx, top - depth, cz, { shadow: false });
+  const bw = (w - 0.02 * (bowls - 1)) / bowls;
   for (let i = 0; i < bowls; i++) {
-    const bx = cx - w / 2 + 0.06 + bw / 2 + i * (bw + 0.06);
-    box(g, bw, 0.004, 0.36, P.sinkIn, bx, COUNTER_Y + 0.007, cz + 0.02, { shadow: false });
+    const bx = cx - w / 2 + bw / 2 + i * (bw + 0.02);
+    cyl(g, 0.035, 0.035, 0.004, P.black, bx, top - depth + 0.004, cz, 20);
+    cyl(g, 0.028, 0.028, 0.006, P.steel, bx, top - depth + 0.006, cz, 20);
   }
-  tap(g, P, cx, cz - 0.21);
+  if (bowls === 2) box(g, 0.02, depth - 0.03, d - 0.02, P.steel, cx, top - depth / 2 - 0.015, cz);
+  tap(g, P, cx, cz - d / 2 - 0.045);
 }
 function tap(g, P, x, z) {
-  cyl(g, 0.018, 0.022, 0.05, P.metal, x, COUNTER_Y + 0.025, z);
-  cyl(g, 0.011, 0.011, 0.3, P.metal, x, COUNTER_Y + 0.2, z);
+  cyl(g, 0.02, 0.024, 0.04, P.metal, x, COUNTER_Y + 0.02, z);
+  cyl(g, 0.011, 0.011, 0.3, P.metal, x, COUNTER_Y + 0.19, z);
   const arc = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.011, 8, 20, Math.PI), P.metal);
-  arc.position.set(x, COUNTER_Y + 0.35, z + 0.07);
+  arc.position.set(x, COUNTER_Y + 0.34, z + 0.07);
   arc.rotation.y = Math.PI / 2;
   arc.castShadow = true;
   g.add(arc);
+  // spout tip + side lever
+  cyl(g, 0.012, 0.009, 0.03, P.metal, x, COUNTER_Y + 0.325, z + 0.14, 10);
+  const lever = box(g, 0.012, 0.012, 0.07, P.metal, x + 0.028, COUNTER_Y + 0.12, z + 0.02);
+  lever.rotation.x = -0.5;
 }
 
 /* ------------------------------------------------------------------ */
 /* Props                                                               */
 /* ------------------------------------------------------------------ */
+// A leaf blade: a stretched, tilted ellipsoid that reads as foliage.
+function leafBlade(g, mat, x, y, z, len, wid, yaw, tilt) {
+  const m = sphere(g, 1, mat, x, y, z);
+  m.scale.set(wid, len, wid * 0.22);
+  m.rotation.order = "YXZ";
+  m.rotation.y = yaw; m.rotation.x = tilt;
+  m.position.set(x + Math.sin(yaw) * Math.sin(tilt) * len * 0.9, y + Math.cos(tilt) * len * 0.9, z + Math.cos(yaw) * Math.sin(tilt) * len * 0.9);
+  return m;
+}
 function plant(g, P, x, y, z, s = 1) {
-  cyl(g, 0.06 * s, 0.045 * s, 0.11 * s, P.pot, x, y + 0.055 * s, z);
-  for (let i = 0; i < 7; i++) {
-    const a = (i / 7) * Math.PI * 2;
-    sphere(g, 0.055 * s, P.leaf, x + Math.cos(a) * 0.045 * s, y + (0.15 + (i % 3) * 0.04) * s, z + Math.sin(a) * 0.045 * s);
+  // tapered pot with a rolled rim, dark soil, and a rosette of blades
+  lathe(g, [[0.001, 0], [0.042 * s, 0], [0.055 * s, 0.09 * s], [0.062 * s, 0.11 * s], [0.058 * s, 0.112 * s], [0.05 * s, 0.1 * s], [0.001, 0.1 * s]], P.pot, x, y, z, 24);
+  cyl(g, 0.05 * s, 0.05 * s, 0.004, P.soil, x, y + 0.098 * s, z, 20);
+  for (let i = 0; i < 16; i++) {
+    const yaw = i * 2.4, tilt = 0.25 + (i % 4) * 0.2;
+    leafBlade(g, P.leaf, x, y + 0.1 * s, z, (0.09 + (i % 3) * 0.035) * s, 0.02 * s, yaw, tilt);
   }
-  sphere(g, 0.06 * s, P.leaf, x, y + 0.22 * s, z);
 }
 function tallPlant(g, P, x, z) {
-  cyl(g, 0.14, 0.11, 0.28, P.pot, x, 0.14, z);
-  cyl(g, 0.012, 0.012, 0.6, P.trunk, x, 0.55, z);
-  for (let i = 0; i < 14; i++) {
-    const a = i * 2.4;
-    sphere(g, 0.09, P.leaf, x + Math.cos(a) * 0.1, 0.6 + i * 0.05, z + Math.sin(a) * 0.1);
+  lathe(g, [[0.001, 0], [0.1, 0], [0.14, 0.26], [0.15, 0.28], [0.13, 0.28], [0.001, 0.26]], P.pot, x, 0, z, 28);
+  cyl(g, 0.13, 0.13, 0.005, P.soil, x, 0.26, z, 20);
+  for (let k = 0; k < 3; k++) cyl(g, 0.01, 0.014, 0.55 + k * 0.1, P.trunk, x + (k - 1) * 0.03, 0.55 + k * 0.05, z + ((k % 2) - 0.5) * 0.04, 8);
+  for (let i = 0; i < 34; i++) {
+    const yaw = i * 2.4, up = 0.55 + (i / 34) * 0.55;
+    leafBlade(g, P.leaf, x + Math.cos(yaw) * 0.03, up, z + Math.sin(yaw) * 0.03, 0.13 + (i % 4) * 0.025, 0.05, yaw, 0.7 + (i % 3) * 0.15);
   }
 }
-function plates(g, P, x, y, z, n = 5) { for (let i = 0; i < n; i++) cyl(g, 0.1, 0.09, 0.012, P.ceramic, x, y + 0.006 + i * 0.014, z, 24); }
-function vase(g, P, x, y, z, h = 0.18, mat) { cyl(g, 0.03, 0.045, h, mat ?? P.ceramic, x, y + h / 2, z); sphere(g, 0.045, mat ?? P.ceramic, x, y + h * 0.35, z).scale.set(1, 1.2, 1); }
-function jar(g, P, x, y, z, h = 0.14) { cyl(g, 0.04, 0.04, h, P.glass, x, y + h / 2, z); cyl(g, 0.042, 0.042, 0.02, P.wood, x, y + h + 0.01, z); }
+function plates(g, P, x, y, z, n = 5) {
+  // dished plates, stacked
+  for (let i = 0; i < n; i++) lathe(g, [[0.001, 0], [0.06, 0], [0.095, 0.014], [0.1, 0.018], [0.097, 0.019], [0.06, 0.006], [0.001, 0.006]], P.ceramic, x, y + i * 0.015, z, 32);
+}
+function vase(g, P, x, y, z, h = 0.18, mat) {
+  const k = h;
+  lathe(g, [[0.001, 0], [0.03, 0], [0.046, 0.22 * k], [0.05, 0.42 * k], [0.04, 0.68 * k], [0.021, 0.88 * k], [0.027, k], [0.02, k], [0.001, 0.9 * k]], mat ?? P.ceramic, x, y, z, 32);
+}
+function jar(g, P, x, y, z, h = 0.14) {
+  // glass jar with spice inside and a wooden lid
+  const tints = ["#7a2e1d", "#b8862e", "#4d5a2a", "#d1a24a", "#5b3a25"];
+  const c = tints[Math.abs(Math.floor((x * 97 + y * 53 + h * 131) * 10)) % tints.length];
+  lathe(g, [[0.001, 0], [0.036, 0], [0.04, 0.012], [0.04, h * 0.85], [0.03, h * 0.94], [0.03, h]], P.glass, x, y, z, 24);
+  cyl(g, 0.034, 0.034, h * 0.62, M(c, { roughness: 0.9 }), x, y + h * 0.33, z, 20);
+  cyl(g, 0.034, 0.034, 0.022, P.wood, x, y + h + 0.01, z, 20);
+}
 function books(g, P, x, y, z, n = 5) {
   const cols = ["#c9b79c", "#7b8c99", "#e5e0d6", "#a3604a", "#56606b"];
   for (let i = 0; i < n; i++) box(g, 0.025, 0.2 - (i % 2) * 0.03, 0.15, M(cols[i % cols.length]), x + i * 0.028, y + 0.1 - (i % 2) * 0.015, z);
@@ -334,12 +468,14 @@ function kettle(g, P, x, y, z) {
   spout.rotation.z = -0.8;
 }
 function fruitBowl(g, P, x, y, z) {
-  cyl(g, 0.14, 0.08, 0.06, P.ceramic, x, y + 0.03, z, 28);
-  const cols = ["#e8892a", "#9cc441", "#c8322b", "#e8892a", "#f1c232"];
+  lathe(g, [[0.001, 0], [0.055, 0], [0.105, 0.035], [0.145, 0.07], [0.15, 0.072], [0.147, 0.075], [0.1, 0.042], [0.05, 0.01], [0.001, 0.01]], P.ceramic, x, y, z, 36);
+  const cols = ["#e8892a", "#9cc441", "#c8322b", "#e8892a", "#f1c232", "#c8322b"];
   cols.forEach((c, i) => {
-    const a = (i / cols.length) * Math.PI * 2;
-    sphere(g, 0.038, M(c, { roughness: 0.45 }), x + Math.cos(a) * 0.06, y + 0.08 + (i % 2) * 0.02, z + Math.sin(a) * 0.06);
+    const a = (i / cols.length) * Math.PI * 2 + 0.4;
+    const f = sphere(g, 0.036, M(c, { roughness: 0.4 }), x + Math.cos(a) * 0.065, y + 0.075 + (i % 2) * 0.016, z + Math.sin(a) * 0.065);
+    f.scale.set(1, 0.94, 1);
   });
+  sphere(g, 0.036, M("#d9372c", { roughness: 0.4 }), x, y + 0.1, z);
 }
 function knifeBlock(g, P, x, y, z) {
   const b = box(g, 0.09, 0.2, 0.13, P.wood, x, y + 0.1, z);
@@ -371,6 +507,28 @@ function ladleRail(g, P, x, y, z, len = 0.5) {
     if (i % 2) box(g, 0.05, 0.07, 0.006, P.black, ux, y - 0.26, z + 0.035);
     else sphere(g, 0.03, P.steel, ux, y - 0.25, z + 0.04).scale.set(1, 0.5, 1);
   }
+}
+// Saucepan with a lid, sitting on a burner's pan support.
+function pot(g, P, x, y, z, r = 0.1) {
+  cyl(g, r, r, 0.12, P.steel, x, y + 0.06, z, 28);
+  cyl(g, r + 0.004, r + 0.004, 0.012, P.steel, x, y + 0.126, z, 28);
+  sphere(g, 0.015, P.black, x, y + 0.148, z);
+  for (const s of [-1, 1]) box(g, 0.075, 0.012, 0.03, P.black, x + s * (r + 0.035), y + 0.1, z);
+}
+// Pendant light: braided cord to the ceiling, dome shade, glowing underside.
+function pendant(g, P, x, yBottom, z) {
+  cyl(g, 0.003, 0.003, H.wall - yBottom - 0.16, P.black, x, yBottom + 0.16 + (H.wall - yBottom - 0.16) / 2, z, 6);
+  const dome = cyl(g, 0.045, 0.16, 0.16, P.black, x, yBottom + 0.08, z, 28);
+  dome.castShadow = false;
+  cyl(g, 0.15, 0.15, 0.008, P.downlight, x, yBottom + 0.004, z, 28);
+}
+function socket(g, P, x, y) {
+  box(g, 0.085, 0.085, 0.008, P.ceramic, x, y, 0.016, { shadow: false });
+  box(g, 0.05, 0.05, 0.004, P.carcass, x, y, 0.021, { shadow: false });
+  for (const dx of [-0.012, 0.012]) box(g, 0.006, 0.014, 0.004, P.black, x + dx, y, 0.024, { shadow: false });
+}
+function rug(g, mat, x, z, w, d) {
+  box(g, w, 0.012, d, mat, x, 0.006, z, { shadow: false });
 }
 function board(g, P, x, y, z, w = 0.22, h = 0.34) {
   const b = box(g, w, h, 0.018, P.wood, x, y + h / 2, z);
@@ -405,8 +563,18 @@ function buildRun(P, run) {
       } else {
         front(g, Pl, style === "groove" ? "slab" : style, x, H.plinth, m.w, H.base - H.plinth - 0.01, H.depth - 0.02, lowerMat);
       }
-      box(g, m.w, H.top, H.depth + 0.02, P.counter, x + m.w / 2, H.base + H.top / 2, (H.depth + 0.02) / 2);
-      if (m.kind === "sink") sink(g, P, x + m.w / 2, H.depth / 2, Math.min(m.w - 0.08, m.bowls === 2 ? 0.8 : 0.55), m.bowls ?? 1);
+      if (m.kind === "sink") {
+        // Worktop in four pieces around the basin cut-out.
+        const c = sinkCut(m.w, m.bowls ?? 1), cx = x + m.w / 2, ty = H.base + H.top / 2, D = H.depth + 0.02;
+        const zb = c.cz - c.d / 2, zf2 = c.cz + c.d / 2, sx = (m.w - c.w) / 2;
+        box(g, m.w, H.top, zb, P.counter, cx, ty, zb / 2);
+        box(g, m.w, H.top, D - zf2, P.counter, cx, ty, (zf2 + D) / 2);
+        box(g, sx, H.top, c.d, P.counter, x + sx / 2, ty, c.cz);
+        box(g, sx, H.top, c.d, P.counter, x + m.w - sx / 2, ty, c.cz);
+        sink(g, P, cx, c.cz, c.w, m.bowls ?? 1);
+      } else {
+        box(g, m.w, H.top, H.depth + 0.02, P.counter, x + m.w / 2, H.base + H.top / 2, (H.depth + 0.02) / 2);
+      }
       if (m.kind === "hob") hob(g, P, x + m.w / 2, H.depth / 2 + 0.02);
     }
     x += m.w;
@@ -423,7 +591,20 @@ function buildRun(P, run) {
   // Backsplash
   if (run.splash) {
     const sp = run.splash;
-    box(g, sp.to - sp.from, H.splashTo - COUNTER_Y + (sp.extra ?? 0), 0.012, P.splash, (sp.from + sp.to) / 2, COUNTER_Y + (H.splashTo - COUNTER_Y + (sp.extra ?? 0)) / 2, 0.006, { shadow: false });
+    const sw = sp.to - sp.from, sh = H.splashTo - COUNTER_Y + (sp.extra ?? 0);
+    let splashMat = P.splash;
+    if (P.splash.map && P.splashTile) {
+      // Scale the tile texture to this panel so every tile is square and the
+      // same real-world size on every run.
+      splashMat = P.splash.clone();
+      splashMat.map = P.splash.map.clone();
+      splashMat.map.repeat.set(sw / (P.splashTile * P.splashN), sh / (P.splashTile * P.splashN));
+      splashMat.map.offset.set(0, 0);
+      splashMat.map.needsUpdate = true;
+    }
+    box(g, sw, sh, 0.012, splashMat, (sp.from + sp.to) / 2, COUNTER_Y + sh / 2, 0.006, { shadow: false });
+    // Wall socket plate on the splash, clear of the sink and hob.
+    if (run.socketX !== false) socket(g, P, run.socketX ?? sp.to - 0.2, 1.12);
   }
 
   // Uppers
@@ -576,12 +757,14 @@ function palette(layout, c = {}) {
     sinkIn: M("#8d9196", { roughness: 0.35, metalness: 0.7 }),
     black: M("#1c1d20", { roughness: 0.45 }),
     glassBlack: M("#0d0e10", { roughness: 0.1, metalness: 0.3 }),
-    glass: M("#bfd3dc", { roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.55 }),
+    glass: M("#cfe0e6", { roughness: 0.04, metalness: 0.1, transparent: true, opacity: 0.4, side: THREE.DoubleSide, depthWrite: false }),
     ring: M("#5a5d63", { roughness: 0.4 }),
-    ceramic: M("#f5f4f0", { roughness: 0.35 }),
-    vase: M("#d8cfc3", { roughness: 0.5 }),
-    pot: M("#e9e5df", { roughness: 0.6 }),
-    leaf: M("#4c7a3d", { roughness: 0.8, flatShading: true }),
+    // turned objects are open surfaces, so they render from both sides
+    ceramic: gloss("#f5f4f0", { roughness: 0.25, clearcoat: 0.4, side: THREE.DoubleSide }),
+    vase: M("#d8cfc3", { roughness: 0.5, side: THREE.DoubleSide }),
+    pot: M("#e9e5df", { roughness: 0.6, side: THREE.DoubleSide }),
+    soil: M("#2f2418", { roughness: 1 }),
+    leaf: M("#3f7a3a", { roughness: 0.55, side: THREE.DoubleSide }),
     trunk: M("#6b4b2f"),
     wood: M("#b88a59", { map: woodTex("#c49a6c", [1, 1]), roughness: 0.7 }),
     oak: M("#e3c79c", { map: woodTex("#e4c89e", [1, 1]), roughness: 0.7 }),
@@ -601,28 +784,37 @@ function palette(layout, c = {}) {
     ...common,
     lower: gloss(c.base ?? "#93a6ba"),
     upper: gloss(c.wall ?? "#f4f4f2"),
-    counter: c.counter ? stone(c.counter) : gloss("#ffffff", { map: marbleTex([1.2, 0.4]), roughness: 0.18 }),
-    splash: c.splash ? stone(c.splash, { roughness: 0.35 }) : gloss("#ffffff", { map: marbleTex([1.6, 0.5]), roughness: 0.22, clearcoat: 0.5 }),
-    floor: gloss("#ffffff", { map: marbleTex([1.5, 1.25], 2), roughness: 0.2, clearcoat: 0.6 }),
-    wallMat: M("#eeeeee", { roughness: 0.95 }),
+    counter: c.counter ? stone(c.counter, { map: graniteTex([1.4, 0.5], 23) }) : gloss("#ffffff", { map: marbleTex([1.2, 0.4]), roughness: 0.18 }),
+    // large stone-look square tiles with varied faces and fine grout
+    splash: gloss(c.splash ?? "#ffffff", { map: tileTex("#f2efe9", "#d2cdc4", 6, 0.1, [1, 1]), roughness: 0.4, clearcoat: 0.3 }),
+    splashTile: 0.18, splashN: 6,
+    floor: gloss("#ffffff", { map: terrazzoTex([2.4, 2]), roughness: 0.3, clearcoat: 0.5 }),
+    wallMat: M("#ffffff", { map: plasterTex("#bdb2a5", [3, 3]), roughness: 0.95 }),
+    rug: M("#ffffff", { map: rugTex("#e6e1d8", "#8d9db0"), roughness: 1 }),
   };
   if (layout === "l") return {
     ...common,
     lower: M(c.base ?? "#8b8a86", { roughness: 0.55 }),
     upper: M(c.wall ?? "#8b8a86", { roughness: 0.55 }),
-    counter: stone(c.counter ?? "#cfcdc8", { roughness: 0.4, clearcoat: 0.4 }),
-    splash: M(c.splash ?? "#e3d6c6", { roughness: 0.9 }),
+    counter: stone(c.counter ?? "#cfcdc8", { map: graniteTex([1.6, 0.6], 29, 4200), roughness: 0.3, clearcoat: 0.5 }),
+    // small square marble mosaic, as in the reference
+    splash: gloss(c.splash ?? "#ffffff", { map: tileTex("#f3f1ee", "#d6d3cd", 8, 0.1, [1, 1]), roughness: 0.3, clearcoat: 0.5 }),
+    splashTile: 0.055, splashN: 8,
     floor: M("#ffffff", { map: tileTex("#e2a06c", "#c98a5a", 8, 0.18, [3, 3]), roughness: 0.7 }),
-    wallMat: M("#e8d9c6", { roughness: 0.95 }),
+    rug: M("#ffffff", { map: rugTex("#e9e2d4", "#6f8397"), roughness: 1 }),
+    wallMat: M("#ffffff", { map: plasterTex("#e8d9c6", [3, 3]), roughness: 0.95 }),
   };
   return {
     ...common,
     lower: M(c.base ?? "#5a5754", { roughness: 0.62 }), // super-matte (anti-fingerprint) fronts
     upper: c.wall ? M(c.wall, { roughness: 0.5 }) : M("#b08458", { map: woodTex("#a77a52", [1, 1]), roughness: 0.55 }),
-    counter: stone(c.counter ?? "#d9d5cf", { roughness: 0.3, clearcoat: 0.5 }),
-    splash: c.splash ? M(c.splash, { roughness: 0.8 }) : M("#c4beb7", { map: concreteTex("#c2bcb5", [3, 1]), roughness: 0.9 }),
+    counter: stone(c.counter ?? "#d9d5cf", { map: marbleTex([1.8, 0.6]), roughness: 0.28, clearcoat: 0.5 }),
+    // small square matt tiles with dark grout lines, as in the reference
+    splash: M(c.splash ?? "#ffffff", { map: tileTex("#c8c2ba", "#6b6560", 8, 0.1, [1, 1]), roughness: 0.65 }),
+    splashTile: 0.075, splashN: 8,
     floor: M("#ffffff", { map: tileTex("#d7c9b8", "#c7b8a6", 4, 0.06, [3, 3]), roughness: 0.55 }),
     wallMat: M("#6a6662", { map: concreteTex("#6d6964", [2, 2]), roughness: 0.95 }),
+    rug: M("#ffffff", { map: rugTex("#cdbfae", "#8a7664"), roughness: 1 }),
   };
 }
 
@@ -631,7 +823,7 @@ function palette(layout, c = {}) {
 // eye level (wider lens), where the ceiling and downlights appear.
 const VIEWS = {
   u: {
-    W: 3.6, D: 3.0, az: [-1.1, 0.6],
+    W: 3.6, D: 3.0, az: [-0.45, 0.6],
     overview: { cam: [1.4, 4.4, 6.6], target: [1.8, 0.8, 1.3], fov: 36 },
     front: { cam: [1.9, 1.6, 2.95], target: [1.9, 1.25, 0], fov: 60 },
     detail: { cam: [1.6, 1.55, 1.9], target: [3.3, 1.0, 0.9], fov: 50 },
@@ -657,10 +849,17 @@ function buildScene(layout, colors) {
 
   // Floor + walls
   box(g, v.W, 0.06, v.D, P.floor, v.W / 2, -0.03, v.D / 2);
-  const walls = { u: ["back", "right"], l: ["back", "left"], straight: ["back", "left"] }[layout];
+  const walls = { u: ["back", "left", "right"], l: ["back", "left"], straight: ["back"] }[layout];
   if (walls.includes("back")) box(g, v.W, H.wall, 0.08, P.wallMat, v.W / 2, H.wall / 2, -0.04);
   if (walls.includes("left")) box(g, 0.08, H.wall, v.D, P.wallMat, -0.04, H.wall / 2, v.D / 2);
   if (walls.includes("right")) box(g, 0.08, H.wall, v.D, P.wallMat, v.W + 0.04, H.wall / 2, v.D / 2);
+
+  // Skirting boards along each wall, so the wall meets the floor properly
+  // wherever no cabinet stands in front of it.
+  const skirt = M({ u: "#ffffff", l: "#f4eee5", straight: "#2c2a28" }[layout], { roughness: 0.5 });
+  if (walls.includes("back")) box(g, v.W, 0.1, 0.016, skirt, v.W / 2, 0.05, 0.008);
+  if (walls.includes("left")) box(g, 0.016, 0.1, v.D, skirt, 0.008, 0.05, v.D / 2);
+  if (walls.includes("right")) box(g, 0.016, 0.1, v.D, skirt, v.W - 0.008, 0.05, v.D / 2);
 
   const ceiling = new THREE.Group();
   ceiling.name = "ceiling";
@@ -708,8 +907,12 @@ function buildScene(layout, colors) {
         kettle(rg, P, 1.5, COUNTER_Y, 0.3);
         bottles(rg, P, 0.2, COUNTER_Y, 0.12);
         plates(rg, P, 2.1, H.plinth + 0.27, 0.3, 4);
+        pot(rg, P, 0.73, COUNTER_Y + 0.05, 0.25, 0.095);
+        bottles(rg, P, 1.95, COUNTER_Y, 0.1);
       },
     });
+    rug(g, P.rug, 2.1, 1.35, 1.7, 0.85);
+    for (const z of [0.9, 1.9]) pendant(g, P, 0.3, 1.75, z);
     // Peninsula: fronts and the double-bowl sink face into the kitchen like
     // the other two runs; the outside is a stone back panel with a
     // waterfall end, and an open shelf closes the front end.
@@ -732,7 +935,7 @@ function buildScene(layout, colors) {
     // Left wall: hob over oven, drawers; uppers with a long lift-up unit and
     // open corner shelving with a vase on top.
     add("left", 0.0, 2.2, {
-      style: "shaker", upperStyle: "slab",
+      style: "shaker", upperStyle: "slab", socketX: 1.25,
       base: [{ w: 0.5, kind: "doors" }, { w: 0.6, kind: "hob", oven: true }, { w: 0.5, kind: "doors" }, { w: 0.6, kind: "corner" }],
       splash: { from: 0, to: 2.2 },
       upper: [{ w: 1.0, kind: "lift" }, { w: 0.5, kind: "wall" }, { w: 0.7, kind: "cornerOpen", mat: P.upper }],
@@ -746,11 +949,13 @@ function buildScene(layout, colors) {
         jar(rg, P, 1.4, COUNTER_Y, 0.15, 0.16); jar(rg, P, 1.5, COUNTER_Y, 0.15, 0.12);
         microwave(rg, P, 0.25, COUNTER_Y, 0.3);
         kettle(rg, P, 1.3, COUNTER_Y, 0.38);
+        pot(rg, P, 0.97, COUNTER_Y + 0.05, 0.25, 0.1);
       },
     });
+    rug(g, P.rug, 2.2, 1.35, 1.7, 0.85);
     // Back wall: long run, sink under the window, no uppers.
     add("back", 0.6, 3.6, {
-      style: "shaker",
+      style: "shaker", splash: { from: 0, to: 3.0 }, socketX: 0.5,
       base: [{ w: 0.6, kind: "drawers" }, { w: 0.6, kind: "doors" }, { w: 0.8, kind: "sink" }, { w: 0.5, kind: "doors" }, { w: 0.5, kind: "doors" }],
       extras: (rg) => {
         // Bread bowl at the end of the counter.
@@ -766,6 +971,11 @@ function buildScene(layout, colors) {
     box(g, ww, wh, 0.02, M("#dff0fb", { emissive: "#cfe8fa", emissiveIntensity: 0.6, roughness: 0.1 }), wx, wy + wh / 2, 0.005, { shadow: false });
     for (const [fx, fy, fw, fh] of [[wx, wy, ww + 0.08, 0.05], [wx, wy + wh, ww + 0.08, 0.05], [wx - ww / 2, wy + wh / 2, 0.05, wh], [wx + ww / 2, wy + wh / 2, 0.05, wh], [wx, wy + wh / 2, 0.035, wh], [wx, wy + wh * 0.62, ww, 0.03]])
       box(g, fw, fh, 0.06, M("#ffffff", { roughness: 0.4 }), fx, fy, 0.03);
+    // Sill, half-drawn roller blind and a pot plant on the sill.
+    box(g, ww + 0.16, 0.03, 0.14, M("#ffffff", { roughness: 0.4 }), wx, wy - 0.015, 0.07);
+    box(g, ww - 0.05, 0.3, 0.012, M("#f3ede2", { roughness: 0.95 }), wx, wy + wh - 0.15, 0.045);
+    box(g, ww - 0.05, 0.012, 0.016, M("#cfc6b6"), wx, wy + wh - 0.306, 0.045);
+    plant(g, P, wx + 0.4, wy, 0.08, 0.9);
     for (const [i, y] of [1.3, 1.62, 1.94].entries()) {
       box(g, 0.5, 0.03, 0.2, P.wood, 3.25, y, 0.1);
       jar(g, P, 3.12, y + 0.015, 0.1, 0.1 + i * 0.02);
@@ -778,7 +988,7 @@ function buildScene(layout, colors) {
     // soffit with a warm LED cove; then the handle-less base run.
     const tallMat = M("#3b3a3a", { roughness: 0.5 });
     add("back", 0.0, 4.4, {
-      style: "groove", hood: "box", underLight: false,
+      style: "groove", hood: "box", underLight: false, socketX: 2.35,
       base: [
         { w: 0.6, kind: "tallOven", mat: tallMat, h: 2.2, soffit: true },
         { w: 0.6, kind: "fridge", mat: M("#2b2b2c", { roughness: 0.25, metalness: 0.3 }), h: 2.2, soffit: true, dispenser: true },
@@ -811,11 +1021,12 @@ function buildScene(layout, colors) {
         bottles(rg, P, 3.3, COUNTER_Y, 0.1);
         plant(rg, P, 3.95, COUNTER_Y, 0.25, 1.2);
         plant(rg, P, 4.2, COUNTER_Y, 0.2, 0.9);
+        pot(rg, P, 2.68, COUNTER_Y + 0.05, 0.25, 0.1);
       },
     });
-    // Plant shelf on the dark left wall.
-    box(g, 0.25, 0.03, 0.5, M("#2a2928"), 0.13, 1.55, 1.1);
-    plant(g, P, 0.13, 1.565, 1.1, 1.5);
+    // A single-wall kitchen has just the one wall, so a plant stands on
+    // the floor beside the fridge column instead of on a side-wall shelf.
+    tallPlant(g, P, 0.3, 1.1);
     // Dining table: walnut top, black steel frame, walnut slab leg; bar stool.
     const T = { x: 3.4, z: 2.15, w: 1.6, d: 0.75, h: 0.92 };
     box(g, T.w, 0.045, T.d, P.walnut, T.x, T.h, T.z);
@@ -824,6 +1035,8 @@ function buildScene(layout, colors) {
       box(g, 0.03, T.h - 0.02, 0.03, P.black, T.x - T.w / 2 + 0.05, (T.h - 0.02) / 2, T.z + dz * (T.d / 2 - 0.04));
       box(g, T.w - 0.1, 0.03, 0.03, P.black, T.x, T.h - 0.04, T.z + dz * (T.d / 2 - 0.04));
     }
+    rug(g, P.rug, T.x - 0.1, T.z + 0.1, 2.4, 1.3);
+    for (const dx of [-0.45, 0.45]) pendant(g, P, T.x + dx, 1.8, T.z);
     fruitBowl(g, P, T.x - 0.3, T.h + 0.022, T.z);
     cyl(g, 0.17, 0.15, 0.05, P.black, T.x + 0.2, 0.72, T.z + 0.6, 24);
     for (let i = 0; i < 4; i++) {
@@ -838,7 +1051,7 @@ function buildScene(layout, colors) {
 /* ------------------------------------------------------------------ */
 /* React component                                                     */
 /* ------------------------------------------------------------------ */
-export default function Kitchen3D({ layout = "l", colors = {}, shot = "overview" }) {
+export default function Kitchen3D({ layout = "u", colors = {}, shot = "overview" }) {
   const hostRef = useRef(null);
   const stateRef = useRef(null);
 
@@ -871,6 +1084,14 @@ export default function Kitchen3D({ layout = "l", colors = {}, shot = "overview"
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.enablePan = false;
+    // Wheel zoom stays off until the visitor clicks into the model, so
+    // scrolling the page past it never hijacks the camera and zooms in.
+    controls.enableZoom = false;
+    const el = renderer.domElement;
+    const zoomOn = () => { controls.enableZoom = true; };
+    const zoomOff = () => { controls.enableZoom = false; };
+    el.addEventListener("pointerdown", zoomOn);
+    el.addEventListener("pointerleave", zoomOff);
     controls.minDistance = 1.2;
     controls.maxDistance = 11;
     controls.minPolarAngle = 0.3;
@@ -895,11 +1116,14 @@ export default function Kitchen3D({ layout = "l", colors = {}, shot = "overview"
     let composer = null;
     let gtao = null;
     if (useAO) {
-      composer = new EffectComposer(renderer);
+      // Multisampled HDR target: without it the post-processing chain loses
+      // the renderer's antialiasing and edges turn jagged.
+      const rt = new THREE.WebGLRenderTarget(host.clientWidth, host.clientHeight, { type: THREE.HalfFloatType, samples: 2 });
+      composer = new EffectComposer(renderer, rt);
       composer.addPass(new RenderPass(scene, camera));
       gtao = new GTAOPass(scene, camera, host.clientWidth, host.clientHeight);
-      gtao.updateGtaoMaterial({ radius: 0.3, distanceFallOff: 1, thickness: 1, scale: 1, samples: 24 });
-      gtao.blendIntensity = 0.9;
+      gtao.updateGtaoMaterial({ radius: 0.35, distanceFallOff: 1, thickness: 1, scale: 1, samples: 16 });
+      gtao.blendIntensity = 1;
       composer.addPass(gtao);
       composer.addPass(new OutputPass());
     }
@@ -915,7 +1139,7 @@ export default function Kitchen3D({ layout = "l", colors = {}, shot = "overview"
     const resize = () => {
       const { clientWidth: w, clientHeight: h } = host;
       renderer.setSize(w, h, false);
-      composer?.setSize(w, h);
+      if (composer) { composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(w, h); }
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
     };
@@ -991,6 +1215,8 @@ export default function Kitchen3D({ layout = "l", colors = {}, shot = "overview"
       ro.disconnect();
       io.disconnect();
       controls.removeEventListener("start", onStart);
+      el.removeEventListener("pointerdown", zoomOn);
+      el.removeEventListener("pointerleave", zoomOff);
       controls.dispose();
       disposeTree(scene);
       for (const g of geoCache.values()) g.dispose();
@@ -1010,7 +1236,7 @@ export default function Kitchen3D({ layout = "l", colors = {}, shot = "overview"
   // A new layout cuts straight to its overview; a new shot glides there.
   const lastLayout = useRef(null);
   useEffect(() => {
-    const v = VIEWS[layout] ?? VIEWS.l;
+    const v = VIEWS[layout] ?? VIEWS.u;
     const layoutChanged = lastLayout.current !== layout;
     lastLayout.current = layout;
     stateRef.current?.setView(v, layoutChanged ? "overview" : shot, layoutChanged);
@@ -1021,7 +1247,7 @@ export default function Kitchen3D({ layout = "l", colors = {}, shot = "overview"
     if (!s) return;
     disposeTree(s.kitchen);
     s.kitchen.clear();
-    const key = VIEWS[layout] ? layout : "l";
+    const key = VIEWS[layout] ? layout : "u";
     const built = buildScene(key, JSON.parse(colorsKey));
     s.kitchen.add(built);
     s.ceiling = built.getObjectByName("ceiling");
@@ -1045,3 +1271,7 @@ function disposeTree(root) {
     if (o.geometry && !o.geometry.userData.cacheKey) o.geometry.dispose();
   });
 }
+
+// Shared with Wall3D (the Wall Decor room), which uses the same procedural
+// textures and mesh helpers.
+export { canvasTex, rng, M, gloss, box, cyl, sphere, lathe, plant, tallPlant, vase, books, woodTex, plasterTex, rugTex, disposeTree, geoCache };

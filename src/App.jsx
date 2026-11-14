@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation, useNavigationType } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigationType } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 
@@ -14,7 +14,6 @@ import ScrollProgress from "./components/ScrollProgress";
 
 import Home from "./pages/Home";
 import ServicePage from "./pages/ServicePage";
-import Collection from "./pages/Collection";
 import Gallery from "./pages/Gallery";
 import ProjectPage from "./pages/ProjectPage";
 import About from "./pages/About";
@@ -61,6 +60,10 @@ const page = {
 export default function App() {
   const location = useLocation();
 
+  // The old standalone collection page now lives on the Furniture page. Redirect
+  // here, outside the keyed page transition, which would swallow a route-level one.
+  if (location.pathname === "/collection") return <Navigate to="/services/furniture" replace />;
+
   return (
     <>
       <a className="hg-skip" href="#main">Skip to main content</a>
@@ -75,7 +78,6 @@ export default function App() {
             <Routes location={location}>
               <Route path="/" element={<Home />} />
               <Route path="/services/:slug" element={<ServicePage />} />
-              <Route path="/collection" element={<Collection />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/projects/:slug" element={<ProjectPage />} />
               <Route path="/about" element={<About />} />

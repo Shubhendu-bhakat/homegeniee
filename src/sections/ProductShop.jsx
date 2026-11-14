@@ -1,16 +1,13 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { products, productCategories } from "../data/products";
 import { useShop } from "../context/ShopContext";
 import ProductCard from "../components/ProductCard";
-import Reveal from "../components/Reveal";
-import TrustStrip from "../sections/TrustStrip";
-import HeroSlider from "../components/HeroSlider";
 
 const FILTERS = [{ id: "all", label: "All" }, ...productCategories];
 
-export default function Collection() {
+/** HomeGeniee Collection product listing; rendered directly on the Furniture page. */
+export default function ProductShop() {
   const [cat, setCat] = useState("all");
   const [view, setView] = useState("all"); // all | wishlist | compare
   const { wishlist, compare, clearCompare } = useShop();
@@ -24,34 +21,7 @@ export default function Collection() {
   }, [cat, view, wishlist, compare]);
 
   return (
-    <>
-      <header className="hg-phead">
-        <div className="hg-phead__media" aria-hidden="true">
-          <HeroSlider slides={products.slice(0, 6)} />
-        </div>
-        <div className="hg-shell hg-phead__copy">
-          <Reveal as="nav" className="hg-crumbs hg-mono" aria-label="Breadcrumb">
-            <Link to="/">Home</Link> <span aria-hidden="true">/</span>{" "}
-            <Link to="/services/furniture">Furniture</Link> <span aria-hidden="true">/</span> <span>Collection</span>
-          </Reveal>
-          <Reveal delay={0.06}><span className="hg-eyebrow">Transform your home with style</span></Reveal>
-          <Reveal delay={0.12}><h1 className="hg-phead__title">Home Geniee Collection</h1></Reveal>
-          <Reveal delay={0.18}>
-            <p className="hg-lede">
-              Discover a curated collection of stylish and functional home essentials. From modern designs to
-              timeless classics, our selection enhances every corner of your home with elegance, comfort, and
-              smart organization.
-            </p>
-          </Reveal>
-          <Reveal delay={0.24}>
-            <p className="hg-phead__note hg-mono">
-              Pre-order showcase · no online checkout · every enquiry goes to WhatsApp or phone
-            </p>
-          </Reveal>
-        </div>
-      </header>
-
-      <section className="hg-section hg-section--light hg-shop">
+    <section className="hg-section hg-section--light hg-shop">
         <div className="hg-shell">
           <div className="hg-shop__bar">
             <div className="hg-tabs hg-tabs--wrap" role="tablist" aria-label="Filter by category">
@@ -68,7 +38,7 @@ export default function Collection() {
                 </button>
               ))}
             </div>
-
+  
             <div className="hg-shop__views">
               <button
                 className={`hg-chip hg-mono ${view === "all" ? "is-on" : ""}`}
@@ -96,11 +66,11 @@ export default function Collection() {
               )}
             </div>
           </div>
-
+  
           <p className="hg-shop__count hg-mono" aria-live="polite">
             {list.length} {list.length === 1 ? "design" : "designs"}
           </p>
-
+  
           {list.length === 0 ? (
             <div className="hg-empty">
               <h2 className="hg-h3">Nothing here yet</h2>
@@ -131,8 +101,5 @@ export default function Collection() {
           )}
         </div>
       </section>
-
-      <TrustStrip />
-    </>
   );
 }
