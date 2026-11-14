@@ -12,12 +12,19 @@ import { estimators } from "../data/estimators";
  */
 const fmtLakh = (n) => (n >= 100000 ? `₹${(n / 100000).toFixed(2).replace(/\.00$/, "")}L` : `₹${Math.round(n).toLocaleString("en-IN")}`);
 
+// "Premium (Acrylic / Membrane)" -> bold title plus a quieter second line.
+const splitLabel = (label) => {
+  const m = label.match(/^(.*?)\s*\((.*)\)$/);
+  return m ? [m[1], m[2]] : [label, null];
+};
+
 export default function CostCalculator({ service = "interior-design" }) {
   const cfg = estimators[service] ?? estimators["interior-design"];
   const { openModal } = useUI();
   const { isSignedIn } = useAuth();
+  const [layout, setLayout] = useState(cfg.layout?.initial ?? 0);
   const [size, setSize] = useState(cfg.size.initial);
-  const [scope, setScope] = useState(cfg.scope.initial);
+  const [scope, setScope] = useState(cfg.scope?.initial ?? 0);
   const [tier, setTier] = useState(cfg.tier.initial);
   const [result, setResult] = useState(null);
 
@@ -26,21 +33,29 @@ export default function CostCalculator({ service = "interior-design" }) {
     const onPreset = (e) => {
       const i = e.detail?.size;
       if (Number.isInteger(i) && cfg.size.options[i]) setSize(i);
+      const l = e.detail?.layout;
+      if (Number.isInteger(l) && cfg.layout?.options[l]) setLayout(l);
+      const t = e.detail?.tier;
+      if (Number.isInteger(t) && cfg.tier.options[t]) setTier(t);
     };
     window.addEventListener("hg:calc-preset", onPreset);
     return () => window.removeEventListener("hg:calc-preset", onPreset);
   }, [cfg]);
 
   const calculate = () => {
-    const base = cfg.size.options[size].area * cfg.scope.options[scope].mult * cfg.tier.options[tier].rate;
+    // Kitchens price by running feet, which depend on layout and size together.
+    const units = cfg.layout ? cfg.layout.feet[layout][size] : cfg.size.options[size].area;
+    const base = units * (cfg.scope ? cfg.scope.options[scope].mult : 1) * cfg.tier.options[tier].rate;
     setResult({ low: base * 0.9, high: base * 1.15, base });
   };
 
   const questions = [
+    cfg.layout && [cfg.layout, layout, setLayout],
     [cfg.size, size, setSize],
-    [cfg.scope, scope, setScope],
+    cfg.scope && [cfg.scope, scope, setScope],
     [cfg.tier, tier, setTier],
-  ];
+  ].filter(Boolean);
+  const count = ["zero", "one", "two", "three", "four", "five"][questions.length];
 
   return (
     <section className="hg-section hg-calc" id="calculate-cost">
@@ -48,7 +63,7 @@ export default function CostCalculator({ service = "interior-design" }) {
         <div className="hg-heading">
           <span className="hg-eyebrow">New — instant estimate</span>
           <h2 className="hg-h2">What would your {cfg.subject} cost?</h2>
-          <p className="hg-lede">Answer three quick questions for a real starting range — no obligation, no site visit needed yet.</p>
+          <p className="hg-lede">Answer {count} quick questions for a real starting range — no obligation, no site visit needed yet.</p>
         </div>
 
         <div className="hg-calc__card">
@@ -56,13 +71,19 @@ export default function CostCalculator({ service = "interior-design" }) {
             <h3>{cfg.formTitle}</h3>
             <p className="hg-calc__hint">Takes less than 30 seconds</p>
 
-            {questions.map(([q, value, set]) => (
-              <div className="hg-field" key={q.label}>
-                <label>{q.label}</label>
+            {questions.map(([q, value, set], n) => (
+              <div className="hg-field hg-calc__q" key={q.label} role="radiogroup" aria-label={q.label}>
+                <label><span className="hg-calc__step">{n + 1}</span>{q.label}</label>
                 <div className="hg-calc__seg">
-                  {q.options.map((o, i) => (
-                    <button key={o.label} type="button" className={i === value ? "is-on" : ""} onClick={() => set(i)}>{o.label}</button>
-                  ))}
+                  {q.options.map((o, i) => {
+                    const [title, sub] = splitLabel(o.label);
+                    return (
+                      <button key={o.label} type="button" role="radio" aria-checked={i === value} className={i === value ? "is-on" : ""} onClick={() => set(i)}>
+                        <span className="hg-calc__optTitle">{title}</span>
+                        {sub && <span className="hg-calc__optSub">{sub}</span>}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -73,12 +94,12 @@ export default function CostCalculator({ service = "interior-design" }) {
           <div className="hg-calc__result">
             {!result ? (
               <div className="hg-calc__empty">
-                <span aria-hidden="true">🏠</span>
+                <svg className="hg-calc__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 23 24 8l18 15M11 20v20h26V20M20 40V28h8v12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 <p>Your estimated range will appear here once you calculate.</p>
               </div>
             ) : !isSignedIn ? (
               <div className="hg-calc__lock hg-calc__lock--full">
-                <span aria-hidden="true">🔒</span>
+                <svg className="hg-calc__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="21" width="28" height="19" rx="4" fill="none" stroke="currentColor" strokeWidth="2.2" /><path d="M16 21v-5a8 8 0 0 1 16 0v5M24 28v6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
                 <p>Your estimate is ready. Sign in with your phone number to view the cost — no numbers are shown until then.</p>
                 <button className="hg-btn hg-calc__signin" onClick={() => openModal("signin")}>Please Sign in to view Cost</button>
               </div>
