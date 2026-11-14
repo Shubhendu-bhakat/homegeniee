@@ -103,7 +103,8 @@ export const projects = [
 // service pages read them through `projectsFor`.
 //   - Modular kitchen: design renders from homegeniee.com/modular-kitchen.
 //     Many of those are one camera shot recoloured; each shot is used once.
-//   - Architecture & civil: images from homegeniee.com's architecture page.
+//   - Architecture & civil: facade and elevation images from homegeniee.com's
+//     facade-elevational page (reference images, not yet real project photos).
 //   - Green scape: homegeniee.com has no photos for it yet, so these are
 //     Unsplash stock placeholders until real project photos are supplied.
 const K = "https://homegeniee.com/wp-content/uploads";
@@ -117,13 +118,22 @@ const kitchen = (slug, title, scope, files, items) => ({
 });
 
 const civil = [
-  ["architectural-survey", "Architectural Survey", "Site survey", `${K}/2024/11/Survey-e1730485571768.png`, ["Total-station survey of plot boundaries and levels.", "Survey drawing prepared as the base for design."]],
-  ["civil-construction-drawing", "Civil Construction Drawing", "Architectural drawing", `${K}/2024/07/1003664_OIU9I70.jpg`, ["Floor plans, elevations and sections drawn to scale.", "Drawing set prepared for approval and construction."]],
-  ["estimation-boq", "Estimation and BOQ", "Estimation", `${K}/2024/11/estimation-e1750949293662.png`, ["Itemised bill of quantities from the approved drawings.", "Material and labour estimate before work starts."]],
-  ["lbs-certification", "LBS Certification", "Certification", `${K}/2024/11/LBS-e1750949346462.png`, ["Licensed building surveyor drawings and certification.", "Paperwork prepared for municipal submission."]],
-  ["soil-testing", "Soil Testing", "Soil test", `${K}/2024/11/Soil-test.png`, ["On-site soil sampling for bearing capacity.", "Report used to design the foundation."]],
-  ["civil-consultancy", "Civil Consultancy", "Consultancy", `${K}/2024/11/consultation-e1750949594633.png`, ["On-site consultation with an experienced civil engineer.", "Advice on structure, materials and sequencing."]],
-  ["civil-contracting", "Civil Contracting", "Construction", `${K}/2025/05/person-doing-their-construction-job-scaled.jpg`, ["Construction executed against the approved drawings.", "Site supervision through to handover."]],
+  ["jali-screen-residence", "Residence with Jali Screen", "Residential elevation", "/img/projects/architecture/jali-screen-residence.jpg", ["Contemporary house elevation with a folding perforated screen on the balcony.", "Terrace garden and louvred pergola on the roof level."]],
+  ["modern-villa-elevation", "Modern Villa Elevation", "Residential elevation", "/img/projects/architecture/modern-villa-elevation.jpg", ["Clean three-storey elevation in stone-grey cladding and dark panels.", "Recessed windows and concealed lighting for evening presence."]],
+  ["wooden-acp-facade", "Wooden ACP Facade House", "Facade cladding", "/img/projects/architecture/wooden-acp-facade.jpg", ["Wood-finish ACP cladding wrapped around the upper floor.", "Glass balustrade and full-height glazing at ground level."]],
+  ["glass-panel-facade", "Glass and Panel Facade", "Commercial facade", "/img/projects/architecture/glass-panel-facade.jpg", ["Large-format glazing broken up by dark composite panels.", "Sloped canopy edge detailed to shed water cleanly."]],
+  ["perforated-screen-facade", "Perforated Screen Facade", "Facade screen", "/img/projects/architecture/perforated-screen-facade.jpg", ["Laser-cut metal screen that filters light and adds privacy.", "Paired with vertical battens in a dark finish."]],
+  ["louvre-facade", "Louvre Facade", "Facade louvres", "/img/projects/architecture/louvre-facade.jpg", ["Vertical louvres that shade the glazing and set a rhythm across the front.", "Warm interior light shows through at night."]],
+];
+
+const wall = [
+  ["textured-feature-wall", "Textured Feature Wall", "Wall paint + texture", "1514942456527-c0bc52b69013", ["Texture finish on the main living-room wall.", "Colour matched to the sofa and curtains."]],
+  ["hand-painted-mural", "Hand-Painted Mural", "Wall mural / art painting", "1724131498859-197e92aefb4b", ["Mural scaled to the full height of the wall.", "Painted in place, sealed for easy cleaning."]],
+  ["custom-motif-wall", "Custom Motif Wall", "Customised wall painting", "1633614027197-44f01c3ba7c7", ["Motif and colourway agreed before painting.", "Clean edges against ceiling and skirting."]],
+  ["printed-wallpaper-bedroom", "Printed Wallpaper Bedroom", "Customised wallpaper", "1644180892282-038d799663dd", ["Wallpaper printed to the exact wall dimensions.", "Seam-matched pattern behind the bed."]],
+  ["3d-relief-wall", "3D Relief Wall", "3D wallpaper", "1491183672482-d0af0e44929d", ["Depth-effect print that adds relief to a flat wall.", "No loss of floor area."]],
+  ["wood-panel-lounge", "Wood Panel Lounge", "Wood / plywood panel", "1543751416-705d3e34d02a", ["Veneer panelling across the TV wall.", "Warm finish that hides wall unevenness."]],
+  ["louver-entry-wall", "Louver Entry Wall", "Louver panel", "1675528030748-d463ab87e8d5", ["Vertical slats that add rhythm to the entry.", "Hides the electrical board behind the panel."]],
 ];
 
 const green = [
@@ -169,6 +179,10 @@ export const serviceProjects = [
   ...civil.map(([slug, title, scope, image, items]) => ({
     slug, title, scope, image, service: "architectural-civil",
     details: { heading: "Scope of work", items },
+  })),
+  ...wall.map(([slug, title, scope, id, items]) => ({
+    slug, title, scope, image: UNS(id), service: "wall-decor",
+    details: { heading: "Project highlights", items },
   })),
   ...green.map(([slug, title, scope, id, items]) => ({
     slug, title, scope, image: UNS(id), service: "green-scape",

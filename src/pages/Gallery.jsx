@@ -4,7 +4,8 @@ import { projects, youtubeId } from "../data/projects";
 import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
 import SectionHeading from "../components/SectionHeading";
 import TrustStrip from "../sections/TrustStrip";
-import HeroSlider from "../components/HeroSlider";
+import HeroVideoBackground from "../components/HeroVideoBackground";
+import { pageClips } from "../data/heroClips";
 import { useUI } from "../context/UIContext";
 
 const videoProjects = projects.filter((p) => p.video);
@@ -16,7 +17,7 @@ export default function Gallery() {
     <>
       <header className="hg-phead">
         <div className="hg-phead__media" aria-hidden="true">
-          <HeroSlider slides={projects} />
+          <HeroVideoBackground clips={pageClips.gallery} />
         </div>
         <div className="hg-shell hg-phead__copy">
           <Reveal delay={0.06}><span className="hg-eyebrow">Connect people</span></Reveal>

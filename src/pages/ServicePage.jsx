@@ -1,19 +1,20 @@
 import { useEffect } from "react";
 import { useParams, Link, Navigate, useLocation } from "react-router-dom";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { services, getService, FEATURED_SLUGS } from "../data/services";
+import { getService, FEATURED_SLUGS } from "../data/services";
 import { projectsFor } from "../data/projects";
 import { site } from "../data/site";
 import { useUI } from "../context/UIContext";
 import Reveal, { RevealGroup, RevealItem } from "../components/Reveal";
 import SectionHeading from "../components/SectionHeading";
-import LouverDivider from "../components/LouverDivider";
-import HeroSlider from "../components/HeroSlider";
+import { serviceClips } from "../data/heroClips";
 import HeroVideoBackground from "../components/HeroVideoBackground";
 import CostCalculator from "../components/CostCalculator";
 import ProjectCarousel from "../components/ProjectCarousel";
 import KitchenLayouts from "../components/KitchenLayouts";
+import WallTreatments from "../components/WallTreatments";
 import TrustStrip from "../sections/TrustStrip";
+import ProductShop from "../sections/ProductShop";
 import useIsDesktop from "../hooks/useIsDesktop";
 import useHeroExit from "../hooks/useHeroExit";
 
@@ -39,7 +40,9 @@ export default function ServicePage() {
 
   useEffect(() => {
     if (!hash) return;
-    const el = document.querySelector(hash);
+    // getElementById, not querySelector: a hash like "#3d" starts with a digit,
+    // which is a valid URL fragment but an invalid CSS selector and would throw.
+    const el = document.getElementById(decodeURIComponent(hash.slice(1)));
     if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
   }, [hash, slug]);
 
@@ -47,19 +50,11 @@ export default function ServicePage() {
 
   // The four headline verticals share the interior design page layout:
   // video hero, project carousel, cost calculator and sub-module cards.
-  const featured = FEATURED_SLUGS.includes(slug);
-  const heroClip = slug === "interior-design"
-    ? { src: "/videos/hero-2.mp4", poster: "/videos/hero-2-poster.jpg" }
-    : service.heroVideo
-      ? { src: service.heroVideo, poster: service.heroPoster }
-      : service.video && { src: service.video, poster: service.videoPoster };
+  const featured = FEATURED_SLUGS.includes(slug) || slug === "wall-decor";
+  const heroClips = serviceClips[slug] ?? serviceClips["interior-design"];
   const pageProjects = projectsFor(slug);
   const subject = service.short ?? service.title;
 
-  const others = services.filter((s) => s.slug !== slug).slice(0, 6);
-  // This service's own photo leads, then three others slide through behind
-  // it — the same carousel the homepage runs, not a single static frame.
-  const slides = [service, ...others.slice(0, 3)];
 
   return (
     <>
@@ -68,11 +63,7 @@ export default function ServicePage() {
       <motion.header className="hg-phead hg-phead--hero" ref={heroRef} style={heroStyle}>
         <motion.div className="hg-hero-dim" style={dimStyle} aria-hidden="true" />
         <motion.div className="hg-phead__media" style={reduce ? undefined : { y: sceneY }} aria-hidden="true">
-          {featured && heroClip ? (
-            <HeroVideoBackground clips={[heroClip]} />
-          ) : (
-            <HeroSlider slides={slides} />
-          )}
+          <HeroVideoBackground clips={heroClips} key={slug} />
         </motion.div>
         <motion.div className="hg-shell hg-phead__copy" style={copyStyle}>
           <Reveal as="nav" className="hg-crumbs hg-mono" aria-label="Breadcrumb">
@@ -107,6 +98,10 @@ export default function ServicePage() {
       <div className="hg-sheetOver">
 
       {slug === "modular-kitchen" && <KitchenLayouts />}
+
+      {slug === "wall-decor" && <WallTreatments />}
+
+      {slug === "furniture" && <ProductShop />}
 
       {featured && pageProjects.length > 0 && (
         <section className="hg-section hg-projects" id="service-projects" aria-labelledby="hg-service-projects-title">
@@ -203,34 +198,6 @@ export default function ServicePage() {
                   ))}
                 </RevealGroup>
               )}
-            </div>
-          </section>
-        </>
-      )}
-
-      {!featured && slug !== "wall-decor" && (
-        <>
-          <LouverDivider label="More services" />
-
-          <section className="hg-section hg-related">
-            <div className="hg-shell">
-              <p className="hg-sheet">Recent Interior Transformations</p>
-              <RevealGroup className="hg-related__grid" stagger={0.05}>
-                {others.map((o) => (
-                  <RevealItem key={o.slug}>
-                    <Link to={o.href ?? `/services/${o.slug}`} className="hg-related__card">
-                      <div className="hg-related__media">
-                        <img src={o.image} alt="" loading="lazy" decoding="async" />
-                      </div>
-                      <div className="hg-related__body">
-                        <span className="hg-eyebrow">{o.eyebrow}</span>
-                        <h3 className="hg-related__title">{o.title}</h3>
-                        <span className="hg-mono hg-related__more">View →</span>
-                      </div>
-                    </Link>
-                  </RevealItem>
-                ))}
-              </RevealGroup>
             </div>
           </section>
         </>

@@ -7,53 +7,45 @@
 }
 
 /* ===== Header ============================================== */
-/* A navy bar, not the usual white-on-scroll — the one place the site commits
-   to its darkest brand colour permanently, so it reads as a fixture rather
-   than a thing that appears. Tokens are re-pointed inside the block, same
-   technique as the footer, so every child rule already written in --fg /
-   --accent flips to the light-on-navy pairing without a second copy of the
-   nav styles. */
+/* Off-white frosted glass with a faint azure undertone. The old blue/navy bar blended into the logo's own
+   blues; a light, translucent bar lets the mark (navy "H", azure "GENIEE",
+   gold lamp) sit on a neutral ground while the page's hero or content shows
+   softly through. Colours come straight from the site tokens: ivory canvas,
+   azure hairlines, navy text. */
 .hg-header {
   position: fixed; inset: 0 0 auto 0; z-index: 100;
-  /* Brand blues, not near-black — the old rgba(4,34,59,…) sat so close to
-     the logo's own darkest navy (the "H") that the letter nearly vanished
-     into it. The gradient runs lightest exactly where the logo sits (far
-     left) and deepens toward the nav/CTA side. The logo-side stop is kept
-     near-opaque (not the glassy 0.5 it was) specifically so a dark frame
-     of hero video behind the transparent header can't blend back into it —
-     the rest of the bar can stay lighter/glassier since nothing there has
-     the same contrast requirement. */
-  background: linear-gradient(100deg, rgba(0, 132, 218, 0.92) 0%, rgba(0, 89, 154, 0.85) 26%, rgba(0, 61, 112, 0.88) 60%, rgba(0, 61, 112, 0.88) 100%);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: background var(--dur) var(--ease-out), backdrop-filter var(--dur), border-color var(--dur),
-              box-shadow var(--dur) var(--ease-out);
-  --fg: #F3F8FD;
-  --fg-muted: #B9CEE2;
-  --fg-faint: #8FACC6;
-  --accent-strong: var(--gold);
-  --line: rgba(255, 255, 255, 0.18);
-  --line-solid: rgba(255, 255, 255, 0.16);
-  --canvas-2: rgba(255, 255, 255, 0.08);
-  --surface: #0A3D68;
   color: var(--fg);
 }
-.hg-header.is-condensed {
-  background: linear-gradient(100deg, var(--accent-bright) 0%, var(--accent-soft) 22%, var(--navy) 55%);
-  border-bottom-color: rgba(255, 255, 255, 0.14);
-  box-shadow: 0 12px 30px -18px rgba(4, 34, 59, 0.6);
+/* The glass lives on a pseudo-element, not the header itself: an element with
+   backdrop-filter becomes a "backdrop root", and anything inside it (the
+   dropdown) could then no longer blur the page behind it. */
+.hg-header::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(226, 240, 253, 0.4), rgba(196, 224, 248, 0.26));
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+  border-bottom: 1px solid rgba(190, 222, 248, 0.6);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 8px 28px -20px rgba(0, 61, 112, 0.35);
+  transition: background var(--dur) var(--ease-out), border-color var(--dur),
+              box-shadow var(--dur) var(--ease-out);
+}
+.hg-header.is-condensed::before {
+  background: linear-gradient(180deg, rgba(228, 241, 253, 0.56), rgba(200, 226, 249, 0.42));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 12px 32px -18px rgba(0, 61, 112, 0.4);
+}
+/* Browsers without backdrop-filter get a solid ivory bar instead. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .hg-header::before, .hg-header.is-condensed::before { background: var(--canvas); }
+  .hg-drop { background: var(--canvas) !important; }
 }
 .hg-header__inner {
   display: flex; align-items: center; gap: var(--s-5);
   min-height: var(--header-h);
 }
-/* No plate behind the mark — it sits straight on the navy bar, sized up so
-   it reads as the header's anchor rather than a shrunk-down favicon. The
-   drop-shadow holds its edge since the header itself is a dark gradient. */
+/* No plate behind the mark; it sits straight on the frosted bar. */
 .hg-logo { display: inline-flex; align-items: center; }
 .hg-logo img {
   height: 52px; width: auto; object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
 }
 
 /* The logo carries the header now, so everything beside it steps down —
@@ -65,20 +57,23 @@
 .hg-nav__link {
   display: inline-flex; align-items: center; gap: 5px;
   padding: 8px 10px;
-  font-size: 0.8125rem; color: var(--fg-muted);
+  font-size: 0.8125rem; font-weight: 500; color: var(--fg);
   border-radius: var(--r-sm);
   transition: color var(--dur) var(--ease-out), background var(--dur) var(--ease-out);
   white-space: nowrap;
 }
-.hg-nav__link:hover, .hg-nav__link.is-active { color: var(--accent-strong); background: rgba(255,255,255,.1); }
+.hg-nav__link:hover, .hg-nav__link.is-active { color: var(--accent-strong); background: rgba(0, 132, 218, 0.09); }
 .hg-nav__chev { transition: transform var(--dur) var(--ease-out); }
 .hg-nav__item:hover .hg-nav__chev { transform: rotate(180deg); }
 
 .hg-drop {
   position: absolute; top: 100%; left: -12px;
   min-width: 290px; padding: var(--s-3);
-  background: linear-gradient(165deg, var(--surface) 0%, #0D4A7E 130%);
-  border: 1px solid var(--line);
+  /* Same azure glass as the bar. */
+  background: linear-gradient(180deg, rgba(228, 241, 253, 0.56), rgba(200, 226, 249, 0.42));
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(190, 222, 248, 0.6);
   border-top: 3px solid var(--gold);
   border-radius: var(--r-md);
   box-shadow: var(--shadow-3);
@@ -87,7 +82,7 @@
 .hg-drop__link {
   position: relative;
   display: block; padding: 9px 12px 9px 16px;
-  font-size: var(--fs-sm); color: var(--fg-muted);
+  font-size: var(--fs-sm); color: var(--fg);
   border-radius: var(--r-sm);
   transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out),
               padding-left var(--dur) var(--ease-out);
@@ -99,13 +94,14 @@
   transition: transform var(--dur) var(--ease-out);
 }
 .hg-drop__link:hover {
-  background: rgba(255,255,255,.08); color: var(--accent-strong); padding-left: 20px;
+  background: rgba(0, 132, 218, 0.09); color: var(--accent-strong); padding-left: 20px;
 }
 .hg-drop__link:hover::before { transform: scaleY(1); }
 
 .hg-header__actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .hg-header__cta {
   display: none; --btn-bg: var(--gold); --btn-fg: var(--navy);
+  box-shadow: 0 0 0 1px rgba(125, 99, 0, 0.18), 0 6px 14px -8px rgba(125, 99, 0, 0.5);
   min-height: 34px; padding: 0 14px; font-size: 0.7rem;
 }
 @media (min-width: 640px) { .hg-header__cta { display: inline-flex; } }

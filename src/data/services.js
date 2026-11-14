@@ -10,8 +10,8 @@ export const services = [
     title: "Interior Design and Stylish Accessories",
     body: "Transform your home with curated interior design elements that blend elegance and functionality. From modern minimalism to timeless classics, our collection enhances every room with smart organization and sophisticated aesthetics. Redesign your living space with premium accessories that bring harmony, style, and inspiration.",
     image: `${IMG}/2025/08/WhatsApp-Image-2025-07-22-at-15.06.13-4.jpeg`,
-    video: "/videos/services/interior-design.mp4",
-    videoPoster: "/videos/services/interior-design-poster.jpg",
+    video: "/videos/hero-1.mp4",
+    videoPoster: "/videos/hero-1-poster.jpg",
     // The three real sub-services that sit under Interior Design in the
     // nav — each links out to its own full page rather than an enquiry
     // modal, same href pattern Furniture already uses for the Collection.
@@ -42,13 +42,13 @@ export const services = [
     body: "Add style and function with Home Geniee's false ceiling designs. Perfect for modern homes, our ceilings enhance lighting, hide wiring, and elevate your room's look with elegance and comfort.",
     image: "/img/services/false-ceiling.jpg",
     sections: [
-      { id: "pop", label: "POP Ceiling", body: "Plaster-of-Paris ceilings shaped on site, ideal for coves, curves and recessed lighting profiles.", image: "/img/services/false-ceiling.jpg"},
-      { id: "gypsum", label: "Gypsum Ceiling", body: "Factory-finished gypsum board on a metal grid — flat, fast to install and easy to service.", image: "/img/services/false-ceiling.jpg"},
-      { id: "grid", label: "Grid Ceiling", body: "Modular lay-in tiles on an exposed T-grid, giving full access to the plenum above.", image: "/img/services/false-ceiling.jpg"},
-      { id: "wooden", label: "Wooden Ceiling", body: "Warm timber and veneer battens that add texture and soften acoustics.", image: "/img/services/false-ceiling.jpg"},
-      { id: "metal", label: "Metal Ceiling", body: "Powder-coated metal panels for durability in kitchens, balconies and commercial spaces.", image: "/img/services/false-ceiling.jpg"},
-      { id: "pvc", label: "PVC Panel Ceiling", body: "Moisture-resistant panels suited to bathrooms, utility areas and humid Kolkata summers.", image: "/img/services/false-ceiling.jpg"},
-      { id: "jafri", label: "Jafri / CNC Ceiling", body: "CNC-cut jali screens that filter light and carry pattern across the whole ceiling plane.", image: "/img/services/false-ceiling.jpg"},
+      { id: "pop", label: "POP Ceiling", body: "Plaster-of-Paris ceilings shaped on site, ideal for coves, curves and recessed lighting profiles.", image: "/img/services/false-ceiling/pop.jpg"},
+      { id: "gypsum", label: "Gypsum Ceiling", body: "Factory-finished gypsum board on a metal grid — flat, fast to install and easy to service.", image: "/img/services/false-ceiling/gypsum.jpg"},
+      { id: "grid", label: "Grid Ceiling", body: "Modular lay-in tiles on an exposed T-grid, giving full access to the plenum above.", image: "/img/services/false-ceiling/grid.jpg"},
+      { id: "wooden", label: "Wooden Ceiling", body: "Warm timber and veneer battens that add texture and soften acoustics.", image: "/img/services/false-ceiling/wooden.jpg"},
+      { id: "metal", label: "Metal Ceiling", body: "Powder-coated metal panels for durability in kitchens, balconies and commercial spaces.", image: "/img/services/false-ceiling/metal.jpg"},
+      { id: "pvc", label: "PVC Panel Ceiling", body: "Moisture-resistant panels suited to bathrooms, utility areas and humid Kolkata summers.", image: "/img/services/false-ceiling/pvc.jpg"},
+      { id: "jafri", label: "Jafri / CNC Ceiling", body: "CNC-cut jali screens that filter light and carry pattern across the whole ceiling plane.", image: "/img/services/false-ceiling/jafri.jpg"},
     ],
   },
   {
@@ -57,9 +57,7 @@ export const services = [
     title: "Modern Furniture",
     body: "Upgrade your home with sleek, contemporary furniture designed for elegance and functionality. Our curated collection combines premium materials, smart designs, and timeless aesthetics to create spaces that inspire.",
     image: "/img/services/furniture.jpg",
-    sections: [
-      { id: "collection", label: "HomeGeniee Collection", body: "Our ready-to-order utility line — puja units, kitchen and study storage, wall shelving — the pre-order catalogue that started as furniture, now its own showcase.", href: "/collection", image: "/img/services/furniture.jpg" },
-    ],
+    sections: [],
   },
   {
     slug: "wall-decor",
@@ -67,19 +65,7 @@ export const services = [
     title: "Home Geniee Wall Decor Collection",
     body: "Discover unique wall decor that brings character and style to your home. From modern panels to artistic finishes, our designs turn empty walls into elegant statements.",
     image: "/img/services/wall-decor.jpg",
-    sections: [
-      { id: "wall-paint", label: "Normal Wall Paint", body: "Emulsion and texture finishes, surface-prepped and applied to a clean, even coat.", image: "https://images.unsplash.com/photo-1514942456527-c0bc52b69013?w=800&q=80&auto=format&fit=crop"},
-      { id: "mural", label: "Wall Mural / Art Painting", body: "Hand-painted murals scaled to the wall and the room's light.", image: "https://images.unsplash.com/photo-1724131498859-197e92aefb4b?w=800&q=80&auto=format&fit=crop"},
-      { id: "painting", label: "Customised Wall Painting", body: "Motifs, colourways and finishes worked out with you before a brush touches the wall.", image: "https://images.unsplash.com/photo-1633614027197-44f01c3ba7c7?w=800&q=80&auto=format&fit=crop"},
-      { id: "wallpaper", label: "Customised Wallpaper", body: "Printed to your artwork and your exact wall dimensions.", image: "https://images.unsplash.com/photo-1644180892282-038d799663dd?w=800&q=80&auto=format&fit=crop"},
-      { id: "3d", label: "3D Wallpaper", body: "Depth-effect prints that give a flat wall relief without losing floor area.", image: "https://images.unsplash.com/photo-1491183672482-d0af0e44929d?w=800&q=80&auto=format&fit=crop"},
-      { id: "pop", label: "POP Panel", body: "Moulded plaster panelling for classical profiles and recessed detail.", image: "https://images.unsplash.com/photo-1780123942992-bb7a449452c4?w=800&q=80&auto=format&fit=crop"},
-      { id: "wood", label: "Wood / Plywood Panel", body: "Veneered and laminated ply panelling, the warmest of the wall treatments.", image: "https://images.unsplash.com/photo-1543751416-705d3e34d02a?w=800&q=80&auto=format&fit=crop"},
-      { id: "pvc", label: "PVC Panel", body: "Low-maintenance, moisture-tolerant panelling for high-traffic walls.", image: "https://images.unsplash.com/photo-1612538498488-226257115cc4?w=800&q=80&auto=format&fit=crop"},
-      { id: "louver", label: "Louver Panel", body: "Vertical slat panelling that adds rhythm and hides services behind it.", image: "https://images.unsplash.com/photo-1675528030748-d463ab87e8d5?w=800&q=80&auto=format&fit=crop"},
-      { id: "glass", label: "Glass Panel", body: "Back-painted and textured glass that bounces light into darker rooms.", image: "https://images.unsplash.com/photo-1776671183498-72570903b06c?w=800&q=80&auto=format&fit=crop"},
-      { id: "fabric", label: "Fabric Panel", body: "Upholstered panels that soften both the look and the acoustics of a room.", image: "https://images.unsplash.com/photo-1643313262988-cdc5f50c6019?w=800&q=80&auto=format&fit=crop"},
-    ],
+    sections: [],
   },
   {
     slug: "architectural-civil",
@@ -88,8 +74,8 @@ export const services = [
     title: "Architecture and Civil",
     body: "Experience innovative architecture and civil engineering solutions that blend functionality, aesthetics, and durability. From modern structures to timeless designs, we craft spaces that inspire and endure.",
     image: "/img/services/architectural-civil.jpg",
-    video: "/videos/services/architectural-civil.mp4",
-    videoPoster: "/videos/services/architectural-civil-poster.jpg",
+    video: "/videos/stock/25480.mp4",
+    videoPoster: "/videos/stock/25480.jpg",
     sections: [
       { id: "fabricator", label: "HomeGeniee Fabricator", body: "Our in-house fabrication team turns a design into fitted carpentry and metalwork — one contractor, not three, for anything built to order.", image: "/img/services/architectural-civil.jpg"},
     ],
@@ -113,8 +99,8 @@ export const services = [
     title: "Balcony and Terrace Decor",
     body: "Transform your balcony or terrace with elegant decor, featuring cozy seating, lush greenery, and modern accents to create a serene and stylish outdoor retreat.",
     image: "/img/services/green-scape.jpg",
-    video: "/videos/services/green-scape.mp4",
-    videoPoster: "/videos/services/green-scape-poster.jpg",
+    video: "/videos/stock/47286.mp4",
+    videoPoster: "/videos/stock/47286.jpg",
     // No sub-modules, by request — the page runs the shared featured layout only.
     sections: [],
   },

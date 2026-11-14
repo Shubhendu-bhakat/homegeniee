@@ -32,21 +32,28 @@ export const estimators = {
   "modular-kitchen": {
     subject: "modular kitchen",
     formTitle: "Tell us about your kitchen",
-    size: { label: "Kitchen layout", options: [
-      { label: "Straight", area: 10 },
-      { label: "L-shaped", area: 14 },
-      { label: "U-shaped", area: 18 },
-      { label: "Parallel / Island", area: 20 },
-    ], initial: 1 },
-    scope: { label: "Scope of work", options: [
-      { label: "Base cabinets only", mult: 0.6 },
-      { label: "Base + wall cabinets", mult: 1 },
+    layout: { label: "Kitchen layout", options: [
+      { label: "Straight" },
+      { label: "L-Shaped" },
+      { label: "U-Shaped" },
+    ], initial: 1,
+      // Running feet of cabinetry for each [layout][size]: one wall, two walls
+      // or three walls at the small / medium / large length.
+      feet: [
+        [8, 10, 14],
+        [12, 16, 20],
+        [16, 22, 28],
+      ] },
+    size: { label: "Kitchen size", options: [
+      { label: "Small (up to 8 ft)" },
+      { label: "Medium (8–12 ft)" },
+      { label: "Large (12 ft+)" },
     ], initial: 1 },
     // rate is per running foot of cabinetry
     tier: { label: "Shutter finish", options: [
-      { label: "Laminate", rate: 9000 },
-      { label: "Acrylic", rate: 13000 },
-      { label: "PU / Glass", rate: 18000 },
+      { label: "Standard (Laminate)", rate: 9000 },
+      { label: "Premium (Acrylic / Membrane)", rate: 13000 },
+      { label: "Luxury (PU / Glass)", rate: 18000 },
     ], initial: 0 },
     breakdown: [
       { label: "Cabinets & shutters", share: 0.5 },
@@ -105,6 +112,32 @@ export const estimators = {
       { label: "Plants, turf & planters", share: 0.38 },
       { label: "Seating, lighting & decor", share: 0.28 },
       { label: "Installation", share: 0.12 },
+    ],
+  },
+
+  "wall-decor": {
+    subject: "wall decor",
+    formTitle: "Tell us about your walls",
+    size: { label: "Wall area", options: [
+      { label: "One feature wall (~80 sq ft)", area: 80 },
+      { label: "One room (~250 sq ft)", area: 250 },
+      { label: "2-3 rooms (~600 sq ft)", area: 600 },
+      { label: "Full home (~1,200 sq ft)", area: 1200 },
+    ], initial: 1 },
+    scope: { label: "Scope of work", options: [
+      { label: "Finish only", mult: 0.75 },
+      { label: "Surface prep + finish", mult: 1 },
+    ], initial: 1 },
+    // rate is per sq ft of wall
+    tier: { label: "Wall finish", options: [
+      { label: "Paint / texture", rate: 60 },
+      { label: "Wallpaper / 3D / mural", rate: 140 },
+      { label: "Panelling (wood, PVC, louver, glass)", rate: 260 },
+    ], initial: 0 },
+    breakdown: [
+      { label: "Materials & panels", share: 0.5 },
+      { label: "Design & surface prep", share: 0.2 },
+      { label: "Application & finishing", share: 0.3 },
     ],
   },
 };
