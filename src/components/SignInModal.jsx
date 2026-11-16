@@ -20,14 +20,14 @@ export default function SignInModal() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
-  const [nameError, setNameError] = useState("");
+  const [nameMsg, setNameMsg] = useState("");
   const [sending, setSending] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
     const formEl = e.currentTarget;
     const ne = nameError(name), pe = phoneError(phone);
-    setNameError(ne);
+    setNameMsg(ne);
     setError(pe);
     if (ne || pe) return;
 
@@ -80,12 +80,12 @@ export default function SignInModal() {
                 <label htmlFor="hg-signin-name">Name <span className="hg-field__req" aria-hidden="true">*</span></label>
                 <input
                   id="hg-signin-name" value={name}
-                  onChange={(e) => { setName(e.target.value); setNameError(""); }}
+                  onChange={(e) => { setName(e.target.value); setNameMsg(""); }}
                   autoComplete="name" required aria-required="true"
-                  aria-invalid={Boolean(nameError)}
-                  aria-describedby={nameError ? "hg-signin-name-err" : undefined}
+                  aria-invalid={Boolean(nameMsg)}
+                  aria-describedby={nameMsg ? "hg-signin-name-err" : undefined}
                 />
-                {nameError && <span className="hg-field__err" id="hg-signin-name-err">{nameError}</span>}
+                {nameMsg && <span className="hg-field__err" id="hg-signin-name-err">{nameMsg}</span>}
               </div>
               <div className="hg-field hg-field--wide">
                 <label htmlFor="hg-signin-phone">Phone number <span className="hg-field__req" aria-hidden="true">*</span></label>
