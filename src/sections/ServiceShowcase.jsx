@@ -42,6 +42,8 @@ export default function ServiceShowcase() {
                         loop
                         muted
                         playsInline
+                        disablePictureInPicture
+                        disableRemotePlayback
                         preload="auto"
                       />
                     ) : (

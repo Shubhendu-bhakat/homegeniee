@@ -44,6 +44,8 @@ export default function HeroVideoBackground({ clips = defaultClips }) {
         loop={single}
         muted
         playsInline
+        disablePictureInPicture
+        disableRemotePlayback
         preload="auto"
         poster={clip.poster}
         onEnded={single ? undefined : () => setI((n) => (n + 1) % clips.length)}

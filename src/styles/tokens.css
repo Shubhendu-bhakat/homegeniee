@@ -90,8 +90,8 @@
   --s-7: 2.25rem;  --s-8: 3rem;     --s-9: 4rem;
   --s-10: 5.5rem;
 
-  --shell: 1240px;
-  --gutter: clamp(1.25rem, 5vw, 3rem);
+  --shell: 100%; /* content spans the full width; only the gutter insets it */
+  --gutter: clamp(1.25rem, 3.2vw, 5rem);
 
   /* --- Form ------------------------------------------------- */
   --r-sm: 4px;
@@ -112,7 +112,7 @@
   --dur: 260ms;
   --dur-slow: 620ms;
 
-  --header-h: 68px;
+  --header-h: 4.25rem; /* 68px at the base root */
 }
 
 @media (prefers-reduced-motion: reduce) {

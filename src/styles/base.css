@@ -1,6 +1,12 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
+  /* 16px up to a 1440px-wide screen, then the root size grows in step with
+     the viewport (1440 -> 16px, 1920 -> 21.3px, 2560 -> 28.4px). Every
+     rem-based size (type, spacing, the page shell, cards) scales with it, so
+     on a larger screen the whole layout fills the width in the same
+     proportion as the full-bleed video, instead of staying a fixed column. */
+  font-size: clamp(16px, 1.1111vw, 48px);
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + 1.5rem);
   -webkit-text-size-adjust: 100%;
@@ -177,8 +183,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 .hg-skip:focus { left: 0; }
 
 .hg-grid { display: grid; gap: var(--s-5); }
-@media (min-width: 720px)  { .hg-grid--2 { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 720px)  { .hg-grid--3 { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1000px) { .hg-grid--3 { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 640px)  { .hg-grid--4 { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1000px) { .hg-grid--4 { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 720px)  { .hg-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 720px)  { .hg-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .hg-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 640px)  { .hg-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .hg-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }

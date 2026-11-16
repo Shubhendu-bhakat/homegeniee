@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { mainNav, site } from "../data/site";
+import { getService } from "../data/services";
 import { useUI } from "../context/UIContext";
 
 const panel = {
@@ -13,6 +14,14 @@ const row = {
   shown: { opacity: 1, x: 0 },
   out: { opacity: 0 },
 };
+
+// Verticals and their sub-verticals as one flat list, in nav order, each with a
+// thumbnail and tagline from the service data so every row looks the same.
+const slugOf = (to) => to.split("#")[0].split("/").pop();
+const verticals = mainNav.flatMap((item) => [item, ...(item.children ?? [])]).map((v) => {
+  const svc = getService(slugOf(v.to));
+  return { label: v.label, to: v.to, image: svc?.image, tagline: v.to.includes("#") ? "In-house fabrication" : svc?.eyebrow };
+});
 
 export default function MobileNav() {
   const { mobileNavOpen, closeMobileNav, openModal } = useUI();
@@ -37,25 +46,23 @@ export default function MobileNav() {
             aria-label="Mobile"
           >
             <motion.div variants={row} className="hg-mobile__head">
-              <span className="hg-mono hg-mobile__label">Menu</span>
+              <h2 className="hg-mobile__title">Explore Our Verticals</h2>
               <button className="hg-mobile__close" onClick={closeMobileNav} aria-label="Close menu">✕</button>
             </motion.div>
 
             <ul className="hg-mobile__list">
-              {mainNav.map((item) => (
-                <motion.li key={item.label} variants={row}>
-                  <Link to={item.to} className="hg-mobile__link" onClick={closeMobileNav}>
-                    {item.label}
+              {verticals.map((v) => (
+                <motion.li key={v.label} variants={row}>
+                  <Link to={v.to} className="hg-mobile__card" onClick={closeMobileNav}>
+                    {v.image && <img className="hg-mobile__thumb" src={v.image} alt="" loading="lazy" decoding="async" />}
+                    <span className="hg-mobile__cardText">
+                      <span className="hg-mobile__cardTitle">{v.label}</span>
+                      {v.tagline && <span className="hg-mobile__cardTag">{v.tagline}</span>}
+                    </span>
+                    <span className="hg-mobile__go" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" width="14" height="14"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </span>
                   </Link>
-                  {item.children?.length > 0 && (
-                    <ul className="hg-mobile__sub">
-                      {item.children.map((c) => (
-                        <li key={c.label}>
-                          <Link to={c.to} onClick={closeMobileNav}>{c.label}</Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </motion.li>
               ))}
             </ul>
