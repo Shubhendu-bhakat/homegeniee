@@ -123,7 +123,9 @@
 .hg-hero__statLabel { margin: 3px 0 0; font-size: var(--fs-xs); color: var(--fg-faint); letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
 
 /* ===== Section heading ==================================== */
-.hg-heading { max-width: 74ch; margin-bottom: clamp(1rem, 2.2vw, 1.75rem); position: relative; }
+.hg-heading { max-width: none; margin-bottom: clamp(0.75rem, 1.6vw, 1.25rem); position: relative; }
+/* Headings and their lede use the full row: text only wraps when it has to. */
+.hg-heading .hg-lede { max-width: none; margin-top: 6px; }
 .hg-heading--center { margin-inline: auto; text-align: center; }
 .hg-heading--center .hg-lede { margin-inline: auto; }
 .hg-heading--center .hg-sheet::after { display: none; }
@@ -135,11 +137,11 @@
 .hg-journey__track {
   display: grid;
   gap: clamp(1.5rem, 4vw, 3.5rem);
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
 }
 @media (min-width: 900px) {
-  .hg-journey__track { grid-template-columns: 1fr 1fr; }
+  .hg-journey__track { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
 
 .hg-journey__stage {
@@ -211,7 +213,7 @@
 .hg-services { background: var(--canvas-2); }
 .hg-services__grid {
   display: grid; gap: var(--s-3);
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   /* Rows only stretch children to match the tallest card in that same row —
      with cards of uneven copy length, a card at the end of one row can sit
      right beside a shorter card from the next row and read as mismatched.
@@ -323,9 +325,9 @@
 .hg-why__step:nth-child(2n) em { background: var(--gold); color: var(--navy); }
 .hg-why__stepLine { flex: 1; height: 2px; margin: 0 10px; background: var(--sand-300); }
 
-.hg-why__grid { display: grid; gap: var(--s-3); grid-template-columns: repeat(2, 1fr); }
+.hg-why__grid { display: grid; gap: var(--s-3); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 560px)  { .hg-why__grid { gap: var(--s-5); } }
-@media (min-width: 1040px) { .hg-why__grid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1040px) { .hg-why__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .hg-why__card {
   padding: var(--s-3);
   background: var(--sand-100);
@@ -400,26 +402,20 @@
   box-shadow: 0 26px 56px -30px rgba(0,61,112,.30);
   transform: translateY(-4px);
 }
+/* No 3D tilt on product cards: a rotated or scaled layer resamples its text and
+   blurs it. A plain lift, shadow and image zoom keep every line sharp. */
+.hg-prod { will-change: auto; }
 .hg-prod__media {
   position: relative; aspect-ratio: 1;
   background: #fff; overflow: hidden;
-  transform: translateZ(24px);
 }
 .hg-prod__media img {
   width: 100%; height: 100%; object-fit: contain; padding: 8%;
   transition: transform var(--dur-slow) var(--ease-out);
 }
 .hg-prod:hover .hg-prod__media img { transform: scale(1.06); }
-.hg-prod__new { position: absolute; top: 10px; left: 10px; }
-.hg-prod__heart {
-  position: absolute; top: 8px; right: 8px;
-  width: 40px; height: 40px; display: grid; place-items: center;
-  background: rgba(255,255,255,.9); border: 1px solid var(--sand-300);
-  border-radius: var(--r-pill); color: var(--fg-inv-muted); font-size: 1.05rem;
-  transition: color var(--dur-fast), border-color var(--dur-fast);
-}
-.hg-prod__heart.is-on { color: var(--accent); border-color: var(--accent); }
-.hg-prod__body { padding: var(--s-4); display: flex; flex-direction: column; gap: 6px; flex: 1; transform: translateZ(14px); }
+.hg-prod__new { position: absolute; top: 10px; left: 10px; z-index: 2; } /* above the image, which gets its own layer when it scales on hover */
+.hg-prod__body { padding: var(--s-4); display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .hg-prod__title { font-size: var(--fs-base); color: var(--fg-inv); font-variation-settings: "opsz" 30; }
 .hg-prod__meta { font-size: var(--fs-sm); color: var(--navy); font-weight: 600; }
 .hg-prod__note { font-size: var(--fs-xs); color: var(--fg-inv-muted); }
@@ -436,9 +432,9 @@
 /* ===== Projects =========================================== */
 .hg-projects { background: var(--canvas); }
 .hg-projects__foot { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-3); margin-top: var(--s-5); }
-.hg-projects__grid { display: grid; gap: var(--s-5); grid-template-columns: 1fr; }
-@media (min-width: 640px)  { .hg-projects__grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1000px) { .hg-projects__grid { grid-template-columns: repeat(3, 1fr); } }
+.hg-projects__grid { display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px)  { .hg-projects__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .hg-projects__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .hg-proj { border-radius: var(--r-lg); overflow: hidden; }
 .hg-proj__link {
   display: block; width: 100%; padding: 0; text-align: left;
@@ -545,10 +541,16 @@
 
 /* ===== Trust strip ======================================== */
 .hg-trust { background: var(--accent); color: var(--canvas); padding-block: var(--s-5); }
-.hg-trust__grid { display: grid; gap: var(--s-5); grid-template-columns: 1fr; }
-@media (min-width: 640px)  { .hg-trust__grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1000px) { .hg-trust__grid { grid-template-columns: repeat(4, 1fr); } }
+.hg-trust__grid { display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px)  { .hg-trust__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .hg-trust__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .hg-trust__item { border-left: 2px solid rgba(255,255,255,.45); padding-left: var(--s-4); }
 .hg-trust__title { font-size: var(--fs-lg); font-variation-settings: "opsz" 30; }
 .hg-trust__note { font-size: var(--fs-xs); margin-top: 4px; opacity: .78; }
 @media (min-width: 560px) { .hg-why__card { padding: var(--s-5); } }
+
+/* Background videos are decoration, not players. Taking them out of hit-testing
+   stops browsers (Edge/Chrome) from showing their hover "Picture in picture"
+   and media buttons over them; the card or hero link around them still works. */
+video { -webkit-user-select: none; user-select: none; }
+.hg-svc__media video, .hg-hero__slider video, .hg-phead__media video { pointer-events: none; }

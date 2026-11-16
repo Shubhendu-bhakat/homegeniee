@@ -45,7 +45,7 @@
 /* No plate behind the mark; it sits straight on the frosted bar. */
 .hg-logo { display: inline-flex; align-items: center; }
 .hg-logo img {
-  height: 52px; width: auto; object-fit: contain;
+  height: 3.25rem; width: auto; object-fit: contain;
 }
 
 /* The logo carries the header now, so everything beside it steps down —
@@ -102,7 +102,7 @@
 .hg-header__cta {
   display: none; --btn-bg: var(--gold); --btn-fg: var(--navy);
   box-shadow: 0 0 0 1px rgba(125, 99, 0, 0.18), 0 6px 14px -8px rgba(125, 99, 0, 0.5);
-  min-height: 34px; padding: 0 14px; font-size: 0.7rem;
+  min-height: 2.125rem; padding: 0 0.875rem; font-size: 0.7rem;
 }
 @media (min-width: 640px) { .hg-header__cta { display: inline-flex; } }
 
@@ -135,26 +135,30 @@
   overflow-y: auto;
   display: flex; flex-direction: column; gap: var(--s-5);
 }
-.hg-mobile__head { display: flex; align-items: center; justify-content: space-between; }
-.hg-mobile__label { font-size: var(--fs-xs); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--accent); }
-.hg-mobile__close { width: 42px; height: 42px; background: none; border: 1px solid var(--line); border-radius: var(--r-pill); }
-.hg-mobile__list { display: grid; gap: var(--s-2); }
-.hg-mobile__link {
-  display: block; padding: var(--s-3) 0;
-  font-family: var(--font-display); font-size: var(--fs-xl); font-weight: 700;
-  border-bottom: 1px solid var(--line-solid);
+.hg-mobile__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-3); }
+.hg-mobile__title { font-family: var(--font-display); font-size: var(--fs-2xl); line-height: 1.15; font-weight: 700; margin: 0; color: var(--fg); }
+.hg-mobile__close { flex: none; width: 42px; height: 42px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-pill); }
+.hg-mobile__list { display: grid; gap: var(--s-3); margin: 0; padding: 0; list-style: none; }
+/* Every vertical and sub-vertical is the same tappable card. */
+.hg-mobile__card {
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: 10px 12px 10px 10px;
+  background: var(--surface); border: 1px solid var(--line-solid); border-radius: var(--r-lg);
+  box-shadow: 0 6px 16px -12px rgba(0, 61, 112, .45);
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast), transform var(--dur-fast);
 }
-.hg-mobile__sub {
-  padding: var(--s-2) 0 var(--s-3) var(--s-4); display: grid; gap: 6px;
-  border-left: 2px solid var(--line);
+.hg-mobile__card:hover, .hg-mobile__card:focus-visible { border-color: var(--accent); box-shadow: 0 10px 22px -12px rgba(0, 61, 112, .55); }
+.hg-mobile__card:active { transform: scale(.985); }
+.hg-mobile__thumb { flex: none; width: 56px; height: 56px; border-radius: var(--r-md); object-fit: cover; background: var(--canvas-2); }
+.hg-mobile__cardText { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.hg-mobile__cardTitle { font-family: var(--font-display); font-size: var(--fs-md); font-weight: 700; line-height: 1.2; color: var(--fg); }
+.hg-mobile__cardTag { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: .05em; text-transform: uppercase; color: var(--fg-muted); line-height: 1.3; }
+.hg-mobile__go {
+  flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--canvas-2); color: var(--accent);
+  transition: background var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
 }
-.hg-mobile__sub a {
-  font-size: var(--fs-sm); color: var(--fg-muted);
-  transition: color var(--dur) var(--ease-out), padding-left var(--dur) var(--ease-out);
-}
-.hg-mobile__sub a:hover, .hg-mobile__cats a:hover { color: var(--accent-strong); padding-left: 4px; }
-.hg-mobile__cats ul { display: grid; gap: 8px; margin-top: var(--s-3); }
-.hg-mobile__cats a { font-size: var(--fs-sm); color: var(--fg-muted); }
+.hg-mobile__card:hover .hg-mobile__go { background: var(--accent); color: #fff; transform: translateX(2px); }
 .hg-mobile__foot { display: grid; gap: var(--s-3); margin-top: auto; }
 .hg-mobile__tel { color: var(--accent); font-size: var(--fs-sm); text-align: center; }
 
@@ -179,7 +183,7 @@
 .hg-modal__done .hg-lede { margin-inline: auto; }
 
 .hg-form { display: grid; gap: var(--s-4); margin-top: var(--s-6); }
-@media (min-width: 640px) { .hg-form { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 640px) { .hg-form { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 .hg-field { display: grid; gap: 6px; }
 .hg-field--wide { grid-column: 1 / -1; }
 .hg-field label { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); }
@@ -317,11 +321,11 @@
 .hg-footer__grid {
   display: grid; gap: var(--s-6);
   padding-block: var(--s-6) var(--s-5);
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
 }
-@media (min-width: 720px)  { .hg-footer__grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1040px) { .hg-footer__grid { grid-template-columns: 1.6fr repeat(4, 1fr); } }
-.hg-footer__brand img { height: 44px; width: auto; object-fit: contain; }
+@media (min-width: 720px)  { .hg-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1040px) { .hg-footer__grid { grid-template-columns: 1.6fr repeat(4, minmax(0, 1fr)); } }
+.hg-footer__brand img { height: 2.75rem; width: auto; object-fit: contain; }
 .hg-footer__address { font-style: normal; color: var(--fg-muted); font-size: var(--fs-sm); margin-top: var(--s-4); max-width: 34ch; }
 .hg-footer__tel { display: inline-block; margin-top: var(--s-3); color: var(--accent); font-size: var(--fs-sm); }
 .hg-footer__heading {
