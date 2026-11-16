@@ -1,7 +1,6 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { site } from "../data/site";
 import { useUI } from "../context/UIContext";
-import MagneticButton from "../components/MagneticButton";
 import HeroVideoBackground from "../components/HeroVideoBackground";
 import useHeroExit from "../hooks/useHeroExit";
 
@@ -80,7 +79,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <MagneticButton onClick={() => openModal("consultation")}>Book free consultation</MagneticButton>
+          <button className="hg-btn" onClick={() => openModal("consultation")}>Book free consultation</button>
         </motion.div>
       </motion.div>
 

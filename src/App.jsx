@@ -7,8 +7,6 @@ import MobileNav from "./components/MobileNav";
 import Footer from "./components/Footer";
 import ConsultationModal from "./components/ConsultationModal";
 import SignInModal from "./components/SignInModal";
-import AskHomeGeniee from "./components/AskHomeGeniee";
-import FloatingActions from "./components/FloatingActions";
 // Deliberately neutral name: ad/tracker blockers (Brave Shields, uBlock)
 // block file URLs and classes containing "cookie"/"consent", which in dev
 // broke the whole app with ERR_BLOCKED_BY_CLIENT.
@@ -21,6 +19,8 @@ import Gallery from "./pages/Gallery";
 import ProjectPage from "./pages/ProjectPage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
 
 // Per-path scroll memory for the life of the tab — lets "back" return to
 // the section the user was actually looking at (e.g. the Projects grid)
@@ -85,6 +85,8 @@ export default function App() {
               <Route path="/projects/:slug" element={<ProjectPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-conditions" element={<TermsConditions />} />
               {/* Legacy WordPress paths kept alive so old links still resolve. */}
               <Route path="/about-us" element={<About />} />
               <Route path="/contact-us" element={<Contact />} />
@@ -98,8 +100,6 @@ export default function App() {
       <Footer />
       <ConsultationModal />
       <SignInModal />
-      <AskHomeGeniee />
-      <FloatingActions />
       <SiteNotice />
     </>
   );

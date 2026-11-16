@@ -35,11 +35,10 @@ export const serviceClips = {
   "shade-work": [st(25480), st(14729), st(49192)],
   "home-makeover": [st(15853), st(15847), st(21219), interior[0]],
   renovation: [st(25480), st(15853), st(14729), st(49192)],
-  "property-consultancy": [st(12877), st(12878), st(24945), st(48394)],
 };
 
 export const pageClips = {
-  about: [st(15847), st(21226), st(3090), interior[0]],
+  about: [st(12877), st(15847), st(21226), st(3090), interior[0]],
   gallery: [st(3090), st(43033), st(3091), interior[2]],
   contact: [st(12878), st(12877), interior[0]],
 };

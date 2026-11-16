@@ -660,3 +660,28 @@
 @media (max-width: 520px) {
   .hg-wall__target { left: 50%; translate: -50% 0; }
 }
+
+/* ===== Legal pages (Privacy Policy, Terms) ================== */
+.hg-legal__head { background: linear-gradient(120deg, var(--navy) 0%, #00538F 100%); padding-bottom: clamp(1.5rem, 3.5vw, 2.5rem); }
+.hg-legal__head .hg-phead__title { font-size: var(--fs-3xl); max-width: none; }
+.hg-legal__updated { margin: 0; font-size: var(--fs-xs); letter-spacing: .08em; color: var(--fg-faint); text-transform: uppercase; }
+.hg-legal__layout { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 960px) { .hg-legal__layout { grid-template-columns: minmax(0, 17rem) minmax(0, 1fr); gap: var(--s-8); align-items: start; } }
+.hg-legal__toc { position: sticky; top: calc(var(--header-h) + 1rem); padding: var(--s-4); background: var(--surface); border: 1px solid var(--line-solid); border-radius: var(--r-lg); }
+@media (max-width: 959px) { .hg-legal__toc { position: static; } }
+.hg-legal__toc ol { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.hg-legal__toc a { display: flex; gap: 10px; padding: 7px 8px; border-radius: var(--r-sm); font-size: var(--fs-sm); color: var(--fg-inv-muted); transition: background var(--dur-fast), color var(--dur-fast); }
+.hg-legal__toc a span { flex: none; color: var(--accent); opacity: .7; font-size: .75em; padding-top: .2em; }
+.hg-legal__toc a:hover { background: var(--canvas-2); color: var(--accent-strong); }
+.hg-legal__body { min-width: 0; max-width: 78ch; color: var(--fg-inv); }
+.hg-legal__intro { font-size: var(--fs-lg); line-height: 1.55; color: var(--fg-inv-muted); margin: 0 0 var(--s-6); padding-bottom: var(--s-5); border-bottom: 1px solid var(--sand-300); }
+.hg-legal__sec { scroll-margin-top: calc(var(--header-h) + 1rem); padding-block: var(--s-4); }
+.hg-legal__sec + .hg-legal__sec { border-top: 1px solid var(--sand-300); }
+.hg-legal__sec h2 { display: flex; align-items: baseline; gap: 12px; font-size: var(--fs-xl); margin: 0 0 var(--s-3); color: var(--fg-inv); }
+.hg-legal__sec h2 span { color: var(--accent); font-size: .6em; letter-spacing: .08em; }
+.hg-legal__sec p, .hg-legal__sec li { font-size: var(--fs-base); line-height: 1.7; color: var(--fg-inv-muted); }
+.hg-legal__sec p { margin: 0 0 var(--s-3); }
+.hg-legal__sec ul { margin: 0 0 var(--s-3); padding-left: 1.2em; display: grid; gap: 6px; list-style: disc; }
+.hg-legal__sec li::marker { color: var(--accent); }
+.hg-legal__sec a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.hg-legal__sec strong { color: var(--fg-inv); }

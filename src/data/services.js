@@ -133,17 +133,6 @@ export const services = [
     image: `${IMG}/2024/09/IMG_20230508_164541973-scaled.jpg`,
     sections: [],
   },
-  {
-    slug: "property-consultancy",
-    eyebrow: "Paperwork, Handled",
-    title: "Property Consultancy",
-    body: "Mutation and property documentation handled end to end, so ownership records match reality before you build on them.",
-    image: `${IMG}/2025/08/wood-layout-img-1.jpg`,
-    sections: [
-      { id: "kmc", label: "KMC Mutation", body: "Kolkata Municipal Corporation mutation filed and followed through to record update.", image: `${IMG}/2025/08/wood-layout-img-1.jpg`},
-      { id: "thika", label: "THIKA Mutation", body: "THIKA tenancy mutation prepared and processed with the relevant authority.", image: `${IMG}/2025/08/wood-layout-img-1.jpg`},
-    ],
-  },
 ];
 
 export const getService = (slug) => services.find((s) => s.slug === slug);

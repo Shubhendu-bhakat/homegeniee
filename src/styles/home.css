@@ -328,18 +328,27 @@
 .hg-why__grid { display: grid; gap: var(--s-3); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 560px)  { .hg-why__grid { gap: var(--s-5); } }
 @media (min-width: 1040px) { .hg-why__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* The card is a transparent holder; its look lives on .hg-why__surface, which is
+   the only layer that rotates. Content sits above it, flat and sharp. */
 .hg-why__card {
-  padding: var(--s-3);
+  position: relative; padding: var(--s-3); perspective: 900px;
+  transition: translate var(--dur) var(--ease-out);
+}
+.hg-why__card:hover { translate: 0 -6px; }
+.hg-why__surface {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background: var(--sand-100);
   border: 1px solid var(--sand-300);
   border-top: 3px solid var(--accent-bright);
   border-radius: var(--r-lg);
-  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out),
-              border-color var(--dur) var(--ease-out);
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .22s ease-out, box-shadow var(--dur) var(--ease-out);
+  will-change: transform;
 }
-.hg-why__card:hover { transform: translateY(-6px); box-shadow: 0 22px 50px -28px rgba(0,61,112,.28); }
+.hg-why__card:hover .hg-why__surface { box-shadow: 0 26px 46px -24px rgba(0,61,112,.34); }
+.hg-why__card > :not(.hg-why__surface) { position: relative; z-index: 1; }
 /* Two colours alternate card to card so the row reads as a set, not a repeat. */
-.hg-why__card:nth-child(2n) { border-top-color: var(--gold-deep); }
+.hg-why__card:nth-child(2n) .hg-why__surface { border-top-color: var(--gold-deep); }
 .hg-why__badge {
   display: inline-flex; align-items: center; justify-content: center;
   width: 52px; height: 52px; margin-bottom: var(--s-4);
@@ -347,10 +356,17 @@
   background: linear-gradient(145deg, var(--accent-bright), var(--accent));
   color: var(--canvas);
   box-shadow: 0 10px 22px -12px rgba(0, 132, 218, 0.55);
+  translate: var(--bx, 0px) var(--by, 0px);
+  transition: translate .22s ease-out, box-shadow var(--dur) var(--ease-out);
 }
+.hg-why__card:hover .hg-why__badge { box-shadow: 0 18px 24px -12px rgba(0, 132, 218, 0.6); }
 .hg-why__card:nth-child(2n) .hg-why__badge {
   background: linear-gradient(145deg, var(--gold), var(--gold-deep));
   box-shadow: 0 10px 22px -12px rgba(125, 99, 0, 0.45);
+}
+.hg-why__card:nth-child(2n):hover .hg-why__badge { box-shadow: 0 18px 24px -12px rgba(125, 99, 0, 0.55); }
+@media (prefers-reduced-motion: reduce) {
+  .hg-why__surface, .hg-why__badge { transform: none; translate: none; }
 }
 .hg-why__title { font-size: var(--fs-lg); color: var(--fg-inv); font-variation-settings: "opsz" 30; }
 .hg-why__note { margin-top: 8px; font-size: var(--fs-sm); color: var(--fg-inv-muted); }
@@ -554,3 +570,15 @@
    and media buttons over them; the card or hero link around them still works. */
 video { -webkit-user-select: none; user-select: none; }
 .hg-svc__media video, .hg-hero__slider video, .hg-phead__media video { pointer-events: none; }
+
+/* Hero CTA: a calm lift and glow. The old cursor-chasing drift made the button
+   slide out from under the pointer and flicker between hover states. */
+.hg-hero__actions .hg-btn {
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out), background var(--dur) var(--ease-out);
+}
+.hg-hero__actions .hg-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -12px rgba(255, 229, 90, 0.6), 0 0 0 4px rgba(255, 229, 90, 0.2);
+}
+.hg-hero__actions .hg-btn:active { transform: translateY(0) scale(0.985); }
+.hg-hero__actions .hg-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }

@@ -53,12 +53,13 @@ export const mainNav = [
 
 export const footerLinks = {
   Categories: [
-    { label: "Architectural", to: "/services/architectural-civil" },
-    { label: "Property Consultancy", to: "/services/property-consultancy" },
-    { label: "Home Decor", to: "/services/interior-design" },
+    { label: "Interior Design", to: "/services/interior-design" },
     { label: "Modular Kitchen", to: "/services/modular-kitchen" },
-    { label: "Furniture", to: "/services/furniture" },
+    { label: "Wall Decor", to: "/services/wall-decor" },
     { label: "False Ceiling", to: "/services/false-ceiling" },
+    { label: "Furniture", to: "/services/furniture" },
+    { label: "Architecture & Civil", to: "/services/architectural-civil" },
+    { label: "Green Scape", to: "/services/green-scape" },
   ],
   "Policy Links": [
     { label: "Privacy Policy", to: "/privacy-policy" },
@@ -68,7 +69,6 @@ export const footerLinks = {
     { label: "About Us", to: "/about" },
     { label: "Contact Us", to: "/contact" },
     { label: "Offer / Promotions", to: "/services/furniture" },
-    { label: "Stores", to: "/services/furniture" },
   ],
 };
 
@@ -109,10 +109,7 @@ export const consultationInterests = [
   "Shade Work",
   "Home Makeover",
   "Renovation",
-  "Property Consultancy",
 ];
 
-export const consultationPurposes = [
-  "Interior", "Civil", "Furniture", "Renovation", "Repair",
-  "Wall Painting", "Shade", "PVC", "Modular Kitchen",
-];
+// The Contact page's "Purpose" dropdown offers the same verticals as the consultation form.
+export const consultationPurposes = consultationInterests;
