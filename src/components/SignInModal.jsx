@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useUI } from "../context/UIContext";
 import { useAuth } from "../context/AuthContext";
 import { sendLead, honeypot } from "../lib/leads";
+import { nameError, phoneError, cleanName, cleanPhone } from "../lib/validate";
 
 /**
  * Gates the calculator's cost reveal. There's no backend yet (phase 2 —
@@ -25,16 +26,15 @@ export default function SignInModal() {
   const submit = async (e) => {
     e.preventDefault();
     const formEl = e.currentTarget;
-    const badName = !name.trim();
-    const badPhone = !/^[\d\s+()-]{8,}$/.test(phone.trim());
-    setNameError(badName ? "Enter your name." : "");
-    if (badPhone) setError("Enter a phone number we can reach you on.");
-    if (badName || badPhone) return;
+    const ne = nameError(name), pe = phoneError(phone);
+    setNameError(ne);
+    setError(pe);
+    if (ne || pe) return;
 
     setSending(true);
     try {
       await sendLead("estimate", {
-        name: name.trim(), phone: phone.trim(),
+        name: cleanName(name), phone: cleanPhone(phone),
         estimate: typeof modalPreset === "object" ? modalPreset : undefined,
         website: honeypot(formEl),
       });
@@ -44,7 +44,7 @@ export default function SignInModal() {
       return;
     }
     setSending(false);
-    signIn({ name: name.trim(), phone: phone.trim() });
+    signIn({ name: cleanName(name), phone: cleanPhone(phone) });
     closeModal();
     setName("");
     setPhone("");
@@ -95,7 +95,7 @@ export default function SignInModal() {
                   required aria-required="true"
                   aria-invalid={Boolean(error)}
                   aria-describedby={error ? "hg-signin-phone-err" : undefined}
-                  autoComplete="tel" placeholder="+91 98XXX XXXXX"
+                  autoComplete="tel" inputMode="tel" maxLength={17} placeholder="+91 98XXX XXXXX"
                 />
                 {error && <span className="hg-field__err" id="hg-signin-phone-err">{error}</span>}
               </div>

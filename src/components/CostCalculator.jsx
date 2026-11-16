@@ -51,6 +51,9 @@ export default function CostCalculator({ service = "interior-design" }) {
     // What gets saved in the "Cost estimates" sheet tab.
     const lead = {
       service: cfg.subject,
+      ...(cfg.layout ? { layout: cfg.layout.options[layout].label } : {}),
+      size: cfg.size.options[size].label,
+      ...(cfg.scope ? { scope: cfg.scope.options[scope].label } : {}),
       size: cfg.layout
         ? `${cfg.layout.options[layout].label} · ${cfg.size.options[size].label}`
         : cfg.size.options[size].label,

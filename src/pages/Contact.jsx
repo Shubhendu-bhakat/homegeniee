@@ -6,6 +6,7 @@ import HeroVideoBackground from "../components/HeroVideoBackground";
 import { pageClips } from "../data/heroClips";
 import TrustStrip from "../sections/TrustStrip";
 import { sendLead, honeypot, readFile, MAX_UPLOAD_MB } from "../lib/leads";
+import { nameError, phoneError, cleanName, cleanPhone } from "../lib/validate";
 
 const EMPTY = { name: "", email: "", phone: "", purpose: "", message: "", file: "" };
 
@@ -27,8 +28,9 @@ export default function Contact() {
     e.preventDefault();
     const formEl = e.currentTarget;
     const found = {};
-    if (!values.name.trim()) found.name = "Enter your name.";
-    if (!/^[\d\s+()-]{8,}$/.test(values.phone.trim())) found.phone = "Enter a phone number we can reach you on.";
+    const ne = nameError(values.name), pe = phoneError(values.phone);
+    if (ne) found.name = ne;
+    if (pe) found.phone = pe;
     if (values.email && !/^\S+@\S+\.\S+$/.test(values.email.trim())) found.email = "That email address looks incomplete.";
     if (file && file.size > MAX_UPLOAD_MB * 1024 * 1024) found.file = `Please choose a file under ${MAX_UPLOAD_MB} MB.`;
     setErrors(found);
@@ -38,7 +40,7 @@ export default function Contact() {
     setSendError("");
     try {
       await sendLead("contact", {
-        name: values.name.trim(), phone: values.phone.trim(), email: values.email.trim(),
+        name: cleanName(values.name), phone: cleanPhone(values.phone), email: values.email.trim(),
         purpose: values.purpose, message: values.message.trim(),
         file: file ? await readFile(file) : undefined,
         website: honeypot(formEl),
