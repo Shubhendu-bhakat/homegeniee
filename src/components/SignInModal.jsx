@@ -101,7 +101,7 @@ export default function SignInModal() {
               </div>
               <input type="text" name="website" className="hg-hp" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
               <button className="hg-btn hg-field--wide" type="submit" disabled={sending}>
-                {sending ? "Sending…" : <>Sign in &amp; view cost</>}
+                {sending ? "Preparing your estimate…" : <>Sign in &amp; view cost</>}
               </button>
             </form>
             <p className="hg-signin__note">No password needed — we'll only use this to share your estimate.</p>

@@ -29,8 +29,9 @@ export function indianMobile(raw) {
 
 // Indian mobile numbers start with 6, 7, 8 or 9 and have ten digits. On top of
 // that, numbers that are obviously not real are refused: one repeated digit
-// (9999999999), straight runs (9876543210, 9123456789), repeating blocks
-// (9898989898, 9876598765), long repeats (9000000000) and too few distinct digits.
+// (9999999999), straight runs of 5+ digits (9876543210, 9123456789), repeating blocks
+// (9898989898, 9876598765), doubled pairs (9988776655), mirror numbers
+// (9876556789), long repeats (9000000000) and too few distinct digits.
 export function phoneError(raw) {
   const d = indianMobile(raw);
   if (!d) return "Enter a valid 10-digit Indian mobile number (starting with 6, 7, 8 or 9).";
@@ -46,7 +47,12 @@ export function phoneError(raw) {
       best = Math.max(best, run);
     } else run = 1;
   }
-  if (best >= 6) return fake;
+  if (best >= 5) return fake;
+  // Doubled pairs (9988776655), or a number that reads the same backwards.
+  let doubles = 0;
+  for (let i = 1; i < 10; i++) if (d[i] === d[i - 1]) doubles++;
+  if (doubles >= 4) return fake;
+  if (d === [...d].reverse().join("")) return fake;
   for (let p = 1; p <= 5; p++) {
     let rep = true;
     for (let i = p; i < 10; i++) if (d[i] !== d[i - p]) { rep = false; break; }

@@ -98,11 +98,17 @@ export const trustPillars = [
 ];
 
 export const consultationInterests = [
-  "Modular Kitchen",
-  "Green Scape",
-  "HomeGeniee Collections",
   "Interior Design",
+  "Modular Kitchen",
+  "Wall Decor",
+  "False Ceiling",
+  "Furniture",
   "Architectural and Civil",
+  "Aluminium / uPVC",
+  "Green Scape",
+  "Shade Work",
+  "Home Makeover",
+  "Renovation",
   "Property Consultancy",
 ];
 
