@@ -54,6 +54,10 @@ export default function CostCalculator({ service = "interior-design" }) {
       ...(cfg.layout ? { layout: cfg.layout.options[layout].label } : {}),
       size: cfg.size.options[size].label,
       ...(cfg.scope ? { scope: cfg.scope.options[scope].label } : {}),
+      size: cfg.layout
+        ? `${cfg.layout.options[layout].label} · ${cfg.size.options[size].label}`
+        : cfg.size.options[size].label,
+      scope: cfg.scope ? cfg.scope.options[scope].label : "",
       tier: cfg.tier.options[tier].label,
       low: Math.round(low),
       high: Math.round(high),
