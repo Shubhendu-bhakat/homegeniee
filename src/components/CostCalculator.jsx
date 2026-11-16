@@ -23,7 +23,6 @@ export default function CostCalculator({ service = "interior-design" }) {
   const cfg = estimators[service] ?? estimators["interior-design"];
   const { openModal } = useUI();
   const { isSignedIn, user } = useAuth();
-  const { isSignedIn } = useAuth();
   const [layout, setLayout] = useState(cfg.layout?.initial ?? 0);
   const [size, setSize] = useState(cfg.size.initial);
   const [scope, setScope] = useState(cfg.scope?.initial ?? 0);
@@ -45,13 +44,16 @@ export default function CostCalculator({ service = "interior-design" }) {
   }, [cfg]);
 
   const calculate = () => {
-    const base = cfg.size.options[size].area * cfg.scope.options[scope].mult * cfg.tier.options[tier].rate;
+    // Kitchens price by running feet, which depend on layout and size together.
+    const units = cfg.layout ? cfg.layout.feet[layout][size] : cfg.size.options[size].area;
+    const base = units * (cfg.scope ? cfg.scope.options[scope].mult : 1) * cfg.tier.options[tier].rate;
     const low = base * 0.9, high = base * 1.15;
     // What gets saved in the "Cost estimates" sheet tab.
     const lead = {
       service: cfg.subject,
+      ...(cfg.layout ? { layout: cfg.layout.options[layout].label } : {}),
       size: cfg.size.options[size].label,
-      scope: cfg.scope.options[scope].label,
+      ...(cfg.scope ? { scope: cfg.scope.options[scope].label } : {}),
       tier: cfg.tier.options[tier].label,
       low: Math.round(low),
       high: Math.round(high),
@@ -61,10 +63,6 @@ export default function CostCalculator({ service = "interior-design" }) {
     if (isSignedIn) {
       sendLead("estimate", { name: user?.name || "Returning visitor", phone: user?.phone, estimate: lead }).catch(() => {});
     }
-    // Kitchens price by running feet, which depend on layout and size together.
-    const units = cfg.layout ? cfg.layout.feet[layout][size] : cfg.size.options[size].area;
-    const base = units * (cfg.scope ? cfg.scope.options[scope].mult : 1) * cfg.tier.options[tier].rate;
-    setResult({ low: base * 0.9, high: base * 1.15, base });
   };
 
   const questions = [

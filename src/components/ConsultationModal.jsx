@@ -3,13 +3,15 @@ import { motion, AnimatePresence } from "motion/react";
 import { useUI } from "../context/UIContext";
 import { consultationInterests, site } from "../data/site";
 import { sendLead, honeypot } from "../lib/leads";
+import { nameError, phoneError, cleanName, cleanPhone } from "../lib/validate";
 
 const EMPTY = { name: "", phone: "", email: "", location: "", interest: "", message: "" };
 
 function validate(values) {
   const errors = {};
-  if (!values.name.trim()) errors.name = "Enter your name so we know who to ask for.";
-  if (!/^[\d\s+()-]{8,}$/.test(values.phone.trim())) errors.phone = "Enter a phone number we can reach you on.";
+  const ne = nameError(values.name), pe = phoneError(values.phone);
+  if (ne) errors.name = ne;
+  if (pe) errors.phone = pe;
   if (values.email && !/^\S+@\S+\.\S+$/.test(values.email.trim())) errors.email = "That email address looks incomplete.";
   if (!values.location.trim()) errors.location = "Enter your location so we know where to send the team.";
   if (!values.interest) errors.interest = "Pick the service closest to what you need.";
@@ -52,7 +54,7 @@ export default function ConsultationModal() {
     setSendError("");
     try {
       await sendLead("consultation", {
-        name: values.name.trim(), phone: values.phone.trim(), email: values.email.trim(),
+        name: cleanName(values.name), phone: cleanPhone(values.phone), email: values.email.trim(),
         location: values.location.trim(), interest: values.interest, message: values.message.trim(),
         website: honeypot(formEl),
       });
